@@ -8,11 +8,13 @@ M0: baseline on gradle/gradle. Not started.
 
 ## Environment
 
-- Machine: (fill in: host, RAM, disk free, Java versions)
-- gradle/gradle checkout: (path, branch, commit)
-- IntelliJ Community fork: (path, branch, commit) or "not yet cloned"
-- Gradle distribution used for measurements: (path, how built, commit)
-- Installed IntelliJ used for tooling jars: (path, version)
+This machine; details and disk budget in `design/environment.md`. Fill in as things are created:
+
+- Benchmark worktree of gradle/gradle: not yet created (`~/projects/gradle-wbs-benchmark`, pin the commit here)
+- Gradle distribution used for measurements: not yet built
+- IntelliJ Community download for tooling jars: not yet downloaded (`~/tools/ideaIC/`, version here)
+- IntelliJ Community fork: not yet cloned (M3)
+- Disk free at last check: 9.3 GB (2026-10-15)
 
 ## Done
 
@@ -24,8 +26,9 @@ M0: baseline on gradle/gradle. Not started.
 
 ## Next step
 
-1. Fill in the environment section above.
-2. Start M0 per `design/plan.md`.
+1. Reclaim disk per `design/environment.md` items 1–2 and note the result in LOG.md.
+2. Create the benchmark worktree, build the logging distribution, download IntelliJ Community.
+3. Start M0 per `design/plan.md`.
 
 ## Blocked on owner
 
