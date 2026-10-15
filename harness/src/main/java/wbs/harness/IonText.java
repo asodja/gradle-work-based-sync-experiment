@@ -38,19 +38,26 @@ public final class IonText {
             }
         }
         IonSystem system = IonSystemBuilder.standard().build();
+        // The Ion writer closes its stream; never close System.out.
+        OutputStream out = new java.io.FilterOutputStream(System.out) {
+            @Override
+            public void close() throws IOException {
+                flush();
+            }
+        };
         for (String file : files) {
             byte[] bytes = Files.readAllBytes(Path.of(file));
             if (canonical) {
                 for (IonValue value : system.getLoader().load(bytes)) {
                     IonValue sorted = canonicalize(system, value);
-                    try (IonWriter writer = IonTextWriterBuilder.pretty().build((OutputStream) System.out)) {
+                    try (IonWriter writer = IonTextWriterBuilder.pretty().build(out)) {
                         sorted.writeTo(writer);
                     }
                     System.out.println();
                 }
             } else {
                 try (IonReader reader = IonReaderBuilder.standard().build(bytes);
-                     IonWriter writer = IonTextWriterBuilder.pretty().build((OutputStream) System.out)) {
+                     IonWriter writer = IonTextWriterBuilder.pretty().build(out)) {
                     writer.writeValues(reader);
                 }
                 System.out.println();

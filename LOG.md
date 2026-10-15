@@ -163,3 +163,14 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   stale-file deletion in the request builder made all 287 tasks re-execute on a cache hit (2.9 s vs 1.5 s) and is
   reverted. `GradleExtensions` fails to capture in 54 projects (removed `apiStubElements` configuration still listed
   in `configurations.names` at graph time), to be recorded as missing in task mode.
+- **M3 fourth attempt diagnosis**: all runs OK (miss 21.8 s, hit 4.4 s with dumps, incremental 17.4 s) but only the
+  first project's `ExternalProject`, `GradleExtensions`, `ExternalTestsModel`, `AnnotationProcessingModel` and
+  `RepositoryModels` matched; the others arrived as `{objectID:1}`. Round-trip experiment (`harness` `RoundTrip2`):
+  reading three different bundles with one `ToolingSerializer` returned the *same object instance* every time.
+  IntelliJ's Ion `SerializationService` readers keep their object table across `read()` calls of one instance and
+  resolve a repeated `objectID` to the earlier document's object; the writers likewise turn a second write of the
+  same instance into a bare reference. So the consumer handed project 1's model to all 287 projects, and the
+  holder's re-serialization of that one object collapsed to a reference. Fix: a fresh `ToolingSerializer` per
+  read in the consumer (IntelliJ's IDE side also deserializes each model with its own context). The six models
+  without an Ion serializer were "missing" in the dump only because the dump skipped non-byte values; the holder
+  passes them through as objects, as in the IDE (D12). The dump now Java-serializes those for comparison.

@@ -118,7 +118,6 @@ final class IdeTasksTransport implements Serializable {
 
         @Override
         public void populateModels(BuildController controller, Collection<? extends GradleBuild> buildModels, GradleModelConsumer consumer) {
-            ToolingSerializer serializer = new ToolingSerializer();
             for (GradleBuild build : buildModels) {
                 for (BasicGradleProject project : build.getProjects()) {
                     List<String> files = filesByProjectDir.get(project.getProjectDirectory().getPath());
@@ -145,9 +144,11 @@ final class IdeTasksTransport implements Serializable {
                             // One entry that does not deserialize must not lose the others.
                             try {
                                 Class<?> modelClass = Class.forName(payload.getModelClassName(), true, IdeTasksTransport.class.getClassLoader());
+                                // A fresh serializer per read: IntelliJ's Ion readers keep an object table across read()
+                                // calls of one instance and return the previous document's objects for repeated ids.
                                 Object model = ModelPayload.JAVA.equals(payload.getFormat())
                                     ? readJava(payload.getBytes())
-                                    : serializer.read(payload.getBytes(), modelClass);
+                                    : new ToolingSerializer().read(payload.getBytes(), modelClass);
                                 if (model != null) {
                                     consumer.consumeProjectModel(project, model, modelClass);
                                 }

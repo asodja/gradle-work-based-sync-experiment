@@ -23,7 +23,7 @@ public final class BundleDump {
                         Class<?> modelClass = Class.forName(payload.getModelClassName());
                         Object model = ModelPayload.JAVA.equals(payload.getFormat())
                             ? IdeTasksTransport.readJava(payload.getBytes())
-                            : serializer.read(payload.getBytes(), modelClass);
+                            : new ToolingSerializer().read(payload.getBytes(), modelClass);
                         status = "ok " + (model == null ? "null" : model.getClass().getSimpleName());
                     } catch (Throwable t) {
                         status = "FAIL " + t;
