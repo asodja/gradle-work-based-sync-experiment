@@ -5,9 +5,9 @@
 #
 # Default models: the ported ones. Prints identical / different / missing per project file; for differences,
 # the canonical Ion text diff (struct fields sorted, map entries sorted by key). Exit 1 if anything differs.
-set -euo pipefail
+set -uo pipefail
 B=$1; T=$2; shift 2
-MODELS=("$@"); [ ${#MODELS[@]} -eq 0 ] && MODELS=(GradleSourceSetModel)
+MODELS=("$@"); [ ${#MODELS[@]} -eq 0 ] && MODELS=($(java -cp "$(dirname "$0")/../harness/build/install/harness/lib/*" wbs.harness.PortedModelNames 2>/dev/null))
 HERE=$(cd "$(dirname "$0")" && pwd)
 LIB=$HERE/../harness/build/install/harness/lib
 ion() { java -cp "$LIB/*" wbs.harness.IonText --canonical "$1" 2>/dev/null; }
@@ -20,7 +20,7 @@ for m in "${MODELS[@]}"; do
       rel=${f#$bdir}
       if [ ! -f "$tdir/$rel" ]; then missing=$((missing+1)); echo "MISSING in tasks: $cls/$rel"; continue; fi
       if cmp -s "$f" "$tdir/$rel" || diff -q <(ion "$f") <(ion "$tdir/$rel") >/dev/null; then same=$((same+1)); else
-        diffn=$((diffn+1)); echo "DIFFERENT: $cls/$rel"; diff <(ion "$f") <(ion "$tdir/$rel") | head -40; fi
+        diffn=$((diffn+1)); echo "DIFFERENT: $cls/$rel"; diff <(ion "$f") <(ion "$tdir/$rel") | head -40 || true; fi
     done < <(find "$bdir" -type f -name '*.bin' -print0 | sort -z)
     extra=$(find "$tdir" -type f -name '*.bin' 2>/dev/null | while read -r f; do [ -f "$bdir/${f#$tdir/}" ] || echo "$f"; done | wc -l)
     echo "$cls: identical=$same different=$diffn missing=$missing extra-in-tasks=$extra"

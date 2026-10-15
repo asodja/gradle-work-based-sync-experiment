@@ -3,7 +3,9 @@ package wbs.harness;
 import com.intellij.gradle.toolingExtension.impl.ideTask.IdeModelTaskRequest;
 import com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle;
 import com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.PortedModels;
 import com.intellij.gradle.toolingExtension.impl.modelSerialization.ToolingSerializer;
+import com.intellij.gradle.toolingExtension.impl.util.GradleModelProviderUtil;
 import com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase;
 import org.gradle.tooling.BuildController;
 import org.gradle.tooling.model.gradle.BasicGradleProject;
@@ -32,8 +34,25 @@ final class IdeTasksTransport implements Serializable {
     /** project directory path -> bundle files announced by the request model. */
     private final Map<String, List<String>> filesByProjectDir = new LinkedHashMap<>();
 
+    /** The request provider plus one file provider per IntelliJ phase that a ported model belongs to. */
     List<ProjectImportModelProvider> providers() {
-        return List.of(new RequestProvider(), new FileModelProvider());
+        List<ProjectImportModelProvider> result = new ArrayList<>();
+        result.add(new RequestProvider());
+        for (Map.Entry<String, List<String>> e : PortedModels.PROJECT_MODEL_TASK.entrySet()) {
+            result.add(new FileModelProvider(phaseByName(e.getKey()), new java.util.HashSet<>(e.getValue())));
+        }
+        return result;
+    }
+
+    private static GradleModelFetchPhase phaseByName(String name) {
+        for (GradleModelFetchPhase phase : List.of(GradleModelFetchPhase.PROJECT_LOADED_PHASE, GradleModelFetchPhase.PROJECT_MODEL_PHASE,
+            GradleModelFetchPhase.PROJECT_SOURCE_SET_PHASE, GradleModelFetchPhase.PROJECT_SOURCE_SET_DEPENDENCY_PHASE,
+            GradleModelFetchPhase.ADDITIONAL_MODEL_PHASE)) {
+            if (phase.getName().equals(name)) {
+                return phase;
+            }
+        }
+        throw new IllegalArgumentException("unknown phase " + name);
     }
 
     /** Projects-loaded phase: ask every project for its model tasks; the builder schedules them. */
@@ -50,27 +69,40 @@ final class IdeTasksTransport implements Serializable {
 
         @Override
         public void populateModels(BuildController controller, Collection<? extends GradleBuild> buildModels, GradleModelConsumer consumer) {
-            for (GradleBuild build : buildModels) {
-                for (BasicGradleProject project : build.getProjects()) {
-                    IdeModelTaskRequest request = controller.findModel(project, IdeModelTaskRequest.class);
-                    if (request != null && !request.getModelFiles().isEmpty()) {
-                        filesByProjectDir.put(project.getProjectDirectory().getPath(), new ArrayList<>(request.getModelFiles()));
+            // Parallel like IntelliJ's own providers (idea.parallelModelFetch.enabled): in the projects-loaded phase each
+            // project-scoped request configures its project, so a sequential loop would configure 287 projects one by one.
+            GradleModelProviderUtil.buildModels(controller, buildModels, IdeModelTaskRequest.class, new GradleModelConsumer() {
+                @Override
+                public void consumeProjectModel(BasicGradleProject project, Object object, Class<?> clazz) {
+                    IdeModelTaskRequest request = (IdeModelTaskRequest) object;
+                    if (!request.getModelFiles().isEmpty()) {
+                        synchronized (filesByProjectDir) {
+                            filesByProjectDir.put(project.getProjectDirectory().getPath(), new ArrayList<>(request.getModelFiles()));
+                        }
                     }
                 }
-            }
+            });
         }
     }
 
-    /** Build-finished, source set phase: read the bundles the tasks wrote and hand the models to the consumer. */
+    /** Build-finished: read the bundles the tasks wrote and hand this phase's models to the consumer. */
     final class FileModelProvider implements ProjectImportModelProvider {
+        private final GradleModelFetchPhase phase;
+        private final java.util.Set<String> modelClassNames;
+
+        FileModelProvider(GradleModelFetchPhase phase, java.util.Set<String> modelClassNames) {
+            this.phase = phase;
+            this.modelClassNames = modelClassNames;
+        }
+
         @Override
         public GradleModelFetchPhase getPhase() {
-            return GradleModelFetchPhase.PROJECT_SOURCE_SET_PHASE;
+            return phase;
         }
 
         @Override
         public String getName() {
-            return "IdeFileModelProvider";
+            return "IdeFileModelProvider(" + phase.getName() + ")";
         }
 
         @Override
@@ -90,6 +122,9 @@ final class IdeTasksTransport implements Serializable {
                         }
                         try (InputStream in = Files.newInputStream(file.toPath()); DataInputStream data = new DataInputStream(in)) {
                             for (ModelPayload payload : ModelBundle.read(data)) {
+                                if (!modelClassNames.contains(payload.getModelClassName())) {
+                                    continue;
+                                }
                                 Class<?> modelClass = Class.forName(payload.getModelClassName(), true, IdeTasksTransport.class.getClassLoader());
                                 Object model = serializer.read(payload.getBytes(), modelClass);
                                 if (model != null) {

@@ -1,16 +1,10 @@
 package com.intellij.gradle.toolingExtension.impl.ideTask;
 
-import com.intellij.gradle.toolingExtension.impl.model.sourceSetModel.GradleSourceSetModelBuilder;
-import com.intellij.gradle.toolingExtension.impl.model.sourceSetModel.GradleSourceSetSerialisationService;
-import com.intellij.gradle.toolingExtension.impl.modelBuilder.DefaultModelBuilderContext;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.invocation.Gradle;
-import org.jetbrains.plugins.gradle.model.GradleSourceSetModel;
-import org.jetbrains.plugins.gradle.tooling.ModelBuilderContext;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -40,16 +34,8 @@ public final class IdeModelTasks {
             task.getModelFile().set(project.getLayout().getBuildDirectory().file(MODEL_DIR + "/" + IdeProjectModelTask.NAME + ".bin"));
             // Evaluated when the task is realized for the graph, after the project is configured: the same
             // moment the builder runs today. Stored by value in the configuration cache entry.
-            task.getModels().add(project.provider(() -> sourceSetModel(project)));
+            task.getModels().addAll(ModelCapture.payloads(project, PortedModels.all()));
         });
-    }
-
-    private static ModelPayload sourceSetModel(Project project) throws IOException {
-        ModelBuilderContext context = new DefaultModelBuilderContext(project.getGradle());
-        GradleSourceSetModel model = (GradleSourceSetModel) new GradleSourceSetModelBuilder()
-            .buildAll(GradleSourceSetModel.class.getName(), project, context);
-        byte[] bytes = new GradleSourceSetSerialisationService().write(model, GradleSourceSetModel.class);
-        return new ModelPayload(GradleSourceSetModel.class.getName(), bytes);
     }
 
     private static void checkDependencies(TaskExecutionGraph graph) {

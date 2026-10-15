@@ -41,11 +41,28 @@ final class IdeProviders {
         return providers;
     }
 
-    /** Task mode: the file transport replaces IntelliJ's source set provider (and its task warm-up request). */
+    /** IntelliJ's dedicated providers and the model class each one delivers (the generic ones say so in toString). */
+    private static final java.util.Map<String, String> DEDICATED_PROVIDERS = java.util.Map.of(
+        "GradleSourceSetModelProvider", "org.jetbrains.plugins.gradle.model.GradleSourceSetModel",
+        "GradleExternalProjectModelProvider", "org.jetbrains.plugins.gradle.model.ExternalProject",
+        "GradleTaskModelProvider", "org.jetbrains.plugins.gradle.model.GradleTaskModel",
+        "GradleBuildScriptClasspathModelProvider", "org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel");
+
+    /** Task mode: the file transport replaces the IntelliJ providers of every ported model. */
     void useTaskTransport(IdeTasksTransport transport) {
-        providers.removeIf(p -> p.getClass().getSimpleName().equals("GradleSourceSetModelProvider"));
+        java.util.Set<String> ported = new java.util.HashSet<>(com.intellij.gradle.toolingExtension.impl.ideTask.PortedModels.all());
+        List<String> removed = new ArrayList<>();
+        providers.removeIf(p -> {
+            String dedicated = DEDICATED_PROVIDERS.get(p.getClass().getSimpleName());
+            boolean remove = dedicated != null ? ported.contains(dedicated)
+                : ported.stream().anyMatch(c -> p.toString().equals("ProjectModel(" + c + ")"));
+            if (remove) {
+                removed.add(p.toString());
+            }
+            return remove;
+        });
         providers.addAll(transport.providers());
-        log.add("TASK MODE: GradleSourceSetModelProvider replaced by " + transport.providers());
+        log.add("TASK MODE: removed " + removed + "; added " + transport.providers());
     }
 
     Set<Class<?>> toolingExtensionClasses() {

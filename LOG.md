@@ -98,3 +98,17 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   load that reaches it fails; any final Kotlin rule class would too. Not fixed on master; `gh search issues` finds
   nothing (2 queries). Smallest fix: expose the delegate of `ValidatingAction` and match it in the codec's
   `writeStrategy` (2 jars: dependency-management, dependency-management-serialization-codecs). See DECISIONS D10.
+- **M2 on gradle/gradle, task mode (`ideProjectModel` = GradleSourceSetModel), one client JVM, 3 runs:**
+  run 0 (miss): 135.7 s, of which 120 s before projects loaded (bug: my request provider asked the 287 projects
+  for `IdeModelTaskRequest` sequentially, and in the projects-loaded phase each project-scoped request configures
+  its project, so configuration ran one project at a time; fixed with `GradleModelProviderUtil.buildModels`, the
+  parallel path IntelliJ's providers use; re-measured below). 314 tasks executed (287 model tasks + 27 build-logic
+  checks), CC entry stored, no IP problems. Run 1 (no change): **2.2 s**, "Configuration cache entry reused",
+  `tasks={up-to-date=288}` (287 model tasks + prepareKotlinBuildScriptModel). Run 2 (comment appended to
+  `subprojects/core/build.gradle.kts`): 19.7 s, entry stored, `up-to-date=558` (all 287 model tasks up to date
+  because the serialized model did not change; `:core` was reconfigured, the remaining builders ran as before).
+  Comparison `prototype/compare-models.sh` (canonical Ion): **285 of 287 `GradleSourceSetModel` identical**;
+  `:docs` and `:internal-build-reports` differ only by extra `configurationArtifacts` entries with empty values on
+  the builder side (`__$$asciidoctorj_*$$__d/_r` and similar), i.e. configurations created while tasks executed
+  (builders run after task execution, the task captures at graph time). Verdict: acceptable, no information lost.
+  M2 gate (task up to date in all projects on the warm IP run, entry reused, no IP problems): **passed**.
