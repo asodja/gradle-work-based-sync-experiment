@@ -126,3 +126,13 @@ work runs, so timings are unaffected; mixing two patched jars into the milestone
 commits. Measuring only on the fixture would leave the central competitor unmeasured on the benchmark build.
 Rejected: an init-script consumer rule that pre-empts KGP's rule (changes the measured build, fragile); dropping
 scenario 6.
+
+### D11: the mechanical M3 ports are entries in `PortedModels`, done by the lead session
+
+What: with D8 a mechanical port is one line in `PortedModels.PROJECT_MODEL_TASK` plus a comparison run; the
+`port-model` subagent (Opus, one model per invocation, its own commit and LOG entry) is not used for them.
+Comparison results are recorded per model in LOG.md in one entry for the group.
+Why: the policy in `design/models-and-effort.md` assumed each port is a rewrite of a builder; it is not any
+more. Spawning 13 agents for 13 one-line edits would cost more than the edits and fragment the comparison.
+The hard group (`GradleSourceSetDependencyModel`, `KotlinGradleModel`, `ProjectDependencies`) stays with the
+lead session as planned.

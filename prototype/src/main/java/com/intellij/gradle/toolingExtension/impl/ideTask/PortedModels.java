@@ -19,8 +19,27 @@ public final class PortedModels {
 
     private static Map<String, List<String>> projectModelTask() {
         Map<String, List<String>> m = new LinkedHashMap<>();
+        m.put("PROJECT_MODEL_PHASE", List.of(
+            "org.jetbrains.plugins.gradle.model.ExternalProject"));
         m.put("SOURCE_SET_MODEL_PHASE", List.of(
             "org.jetbrains.plugins.gradle.model.GradleSourceSetModel"));
+        // The mechanical group (design/plan.md M3), all served by GradleClassProjectModelProvider or a dedicated
+        // provider in IntelliJ's ADDITIONAL phase. Not here: the hard group (GradleSourceSetDependencyModel,
+        // KotlinGradleModel, ProjectDependencies) and the out-of-scope Kotlin compiler-plugin and MPP models.
+        m.put("ADDITIONAL_MODEL_PHASE", List.of(
+            "org.jetbrains.plugins.gradle.model.GradleTaskModel",
+            "org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel",
+            "org.jetbrains.plugins.gradle.model.GradleExtensions",
+            "org.jetbrains.plugins.gradle.model.tests.ExternalTestsModel",
+            "org.jetbrains.plugins.gradle.model.IntelliJProjectSettings",
+            "org.jetbrains.plugins.gradle.model.IntelliJSettings",
+            "org.jetbrains.plugins.gradle.model.DependencyAccessorsModel",
+            "org.jetbrains.plugins.gradle.model.VersionCatalogsModel",
+            "org.jetbrains.plugins.gradle.model.AnnotationProcessingModel",
+            "org.jetbrains.plugins.gradle.javaModel.JavaGradleManifestModel",
+            "org.jetbrains.plugins.gradle.model.RepositoryModels",
+            "com.intellij.gradle.toolingExtension.model.repositoryModel.ProjectRepositoriesModel",
+            "org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel"));
         return m;
     }
 
