@@ -197,3 +197,11 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   per-project reconfiguration, i.e. the opt-in per-model cache. The remaining structural difference between tasks
   and builders is therefore only against IP *without* the opt-in cache (scenario 4: builders rebuild every model,
   tasks recapture the reconfigured project only). Decision D13.
+- **M3 mechanical group complete**: with the Java-serialized models now dumped and compared reflectively, every ported
+  model is identical to the builder output for every project where the builder produces one (ExternalProject 287,
+  GradleSourceSetModel 287, GradleExtensions 278, ExternalTestsModel 287, IntelliJ(Project)Settings 1,
+  DependencyAccessorsModel 287, VersionCatalogsModel 287, AnnotationProcessingModel 256, JavaGradleManifestModel 287,
+  RepositoryModels 287, ProjectRepositoriesModel 287, KaptGradleModel 287); GradleTaskModel differs only by the new
+  task entry. `results/m3-ports/compare-mechanical.md`. Not ported: GradleBuildScriptClasspathModel (parent-model
+  dependency). Hard group (dependency model with own-project index, KotlinGradleModel, ProjectDependencies) added
+  to the capture list per D13; comparison running.

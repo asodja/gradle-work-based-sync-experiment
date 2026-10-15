@@ -26,6 +26,9 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## Done
 
+- **M3 mechanical group**: 13 models captured via `PortedModels`, all identical to builder output
+  (`results/m3-ports/compare-mechanical.md`). Key finding on the way: resolution cannot be deferred under CC
+  (LOG, D13), so the dependency model is captured at configuration time too.
 - **M0**: `results/m0-baseline/` (models.md = cost tables, summary.md, NOTES.md, per-run files, `<s>-models.md`
   per-model tables from traces). Medians: cold 34.7 s; warm plain 16.9 s; warm IP hit 1.4 s; warm IP miss 21.9 s;
   incremental IP 14.9 s; IP + model cache hit 1.3 s; incremental + model cache: fails (Gradle). Gate applied below.
@@ -37,12 +40,12 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## In flight
 
-- **M3 mechanical group** (`PortedModels`: ExternalProject, GradleTaskModel, GradleBuildScriptClasspathModel,
-  GradleExtensions, ExternalTestsModel, IntelliJ(Project)Settings, DependencyAccessorsModel, VersionCatalogsModel,
-  AnnotationProcessingModel, JavaGradleManifestModel, RepositoryModels, ProjectRepositoriesModel, KaptGradleModel)
-  running on gradle/gradle: miss/hit/incremental in task mode plus comparison of every ported model against the
-  builder dump (session scratchpad `logs/gg-m3.log`, `logs/gg-m3-compare.txt`, dumps `dump/gg-builders`,
-  `dump/gg-tasks3`). Resolved: the 113 s task-mode miss was an environment stall, not the tasks (LOG).
+- **M3 hard group** (D13: GradleDependencyDownloadPolicy + artifact-index request + GradleSourceSetDependencyModel,
+  KotlinGradleModel, ProjectDependencies captured at configuration) running on gradle/gradle: miss/hit/incremental in
+  task mode plus the comparison (session scratchpad `logs/gg-m3h.log`, `logs/gg-m3h-compare.txt`, dumps
+  `dump/gg-builders2`, `dump/gg-tasks4`). Expected differences: dependency-model parts that need other projects'
+  artifact-index entries. Then: `results/m3-ports/compare-hard.md`, M4 runs for both versions with
+  `WBS_EXTRA="--tasks --extra-tooling-jar prototype/build/libs/ide-model-tasks.jar"`, scenario 7 (build-logic edit).
 - **M2 end to end**: `prototype/` (task base class `IdeModelTask`, `IdeProjectModelTask`, registration `IdeModelTasks.apply(gradle)`
   from an extra init script, `IdeModelTaskRequestBuilder` scheduling the tasks in the projects-loaded phase) and the
   harness task transport (`--tasks --extra-tooling-jar prototype/build/libs/ide-model-tasks.jar`, `IdeTasksTransport`).
