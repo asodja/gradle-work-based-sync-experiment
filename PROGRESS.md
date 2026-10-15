@@ -40,6 +40,11 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## In flight
 
+- **All-tasks floor measured** (LOG "All-tasks floor, corrected build"): miss 14.4 s vs builders 21.9 s, hit 1.9 s,
+  edit 13.1 s vs 14.9 s. Launcher transport (`--launcher`: GradleBuild model + BuildLauncher task run + client-side
+  bundle reading, D14) built and running: miss / hit / project edit / gradle.properties edit (session scratchpad
+  `logs/gg-launcher.log`). Expected: the edit case drops further if Isolated Projects updates the entry per project
+  for a plain task run.
 - **M3 hard group** (D13: GradleDependencyDownloadPolicy + artifact-index request + GradleSourceSetDependencyModel,
   KotlinGradleModel, ProjectDependencies captured at configuration) running on gradle/gradle: miss/hit/incremental in
   task mode plus the comparison (session scratchpad `logs/gg-m3h.log`, `logs/gg-m3h-compare.txt`, dumps
