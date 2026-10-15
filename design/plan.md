@@ -43,7 +43,8 @@ Exit: one command yields the comparison table for any Gradle distribution and an
 
 Goal: settle the design on the hardest representative before fanning out.
 
-1. Turn `design/task-contract.md` from draft into decided. Record decisions in `DECISIONS.md`.
+1. Turn `design/task-contract.md` from draft into decided, including the builder-to-task grouping
+   (see "Builders to tasks is not one to one"). Record decisions in `DECISIONS.md`.
 2. In the IntelliJ fork (`plugins/gradle/tooling-extension-impl`), add the model task base class and
    port `GradleSourceSetModel` (`GradleSourceSetModelBuilder.java`, ~880 lines). It shares state with
    `GradleSourceSetDependencyModel` through `GradleSourceSetArtifactIndex`; decide whether that index goes

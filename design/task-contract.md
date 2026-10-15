@@ -3,10 +3,36 @@
 Every ported model follows the same contract so that ports are mechanical and the transport is one piece
 of code.
 
+## Builders to tasks is not one to one
+
+The builder set is shaped by IntelliJ's phases and by model classes the IDE consumes; the task set should
+be shaped by what makes sense as work. Merge, split or drop freely, as long as the consumer still receives
+the same model objects:
+
+- **Merge**: one task per project producing several models is often better than one task per model. It
+  snapshots the project once, cuts the task count (254 × 1 instead of 254 × 15 on gradle/gradle), and
+  writes one bundle file. A natural first grouping is one task per IntelliJ phase group: a "project
+  model" task (`ExternalProject`, source sets, tests, extensions, settings, catalogs, accessors, manifest,
+  annotation processing, repositories, task model) and a "dependency model" task (source set dependencies,
+  artifact index, project dependencies), since the second resolves configurations and is the expensive,
+  separately-invalidated part. Decide the grouping in M2 against: input overlap, failure isolation (one
+  failing part should not lose the whole bundle), incrementality (what changes together), and file count.
+- **Split**: a builder that does two unrelated things (e.g. `GradleSourceSetModelBuilder` collects jar
+  artifacts for all tasks and builds source sets) may become two tasks if their inputs change independently.
+- **Drop**: builders that exist only because of the builder world disappear. `GradleTaskWarmUpRequest`
+  (realizes tasks so later builders see them), `GradleTurnOffDefaultTasksRequest` (moot once tasks are
+  requested), `GradleDependencyDownloadPolicy` as a separate request (becomes an input of the dependency
+  task), `GradleSourceSetArtifactBuildRequest` (becomes an output or an input).
+- **Keep the model classes**: the consumer, the resolvers and the serializers are keyed by model class, so
+  tasks still produce `DefaultExternalProject`, `DefaultGradleSourceSetModel` and friends. A bundle file is
+  just several serialized models in one container with a small index.
+
+Record the mapping in `design/model-inventory.md` (add a "task" column) as it is decided.
+
 ## Naming and registration
 
-- One task per model per project, named `ide<ModelSimpleName>` (e.g. `ideSourceSetModel`,
-  `ideExternalProject`). No group, so they do not show in `gradle tasks`.
+- Task names reflect the chosen grouping, e.g. `ideProjectModel`, `ideDependencyModel`, or
+  `ide<ModelSimpleName>` for single-model tasks. No group, so they do not show in `gradle tasks`.
 - Registered from IntelliJ's init script with `gradle.lifecycle.beforeProject` (Isolated Projects safe),
   lazily (`tasks.register`), and only where the model applies (`plugins.withId("java-base")` for
   source-set models). Projects without the plugin get no task and the consumer treats a missing file as
@@ -19,7 +45,8 @@ of code.
 `abstract class IdeModelTask extends DefaultTask` in `tooling-extension-impl`:
 
 - `@OutputFile RegularFileProperty getModelFile()` defaulting to
-  `<project build dir>/ide/models/<ModelSimpleName>.bin`.
+  `<project build dir>/ide/models/<taskName>.bin`; a bundle holds several serialized models with an index
+  (model class name → byte range), single-model tasks hold one.
 - `@Internal` project identity captured at configuration time (identity path, project dir) for the
   consumer to key the model.
 - A validation (at graph time via `gradle.taskGraph.whenReady`, or a `doFirst` in development builds)

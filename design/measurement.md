@@ -55,6 +55,22 @@ Both versions run 1–4; scenario 5 is for the builder version. Run 3–5 with t
 task-version run under 3 or 4 that reports IP problems is a failed run, not a data point; fix the port
 first.
 
+## Capturing the model list and costs without a patched distribution
+
+The build operation trace records every "Fetch model '<name>' for <target>" operation with timestamps.
+Add to the daemon JVM args of the synced build (for gradle/gradle, `org.gradle.jvmargs` in its
+`gradle.properties`, or the Gradle VM options in the IDE settings):
+
+```
+-Dorg.gradle.internal.operations.trace=/tmp/sync-trace
+```
+
+Sync once; `/tmp/sync-trace-log.txt` then has one start and one finish line per model request. Aggregate
+with a small script (match `Fetch model '`, pair start/finish by operation id, group by model name). This
+works with a stock Gradle distribution and the IDE you already have, so the owner can produce the
+gradle/gradle request profile on any machine before M0 starts here. The request logger in
+`design/context.md` §5 gives the same data with less parsing when a patched distribution is at hand.
+
 ## Metrics
 
 - Total wall time of the fetch (harness) and `GRADLE_CALL` / `PROJECT_RESOLVERS` (IDE, M0 and M5).

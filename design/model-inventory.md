@@ -1,5 +1,11 @@
 # Model inventory
 
+The set of model classes requested during a sync is decided by the IDE's installed plugins, not by the
+project: every project is asked for the same classes, and a builder returns `null` where it does not apply
+(kapt without kapt, MPP without MPP). So gradle/gradle will be asked for the list below (minus Ultimate
+models under Community) for each of its 254 projects. What differs per project is the cost and whether
+the model is empty; M0 measures that.
+
 Owner "IJ" = IntelliJ Community (`plugins/gradle/tooling-extension-impl` unless noted), "Gradle" = Gradle
 distribution. Phase = IntelliJ fetch phase. Plan: `task` (port in M3), `task-hard` (M2/M3 hard group),
 `keep` (stays a model), `skip` (not exercised by gradle/gradle or out of scope).
