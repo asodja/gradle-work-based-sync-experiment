@@ -46,7 +46,7 @@ def main(dirs):
         runs = defaultdict(list)
         for name in sorted(os.listdir(d)):
             m = re.match(r"^(\d)-(\d+)\.txt$", name)
-            if m:
+            if m and m.group(2) != "0":  # run 0 is the warm-up
                 runs[m.group(1)].append(parse(os.path.join(d, name)))
         print(f"## {os.path.basename(os.path.normpath(d))}\n")
         print("| # | Scenario | Runs | Total ms median (min–max) | Action ms | To projectsLoaded | projectsLoaded→buildFinished | Tasks | CC |")

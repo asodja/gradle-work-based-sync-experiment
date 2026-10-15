@@ -10,8 +10,10 @@
 #   WBS_RUNS      measured runs/scenario   [3]
 #   WBS_EXTRA     extra harness args       []
 #
-# Each measured run writes results/<label>/<scenario>-<run>.txt. Each scenario also gets one traced
-# profiling run (not timed): results/<label>/<scenario>-trace-log.txt and <scenario>-models.md.
+# Each measured run writes results/<label>/<scenario>-<run>.txt; run 0 is the warm-up and is not reported.
+# Scenarios 2-5 run all their runs inside one harness JVM (the CC key depends on the client classloader, see
+# LOG.md 2026-10-15). Each scenario also gets one traced profiling run in a fresh JVM (not timed, a CC miss):
+# results/<label>/<scenario>-trace-log.txt and <scenario>-models.md.
 set -euo pipefail
 
 LABEL=${1:?label}; shift || true
@@ -40,10 +42,16 @@ EDIT_FILE=$PROJECT/subprojects/core/build.gradle.kts
 
 stop_daemons() { (cd "$PROJECT" && ./gradlew -g "$GUH" --stop -q >/dev/null 2>&1 || true); }
 
-run() { # run <name> <args...>
+run() { # run <name> <args...>: one run in a fresh JVM
   local name=$1; shift
   echo "== $LABEL $name $(date -Is)"
-  "$HARNESS" "${COMMON[@]}" "$@" ${WBS_EXTRA:-} --out "$OUT/$name.txt" | tail -3
+  "$HARNESS" "${COMMON[@]}" "$@" ${WBS_EXTRA:-} --out "$OUT/$name.txt" 2>&1 | grep "^run " || true
+}
+
+repeat() { # repeat <scenario> <args...>: warm-up run 0 plus RUNS measured runs in one JVM
+  local s=$1; shift
+  echo "== $LABEL $s x$((RUNS + 1)) $(date -Is)"
+  "$HARNESS" "${COMMON[@]}" "$@" ${WBS_EXTRA:-} --repeat $((RUNS + 1)) --first-run 0 --out "$OUT/$s-{run}.txt" 2>&1 | grep "^run " || true
 }
 
 traced_run() { # traced_run <scenario> <args...>
@@ -61,25 +69,18 @@ for s in "${SCENARIOS[@]}"; do
        for i in $(seq 1 "$RUNS"); do stop_daemons; run "1-$i" "${PLAIN[@]}"; done
        stop_daemons; traced_run 1 "${PLAIN[@]}" ;;
     2) # warm, plain: daemon alive, CC off, IP off
-       run "2-warmup" "${PLAIN[@]}"
-       for i in $(seq 1 "$RUNS"); do run "2-$i" "${PLAIN[@]}"; done
+       repeat 2 "${PLAIN[@]}"
        traced_run 2 "${PLAIN[@]}" ;;
-    3) # warm, IP: project defaults (CC + IP on), entry present
-       run "3-warmup"
-       for i in $(seq 1 "$RUNS"); do run "3-$i"; done
+    3) # warm, IP: project defaults (CC + IP on), entry present after run 0
+       repeat 3
        traced_run 3 ;;
-    4) # incremental, IP: a unique comment appended to one build script before every run
-       run "4-warmup"
-       for i in $(seq 1 "$RUNS"); do
-         echo "// wbs incremental edit $LABEL $i $(date +%s)" >> "$EDIT_FILE"
-         run "4-$i"
-       done
+    4) # incremental, IP: a unique comment appended to one build script before every measured run
+       repeat 4 --before-run "[ \"\$RUN\" -gt 0 ] && echo \"// wbs incremental edit $LABEL \$RUN \$(date +%s)\" >> '$EDIT_FILE' || true"
        echo "// wbs incremental edit $LABEL trace $(date +%s)" >> "$EDIT_FILE"
        traced_run 4
        restore_edit ;;
     5) # warm, IP + opt-in model cache (builders only)
-       run "5-warmup" "${MODEL_CACHE[@]}"
-       for i in $(seq 1 "$RUNS"); do run "5-$i" "${MODEL_CACHE[@]}"; done
+       repeat 5 "${MODEL_CACHE[@]}"
        traced_run 5 "${MODEL_CACHE[@]}" ;;
     *) echo "unknown scenario $s" >&2; exit 2 ;;
   esac

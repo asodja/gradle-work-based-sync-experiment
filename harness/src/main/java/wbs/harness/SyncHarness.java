@@ -53,7 +53,7 @@ public final class SyncHarness {
         // All repeats run in this one JVM: the configuration cache key hashes the serialized action, which
         // carries the client classloader's UUID (ClientSidePayloadClassLoaderRegistry), so a new JVM per run
         // could never reuse an entry, while the IDE process keeps one classloader across syncs.
-        for (int run = 1; run <= o.repeat; run++) {
+        for (int run = o.firstRun; run < o.firstRun + o.repeat; run++) {
             if (o.beforeRun != null) {
                 runHook(o.beforeRun, run);
             }
@@ -68,7 +68,7 @@ public final class SyncHarness {
                 summary.flush();
                 if (out != null) {
                     summary.close();
-                    System.out.println("run " + run + "/" + o.repeat + " -> " + out + " exit " + code);
+                    System.out.println("run " + run + " -> " + out + " exit " + code);
                 }
             }
         }
@@ -349,6 +349,7 @@ public final class SyncHarness {
         Path installation;
         String out;
         int repeat = 1;
+        int firstRun = 1;
         String beforeRun;
         String ideaVersion = "2025.3";
         boolean streaming = true;
@@ -368,6 +369,7 @@ public final class SyncHarness {
                     case "--installation": o.installation = Path.of(args[++i]).toAbsolutePath(); break;
                     case "--out": o.out = args[++i]; break;
                     case "--repeat": o.repeat = Integer.parseInt(args[++i]); break;
+                    case "--first-run": o.firstRun = Integer.parseInt(args[++i]); break;
                     case "--before-run": o.beforeRun = args[++i]; break;
                     case "--idea-version": o.ideaVersion = args[++i]; break;
                     case "--arg": o.gradleArgs.add(args[++i]); break;
@@ -400,7 +402,7 @@ public final class SyncHarness {
         }
 
         static final String USAGE = "\nusage: harness --project DIR --gradle-user-home DIR [--idea-home DIR] [--installation DIR]"
-            + " [--out FILE(with {run})] [--repeat N] [--before-run SHELL]"
+            + " [--out FILE(with {run})] [--repeat N] [--first-run N] [--before-run SHELL]"
             + " [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--drop-arg-prefix P]... [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
     }
 }
