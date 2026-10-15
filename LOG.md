@@ -151,3 +151,15 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   before the tasks run so a missing file is unambiguous. Builder mode produces `GradleExtensions` for those 9
   projects (it runs after task execution), so the comparison will show them as missing in task mode: a timing
   difference to record per model, not a port bug.
+- **M3 third attempt**: all three task-mode runs OK (miss 26.7 s, hit 2.9 s with entry reused, incremental 19.6 s),
+  `ExternalProject` and `GradleSourceSetModel` 287/287 identical, `GradleTaskModel` differs only by the new
+  `ideProjectModel` entry (accepted). But every ADDITIONAL-phase model was lost: four Ion entries per bundle
+  (`GradleExtensions`, `ExternalTestsModel`, `AnnotationProcessingModel`, `RepositoryModels`, the
+  `org.jetbrains.plugins.gradle.tooling.serialization.*` services) were 24-byte empty Ion documents and the consumer
+  aborted the whole bundle on the first one. Cause: IntelliJ's Ion `SerializationService`s keep per-instance write
+  state and are not thread-safe (the IDE serializes on a single-thread executor, `idea-tooling-model-converter`);
+  I shared one `ToolingSerializer` while the configuration cache store evaluated the task inputs of different
+  projects in parallel. Fixed with one serializer per capture; the consumer now fails per entry. Also: the
+  stale-file deletion in the request builder made all 287 tasks re-execute on a cache hit (2.9 s vs 1.5 s) and is
+  reverted. `GradleExtensions` fails to capture in 54 projects (removed `apiStubElements` configuration still listed
+  in `configurations.names` at graph time), to be recorded as missing in task mode.

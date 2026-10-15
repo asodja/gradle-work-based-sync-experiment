@@ -29,11 +29,10 @@ public final class IdeModelTaskRequestBuilder extends AbstractModelBuilderServic
         List<String> files = new ArrayList<>();
         if (project.getTasks().getNames().contains(IdeProjectModelTask.NAME)) {
             taskPaths.add(absoluteTaskPath(project, IdeProjectModelTask.NAME));
-            java.io.File file = project.getLayout().getBuildDirectory().file(IdeModelTasks.MODEL_DIR + "/" + IdeProjectModelTask.NAME + ".bin")
-                .get().getAsFile();
-            // A stale bundle from an earlier sync must not be mistaken for this sync's output.
-            file.delete();
-            files.add(file.getAbsolutePath());
+            // Not deleted here: deleting the output would make the task re-run on every sync. A stale bundle can
+            // only survive a *failed* task, and a failed task fails the sync (the task deletes its output on failure).
+            files.add(project.getLayout().getBuildDirectory().file(IdeModelTasks.MODEL_DIR + "/" + IdeProjectModelTask.NAME + ".bin")
+                .get().getAsFile().getAbsolutePath());
         }
         if (!taskPaths.isEmpty()) {
             Gradle rootBuild = project.getGradle();

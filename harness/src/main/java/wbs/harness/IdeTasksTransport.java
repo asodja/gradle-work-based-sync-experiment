@@ -85,7 +85,7 @@ final class IdeTasksTransport implements Serializable {
         }
     }
 
-    private static Object readJava(byte[] bytes) throws IOException, ClassNotFoundException {
+    static Object readJava(byte[] bytes) throws IOException, ClassNotFoundException {
         try (java.io.ObjectInputStream in = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(bytes)) {
             @Override
             protected Class<?> resolveClass(java.io.ObjectStreamClass desc) throws IOException, ClassNotFoundException {
@@ -131,11 +131,19 @@ final class IdeTasksTransport implements Serializable {
                             System.err.println("[wbs-tasks] missing model file " + path + " for " + project.getPath());
                             continue;
                         }
+                        List<ModelPayload> payloads;
                         try (InputStream in = Files.newInputStream(file.toPath()); DataInputStream data = new DataInputStream(in)) {
-                            for (ModelPayload payload : ModelBundle.read(data)) {
-                                if (!modelClassNames.contains(payload.getModelClassName())) {
-                                    continue;
-                                }
+                            payloads = ModelBundle.read(data);
+                        } catch (IOException | RuntimeException e) {
+                            System.err.println("[wbs-tasks] cannot read " + path + " for " + project.getPath() + ": " + e);
+                            continue;
+                        }
+                        for (ModelPayload payload : payloads) {
+                            if (!modelClassNames.contains(payload.getModelClassName())) {
+                                continue;
+                            }
+                            // One entry that does not deserialize must not lose the others.
+                            try {
                                 Class<?> modelClass = Class.forName(payload.getModelClassName(), true, IdeTasksTransport.class.getClassLoader());
                                 Object model = ModelPayload.JAVA.equals(payload.getFormat())
                                     ? readJava(payload.getBytes())
@@ -143,11 +151,10 @@ final class IdeTasksTransport implements Serializable {
                                 if (model != null) {
                                     consumer.consumeProjectModel(project, model, modelClass);
                                 }
+                            } catch (Exception e) {
+                                System.err.println("[wbs-tasks] cannot deserialize " + payload.getModelClassName() + " from " + path
+                                    + " for " + project.getPath() + ": " + e);
                             }
-                        } catch (IOException | ClassNotFoundException | RuntimeException e) {
-                            System.err.println("[wbs-tasks] cannot read " + path + " for " + project.getPath() + ": " + e);
-                        } catch (Exception e) {
-                            System.err.println("[wbs-tasks] cannot deserialize " + path + " for " + project.getPath() + ": " + e);
                         }
                     }
                 }

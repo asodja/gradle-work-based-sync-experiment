@@ -23,7 +23,6 @@ import java.util.ServiceLoader;
 final class ModelCapture {
 
     private static final List<ModelBuilderService> BUILDERS = loadBuilders();
-    private static final ToolingSerializer SERIALIZER = new ToolingSerializer();
 
     private ModelCapture() {
     }
@@ -31,6 +30,10 @@ final class ModelCapture {
     static Provider<List<ModelPayload>> payloads(Project project, List<String> modelClassNames) {
         return project.provider(() -> {
             ModelBuilderContext context = new DefaultModelBuilderContext(project.getGradle());
+            // One serializer per capture: IntelliJ's Ion SerializationServices keep per-instance write state and are
+            // not thread-safe (the IDE serializes on a single-thread executor); the configuration cache store evaluates
+            // task inputs of different projects in parallel.
+            ToolingSerializer serializer = new ToolingSerializer();
             List<ModelPayload> result = new ArrayList<>();
             for (String modelClassName : modelClassNames) {
                 // Like ExtraModelBuilder.buildServiceModel: a failing builder reports and yields no model, it does
@@ -43,16 +46,16 @@ final class ModelCapture {
                     continue;
                 }
                 if (model != null) {
-                    result.add(serialize(modelClassName, model));
+                    result.add(serialize(serializer, modelClassName, model));
                 }
             }
             return result;
         });
     }
 
-    private static ModelPayload serialize(String modelClassName, Object model) throws IOException {
+    private static ModelPayload serialize(ToolingSerializer serializer, String modelClassName, Object model) throws IOException {
         try {
-            return new ModelPayload(modelClassName, ModelPayload.ION, SERIALIZER.write(model));
+            return new ModelPayload(modelClassName, ModelPayload.ION, serializer.write(model));
         } catch (SerializationServiceNotFoundException e) {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
