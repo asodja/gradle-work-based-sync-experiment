@@ -179,3 +179,15 @@ assembly, which is a resolver change and goes into M5.
 Why: with any build-level builder left, every incremental sync pays full configuration plus those builders, which
 is exactly the cost the thesis wants to remove; the floor tells whether the IDE-side rewrite is worth it before it
 is written. The "resolvers untouched" rule of README.md is relaxed for `IdeaProject` by the owner.
+
+### D15: M4 gate margin and what counts
+
+What: fixed before reading `results/m4-summary.md`. The task version "beats" the builders when, for the same
+scenario and the same client-JVM conditions, its median total is at least 30 % lower (design/plan.md's bar) on the
+scenarios where builders do work: scenario 2 (warm plain, CC and IP off), the warm miss (scenario 3's traced run,
+fresh JVM) and scenario 4 (edit). Scenario 3 (hit) and scenario 1 (cold) are reported but expected ties: the hit is
+the whole-action cache in both versions and the cold run is dominated by daemon start and configuration. The three
+task variants are judged separately: `tasks` (ported models from bundles, Gradle-owned models still from builders)
+is the state an unchanged IDE could reach; `tasks-only` and `launcher` are the floor and the transport the owner
+asked for (D14), which need the IDE-side changes in M5.
+Why: the gate must not be tuned to the result; 30 % is the plan's number, and the scenario list follows D6.
