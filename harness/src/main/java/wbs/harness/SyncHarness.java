@@ -61,6 +61,7 @@ public final class SyncHarness {
     private final Options o;
     private final Path initDir;
     private final PrintStream summary;
+    private final List<String> providersLog = new ArrayList<>();
 
     private SyncHarness(Options o, Path initDir, PrintStream summary) {
         this.o = o;
@@ -90,6 +91,7 @@ public final class SyncHarness {
             t.mark("buildEnvironment");
 
             IdeProviders providers = IdeProviders.create();
+            providersLog.addAll(providers.log);
             InitScripts scripts = InitScripts.write(initDir, providers.toolingExtensionClasses());
 
             GradleModelFetchAction action = new GradleModelFetchAction(gradleVersion);
@@ -186,6 +188,9 @@ public final class SyncHarness {
         p.println("jvmArgs=" + String.join(" ", o.jvmArgs));
         p.println("streaming=" + o.streaming + " parallelFetch=" + o.parallelFetch);
         p.println("status=" + (failure == null ? "OK" : "FAILED"));
+        p.println();
+        p.println("# resolver extensions");
+        providersLog.forEach(p::println);
         p.println();
         p.println("# timing (ms from start)");
         long start = t.marks.get("start");

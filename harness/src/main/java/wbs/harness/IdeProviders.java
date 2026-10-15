@@ -129,7 +129,7 @@ final class IdeProviders {
         if (resolverClassName.endsWith(".KotlinGradleProjectResolverExtension")) {
             // AndroidAwareGradleModelProvider(isAndroidPluginRequestingKotlinGradleModel = false)
             try {
-                Class<?> c = Class.forName("org.jetbrains.kotlin.idea.gradleJava.configuration.AndroidAwareGradleModelProvider");
+                Class<?> c = Class.forName("org.jetbrains.kotlin.idea.gradleTooling.AndroidAwareGradleModelProvider");
                 return (ProjectImportModelProvider) c.getConstructor(boolean.class).newInstance(false);
             } catch (Throwable t) {
                 throw new IllegalStateException("AndroidAwareGradleModelProvider not constructible", t);
