@@ -17,6 +17,7 @@ SCENARIO_NAMES = {
     "4": "Incremental, IP (one script edited)",
     "5": "Warm, IP + model cache (builders only)",
     "6": "Incremental, IP + model cache (builders only)",
+    "7": "Full invalidation, IP (gradle.properties edited)",
 }
 
 

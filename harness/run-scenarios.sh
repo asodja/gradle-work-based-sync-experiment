@@ -4,6 +4,10 @@
 #   run-scenarios.sh <label> [scenario...]        scenarios: 1 2 3 4 5 6 (default: 1 2 3 4 5 6)
 #   6 = incremental (scenario 4 edit) with the opt-in per-model cache (scenario 5 flag): the builder-side
 #       competitor of task-level incrementality (DECISIONS D6).
+#   7 = full invalidation, IP: a comment appended to the root gradle.properties before every measured run, which
+#       invalidates the whole entry and reconfigures every project without recompiling build logic (D6 case (a)).
+#   Task version: WBS_EXTRA="--tasks --extra-tooling-jar $REPO/prototype/build/libs/ide-model-tasks.jar" and a
+#   different label; scenarios 5 and 6 are builder-only.
 #
 # Environment (defaults in brackets):
 #   WBS_PROJECT   build to sync            [~/projects/gradle-wbs-benchmark]
@@ -19,7 +23,7 @@
 set -euo pipefail
 
 LABEL=${1:?label}; shift || true
-SCENARIOS=("$@"); [ ${#SCENARIOS[@]} -eq 0 ] && SCENARIOS=(1 2 3 4 5 6)
+SCENARIOS=("$@"); [ ${#SCENARIOS[@]} -eq 0 ] && SCENARIOS=(1 2 3 4 5 6 7)
 
 HERE=$(cd "$(dirname "$0")" && pwd)
 REPO=$(dirname "$HERE")
@@ -41,6 +45,7 @@ COMMON=(--project "$PROJECT" --gradle-user-home "$GUH" --idea-home "$IDEA_HOME" 
 PLAIN=(--arg --no-configuration-cache --arg -Dorg.gradle.isolated-projects=false)
 MODEL_CACHE=(--arg -Dorg.gradle.internal.isolated-projects.caching=tooling)
 EDIT_FILE=$PROJECT/subprojects/core/build.gradle.kts
+PROPS_FILE=$PROJECT/gradle.properties
 
 stop_daemons() { (cd "$PROJECT" && ./gradlew -g "$GUH" --stop -q >/dev/null 2>&1 || true); }
 
@@ -62,7 +67,7 @@ traced_run() { # traced_run <scenario> <args...>
   python3 -I "$HERE/aggregate_trace.py" "$OUT/$s-trace-log.txt" --md "$OUT/$s-models.md" >/dev/null
 }
 
-restore_edit() { (cd "$PROJECT" && git checkout -q -- "${EDIT_FILE#$PROJECT/}"); }
+restore_edit() { (cd "$PROJECT" && git checkout -q -- "${EDIT_FILE#$PROJECT/}" "${PROPS_FILE#$PROJECT/}"); }
 trap restore_edit EXIT
 
 for s in "${SCENARIOS[@]}"; do
@@ -88,6 +93,11 @@ for s in "${SCENARIOS[@]}"; do
        repeat 6 "${MODEL_CACHE[@]}" --before-run "[ \"\$RUN\" -gt 0 ] && echo \"// wbs incremental edit $LABEL \$RUN \$(date +%s)\" >> '$EDIT_FILE' || true"
        echo "// wbs incremental edit $LABEL trace $(date +%s)" >> "$EDIT_FILE"
        traced_run 6 "${MODEL_CACHE[@]}"
+       restore_edit ;;
+    7) # full invalidation, IP: gradle.properties edited before every measured run
+       repeat 7 --before-run "[ \"\$RUN\" -gt 0 ] && echo \"# wbs invalidation edit $LABEL \$RUN \$(date +%s)\" >> '$PROPS_FILE' || true"
+       echo "# wbs invalidation edit $LABEL trace $(date +%s)" >> "$PROPS_FILE"
+       traced_run 7
        restore_edit ;;
     *) echo "unknown scenario $s" >&2; exit 2 ;;
   esac
