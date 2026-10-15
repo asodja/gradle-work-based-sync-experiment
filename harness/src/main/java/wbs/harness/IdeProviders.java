@@ -44,6 +44,8 @@ final class IdeProviders {
     /** IntelliJ's dedicated providers and the model class each one delivers (the generic ones say so in toString). */
     private static final java.util.Map<String, String> DEDICATED_PROVIDERS = java.util.Map.of(
         "GradleSourceSetModelProvider", "org.jetbrains.plugins.gradle.model.GradleSourceSetModel",
+        "GradleSourceSetDependencyModelProvider", "org.jetbrains.plugins.gradle.model.GradleSourceSetDependencyModel",
+        "AndroidAwareGradleModelProvider", "org.jetbrains.kotlin.idea.gradleTooling.KotlinGradleModel",
         "GradleExternalProjectModelProvider", "org.jetbrains.plugins.gradle.model.ExternalProject",
         "GradleTaskModelProvider", "org.jetbrains.plugins.gradle.model.GradleTaskModel",
         "GradleBuildScriptClasspathModelProvider", "org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel");

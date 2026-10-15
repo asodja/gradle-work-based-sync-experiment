@@ -23,12 +23,21 @@ public final class PortedModels {
             "org.jetbrains.plugins.gradle.model.ExternalProject"));
         m.put("SOURCE_SET_MODEL_PHASE", List.of(
             "org.jetbrains.plugins.gradle.model.GradleSourceSetModel"));
-        // The mechanical group (design/plan.md M3), all served by GradleClassProjectModelProvider or a dedicated
-        // provider in IntelliJ's ADDITIONAL phase. Not here: the hard group (GradleSourceSetDependencyModel,
-        // KotlinGradleModel, ProjectDependencies), the out-of-scope Kotlin compiler-plugin and MPP models, and
-        // GradleBuildScriptClasspathModel, whose builder needs the parent project's model from the shared builder
-        // context (LOG 2026-10-15); it stays a builder until the consumer concatenates parent chains itself.
+        // Hard group (D13): captured with the builders too, in IntelliJ's request order: the download policy and the
+        // artifact-index request fill the shared per-capture context first (the index then holds this project's
+        // own jar -> source set entries; the request itself yields no payload), then the dependency model.
+        m.put("DEPENDENCY_MODEL_PHASE", List.of(
+            "com.intellij.gradle.toolingExtension.impl.model.dependencyDownloadPolicyModel.GradleDependencyDownloadPolicy",
+            "com.intellij.gradle.toolingExtension.impl.model.sourceSetArtifactIndex.GradleSourceSetArtifactBuildRequest",
+            "org.jetbrains.plugins.gradle.model.GradleSourceSetDependencyModel"));
+        // KotlinGradleModel and ProjectDependencies (hard group) plus the mechanical group (design/plan.md M3), all
+        // served by GradleClassProjectModelProvider or a dedicated provider in IntelliJ's ADDITIONAL phase. Not here:
+        // the out-of-scope Kotlin compiler-plugin and MPP models, and GradleBuildScriptClasspathModel, whose builder
+        // needs the parent project's model from the shared builder context (LOG 2026-10-15); it stays a builder until
+        // the consumer concatenates parent chains itself.
         m.put("ADDITIONAL_MODEL_PHASE", List.of(
+            "org.jetbrains.kotlin.idea.gradleTooling.KotlinGradleModel",
+            "com.intellij.openapi.externalSystem.model.project.dependencies.ProjectDependencies",
             "org.jetbrains.plugins.gradle.model.GradleTaskModel",
             "org.jetbrains.plugins.gradle.model.GradleExtensions",
             "org.jetbrains.plugins.gradle.model.tests.ExternalTestsModel",
