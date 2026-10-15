@@ -6,7 +6,6 @@ import org.gradle.api.Task;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.DisableCachingByDefault;
@@ -35,7 +34,16 @@ public abstract class IdeModelTask extends DefaultTask {
     @Input
     public abstract org.gradle.api.provider.Property<String> getProjectIdentityPath();
 
-    @Nested
+    /**
+     * Content fingerprint of all payloads: the only up-to-date input. The payloads themselves are {@code @Internal}
+     * so that task graph calculation, which materializes {@code @Nested} beans to infer task dependencies, does
+     * not evaluate the captures one task at a time on its single thread; they are evaluated when the configuration
+     * cache entry is stored, in parallel across projects.
+     */
+    @Input
+    public abstract org.gradle.api.provider.Property<String> getFingerprint();
+
+    @org.gradle.api.tasks.Internal
     public abstract ListProperty<ModelPayload> getModels();
 
     @OutputFile

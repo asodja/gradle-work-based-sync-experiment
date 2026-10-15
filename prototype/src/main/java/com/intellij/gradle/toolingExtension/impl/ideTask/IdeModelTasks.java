@@ -4,6 +4,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.invocation.Gradle;
+import org.gradle.api.provider.Provider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,16 @@ public final class IdeModelTasks {
             task.getModelFile().set(project.getLayout().getBuildDirectory().file(MODEL_DIR + "/" + IdeProjectModelTask.NAME + ".bin"));
             // Evaluated when the task is realized for the graph, after the project is configured: the same
             // moment the builder runs today. Stored by value in the configuration cache entry.
-            task.getModels().addAll(ModelCapture.payloads(project, PortedModels.captureOrder()));
+            // One memoized capture feeds both properties, so the builders run once per project.
+            Provider<List<ModelPayload>> capture = ModelCapture.payloads(project, PortedModels.captureOrder());
+            task.getModels().addAll(capture);
+            task.getFingerprint().set(capture.map(payloads -> {
+                StringBuilder all = new StringBuilder();
+                for (ModelPayload payload : payloads) {
+                    all.append(payload.getModelClassName()).append('=').append(payload.getFingerprint()).append('\n');
+                }
+                return all.toString();
+            }));
         });
     }
 

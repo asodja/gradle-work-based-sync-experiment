@@ -221,3 +221,17 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   consumption order with one serializer (`GradleIdeaModelHolder.convertModelsWithType`), so a per-document
   comparison is meaningless for these two; `prototype/compare-ordered.sh` (ordered deserialization, reflective
   text) is being added. Task inputs are now a content fingerprint (`ModelText`) instead of the bytes.
+- **Traced all-tasks miss (35.6 s)**: "Configure build" 7.8 s (parallel), **"Calculate task graph" 20.1 s**, "Store
+  configuration cache state" 1.7 s, "Run tasks" 2.0 s (287 `ideProjectModel` executions in 2 s). Graph calculation
+  materializes `@Nested` inputs to infer task dependencies, so the 287 captures (including dependency resolution)
+  ran one after another on the single graph-calculation thread. Fix: the up-to-date input is a `@Input` content
+  fingerprint string and the payload list is `@Internal`, evaluated at store time (parallel per project under IP);
+  one memoized capture feeds both. Re-measuring.
+- **Why the incremental edit re-stored everything**: in every mode the bootstrap message is "cannot be reused because
+  file 'subprojects/core/build.gradle.kts' has changed" followed by "entry stored", i.e. `CheckedFingerprint.Invalid`
+  at build scope, not the per-project `Update` path. For a model-building action the project-scoped fingerprint
+  machinery (`ConfigurationCacheFingerprintWriter`, `cacheIntermediateModels`) is tied to
+  `isolated-projects.caching`, so without that (broken) option a tooling build action never updates an entry
+  incrementally on this Gradle version; a plain task run (`BuildLauncher`, `RunTasksRequirements`) does. Next
+  transport to measure: `BuildLauncher.forTasks(...)` for the model tasks plus client-side bundle reading, which is
+  also the "pure task run" the owner asked for (D14) and removes the daemon-side re-serialization.

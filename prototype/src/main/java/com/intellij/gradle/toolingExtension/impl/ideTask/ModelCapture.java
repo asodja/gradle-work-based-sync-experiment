@@ -28,7 +28,23 @@ final class ModelCapture {
     }
 
     static Provider<List<ModelPayload>> payloads(Project project, List<String> modelClassNames) {
+        // Memoized: the same provider value is read for the fingerprint and for the payloads.
+        Object[] memo = new Object[1];
         return project.provider(() -> {
+            synchronized (memo) {
+                if (memo[0] != null) {
+                    @SuppressWarnings("unchecked") List<ModelPayload> cached = (List<ModelPayload>) memo[0];
+                    return cached;
+                }
+                List<ModelPayload> computed = capture(project, modelClassNames);
+                memo[0] = computed;
+                return computed;
+            }
+        });
+    }
+
+    private static List<ModelPayload> capture(Project project, List<String> modelClassNames) throws IOException {
+        {
             ModelBuilderContext context = new DefaultModelBuilderContext(project.getGradle());
             // One serializer per capture: IntelliJ's Ion SerializationServices keep per-instance write state and are
             // not thread-safe (the IDE serializes on a single-thread executor); the configuration cache store evaluates
