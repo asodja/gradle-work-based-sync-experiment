@@ -25,10 +25,11 @@ public final class PortedModels {
             "org.jetbrains.plugins.gradle.model.GradleSourceSetModel"));
         // The mechanical group (design/plan.md M3), all served by GradleClassProjectModelProvider or a dedicated
         // provider in IntelliJ's ADDITIONAL phase. Not here: the hard group (GradleSourceSetDependencyModel,
-        // KotlinGradleModel, ProjectDependencies) and the out-of-scope Kotlin compiler-plugin and MPP models.
+        // KotlinGradleModel, ProjectDependencies), the out-of-scope Kotlin compiler-plugin and MPP models, and
+        // GradleBuildScriptClasspathModel, whose builder needs the parent project's model from the shared builder
+        // context (LOG 2026-10-15); it stays a builder until the consumer concatenates parent chains itself.
         m.put("ADDITIONAL_MODEL_PHASE", List.of(
             "org.jetbrains.plugins.gradle.model.GradleTaskModel",
-            "org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel",
             "org.jetbrains.plugins.gradle.model.GradleExtensions",
             "org.jetbrains.plugins.gradle.model.tests.ExternalTestsModel",
             "org.jetbrains.plugins.gradle.model.IntelliJProjectSettings",

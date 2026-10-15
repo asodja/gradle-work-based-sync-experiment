@@ -128,3 +128,14 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   `stall_max_gap_s` per run (idle-daemon health-check gaps during the run) and `summarize.py` shows it, so
   affected runs can be excluded. Attribution of the first 136 s run to a sequential request loop was only
   partly right: the loop was real and is fixed, but the 100 s was this stall.
+- **M3 first attempt failed on `GradleBuildScriptClasspathModel`**: its builder reads the parent project's model
+  from `GradleBuildScriptClasspathCache` in the shared `ModelBuilderContext` (IntelliJ requests projects
+  parent-first with one context per build); with one context per task capture the cache is empty and the
+  builder throws "Gradle build script class-path model for root project 'gradle' wasn't collected", which made
+  the input evaluation of all 254 root-build tasks fail and the CC store discard the entry ("254 problems were
+  found storing the configuration cache", `cannot serialize ... DefaultListProperty`). Removed from the ported
+  list: the task version should emit only the project's own classpath entries and let the consumer concatenate
+  the parent chain (the IDE side is untouched in this experiment, so it stays a builder; cost 0.3 s summed).
+  Lesson for the contract: a builder is only capturable as is if it reads no other project's model from the
+  context; `javap` scan of the remaining mechanical builders shows no cache use (`ProjectExtensionsDataBuilderImpl`
+  and `IntelliJProjectSettingsBuilder` only call `Project.getParent()`).
