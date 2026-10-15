@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Runs the measurement scenarios of design/measurement.md with the harness.
 #
-#   run-scenarios.sh <label> [scenario...]        scenarios: 1 2 3 4 5 (default: 1 2 3 4 5)
+#   run-scenarios.sh <label> [scenario...]        scenarios: 1 2 3 4 5 6 (default: 1 2 3 4 5 6)
+#   6 = incremental (scenario 4 edit) with the opt-in per-model cache (scenario 5 flag): the builder-side
+#       competitor of task-level incrementality (DECISIONS D6).
 #
 # Environment (defaults in brackets):
 #   WBS_PROJECT   build to sync            [~/projects/gradle-wbs-benchmark]
@@ -17,7 +19,7 @@
 set -euo pipefail
 
 LABEL=${1:?label}; shift || true
-SCENARIOS=("$@"); [ ${#SCENARIOS[@]} -eq 0 ] && SCENARIOS=(1 2 3 4 5)
+SCENARIOS=("$@"); [ ${#SCENARIOS[@]} -eq 0 ] && SCENARIOS=(1 2 3 4 5 6)
 
 HERE=$(cd "$(dirname "$0")" && pwd)
 REPO=$(dirname "$HERE")
@@ -82,6 +84,11 @@ for s in "${SCENARIOS[@]}"; do
     5) # warm, IP + opt-in model cache (builders only)
        repeat 5 "${MODEL_CACHE[@]}"
        traced_run 5 "${MODEL_CACHE[@]}" ;;
+    6) # incremental, IP + opt-in model cache (builders only)
+       repeat 6 "${MODEL_CACHE[@]}" --before-run "[ \"\$RUN\" -gt 0 ] && echo \"// wbs incremental edit $LABEL \$RUN \$(date +%s)\" >> '$EDIT_FILE' || true"
+       echo "// wbs incremental edit $LABEL trace $(date +%s)" >> "$EDIT_FILE"
+       traced_run 6 "${MODEL_CACHE[@]}"
+       restore_edit ;;
     *) echo "unknown scenario $s" >&2; exit 2 ;;
   esac
 done
