@@ -111,9 +111,12 @@ scenarios in `design/measurement.md`.
 - The build operation trace writes every build operation, including "Fetch model '<name>' for <target>",
   to a file: daemon JVM arg `-Dorg.gradle.internal.operations.trace=<path-prefix>`. Zero-code alternative to
   the request logger.
-- CC caches per-model results only under Isolated Projects (`BuildModelParameters.isCachingModelBuilding`).
-  Without IP, CC does not apply to a model-building invocation at all. A task-based sync is a task run and
-  CC applies. This is the whole thesis.
+- A per-model cache exists only under Isolated Projects **and** only when the internal option
+  `org.gradle.internal.isolated-projects.caching` is `tooling` or `true` (default `false`;
+  `BuildModelParametersProvider.kt`, `BuildModelParameters.isCachingModelBuilding`). With gradle/gradle's
+  defaults (IP on, option unset) every builder runs on every sync, in parallel. Without IP, CC does not
+  apply to a model-building invocation at all. A task-based sync is a task run and CC applies. This is
+  the whole thesis; the opt-in IP model cache is the competing feature and is measured as a reference.
 
 ## 4. Pitfalls already hit
 
@@ -168,6 +171,7 @@ Includes `BrokenBuildTaskReference`/`BrokenBuildTaskNode` for cross-build task d
   file read in the build-finished phase. Streaming via task-finish events is M5.
 - File format: IntelliJ's existing Ion-based `SerializationService`s, not Java serialization.
 - Tasks are Isolated-Projects- and configuration-cache-compatible from the first port; gradle/gradle runs
-  with both on, and the baseline on that build is the IP model cache, not uncached builders.
+  with both on. Its baseline is builders running in parallel under IP, uncached (the IP model cache is an
+  opt-in internal option and is measured separately as a reference).
 - Kotlin Multiplatform, Ultimate models, resilient sync, public API: out of scope.
 - Measurements are done with the harness (M1) first; the IDE only confirms at the end (M5).

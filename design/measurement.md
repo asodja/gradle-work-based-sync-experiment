@@ -9,21 +9,21 @@ configuration, no model computation, only up-to-date checks and file reads), lar
 cost × projects, parallel execution), and incremental re-sync after a small change. gradle/gradle
 provides the second; the scenarios provide the other two.
 
-## The baseline already caches models: Isolated Projects
+## Isolated Projects on the baseline: parallel, but not cached
 
 gradle/gradle's `gradle.properties` sets `org.gradle.isolated-projects=true`,
 `org.gradle.configuration-cache=true`, `configuration-cache.parallel=true` and `tooling.parallel=true`.
-With IP on, Gradle already caches each project's tooling models in the CC entry
-(`BuildModelParameters.isCachingModelBuilding`) and serves them without configuring the project on a
-warm sync. So on this build the comparison is **tasks vs IP-cached model builders**, and the expected gap
-is smaller than against uncached builders. What tasks can still win: finer invalidation (a task re-runs
-when its inputs change, an IP model is invalidated with its project and anything coupled to it),
-parallel execution through the scheduler, and no model-building phase at all on a full CC hit. What they
-can lose: task scheduling and up-to-date-check overhead for 254 × N tasks, and file reading.
+Under IP, model building runs in parallel across projects, but the per-project **model cache is off by
+default**: it is governed by the internal option `org.gradle.internal.isolated-projects.caching`
+(`BuildModelParametersProvider.kt`), whose default is `false`; only `tooling` or `true` turns on
+`isCachingModelBuilding`, which wraps the model creator and tooling controller with the CC-aware
+variants (`ConfigurationCacheAwareBuildTreeModelCreator`, `ConfigurationCacheAwareBuildToolingModelController`).
+So on the project's defaults every IntelliJ builder runs on every sync, and the baseline for the
+headline is uncached builders running in parallel under IP.
 
-Measure both baselines: IP on (the project's default, the realistic one) and IP off with CC off (the
-"plain" builder path, for the magnitude of the per-project model cost). Report the task version against
-both and say which is which.
+Because the task approach competes with that opt-in cache, measure it too as a reference point:
+scenario 5 below runs the builder version with `-Dorg.gradle.internal.isolated-projects.caching=tooling`.
+If the opt-in cache already delivers most of what tasks deliver, that is a finding.
 
 ## gradle/gradle as the benchmark
 
@@ -45,13 +45,15 @@ Each three times; report median and spread.
 | # | Scenario | Setup | What it shows |
 |---|---|---|---|
 | 1 | Cold | `gradle --stop`, CC off, IP off | floor, nothing beats it |
-| 2 | Warm, plain | daemon alive, no change, CC off, IP off | per-project model cost without any caching |
-| 3 | Warm, IP | daemon alive, no change, CC + IP on (project defaults), entry present | **headline**: builders served from the IP model cache vs tasks up to date from the CC entry |
+| 2 | Warm, plain | daemon alive, no change, CC off, IP off | per-project model cost, sequential, no caching |
+| 3 | Warm, IP | daemon alive, no change, project defaults (CC + IP on, model cache off), entry present | **headline**: builders re-run in parallel vs tasks up to date from the CC entry |
 | 4 | Incremental, IP | as 3, then edit one subproject build script (add a comment to `subprojects/core/build.gradle.kts`), restore after | invalidation granularity: how much re-runs on each side |
+| 5 | Warm, IP + model cache (builders only) | as 3 plus `-Dorg.gradle.internal.isolated-projects.caching=tooling` | reference: what the existing opt-in model cache gives, to compare with the task version's scenario 3 |
 
-Both versions run all four. Run each with the project's own `gradle.properties` for 3 and 4, and with
-`--no-configuration-cache -Dorg.gradle.isolated-projects=false` for 1 and 2. A task-version run under
-3 or 4 that reports IP problems is a failed run, not a data point; fix the port first.
+Both versions run 1–4; scenario 5 is for the builder version. Run 3–5 with the project's own
+`gradle.properties`, and 1–2 with `--no-configuration-cache -Dorg.gradle.isolated-projects=false`. A
+task-version run under 3 or 4 that reports IP problems is a failed run, not a data point; fix the port
+first.
 
 ## Metrics
 
