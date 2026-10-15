@@ -119,3 +119,12 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   `PrepareKotlinIdeaImportTaskModelBuilder` does the same unsynchronized update and IntelliJ requests it in
   parallel too; with many Kotlin projects it can lose prepare tasks the same way (potential IntelliJ bug, not
   verified in the IDE).
+- **Intermittent whole-machine stalls.** Three warm misses took 66 s, 136 s and 113 s instead of 21–25 s
+  (builder scenario 3 run 0; task mode gg-m2 run 0 and gg-m2c run 0), each with the extra ~100 s inside one
+  phase. In the daemon logs of *idle* daemons the 10-second "periodic daemon health check" stopped for 103–112 s
+  during exactly those windows, so every JVM on the machine stood still: an environment stall (host or sandbox),
+  not Gradle or the tasks. A traced task-mode miss right after the 113 s run took 22.2 s. Mitigations: fewer JVMs
+  (stopped the harness-build daemons and compiler workers, ~4.5 GB RSS), the harness now reports
+  `stall_max_gap_s` per run (idle-daemon health-check gaps during the run) and `summarize.py` shows it, so
+  affected runs can be excluded. Attribution of the first 136 s run to a sequential request loop was only
+  partly right: the loop was real and is fixed, but the 100 s was this stall.

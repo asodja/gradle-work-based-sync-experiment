@@ -239,6 +239,8 @@ public final class SyncHarness {
         }
         p.println();
         p.printf("total_ms=%d%n", t.marks.get("end") - start);
+        // A gap far above the 10 s health-check period means the whole machine stalled during the run.
+        p.printf("stall_max_gap_s=%d%n", StallDetector.maxGapSeconds(o.gradleUserHome, start, t.marks.get("end")));
         p.printf("buildEnvironment_ms=%d%n", t.marks.get("buildEnvironment") - start);
         p.printf("action_ms=%d%n", t.marks.get("end") - t.marks.get("actionStart"));
         Long loaded = t.marks.get("projectsLoaded");

@@ -27,7 +27,7 @@ def parse(path):
             line = line.rstrip("\n")
             m = re.match(r"^(\w+)=(.*)$", line)
             if m and m.group(1) in ("total_ms", "action_ms", "buildEnvironment_ms", "toProjectsLoaded_ms",
-                                    "projectsLoadedToBuildFinished_ms", "afterBuildFinished_ms", "status", "tasks",
+                                    "projectsLoadedToBuildFinished_ms", "afterBuildFinished_ms", "status", "tasks", "stall_max_gap_s",
                                     "builds", "gradleVersion"):
                 d[m.group(1)] = m.group(2)
             if "Configuration cache entry" in line or "Reusing configuration cache" in line or "problems were found" in line:
@@ -50,8 +50,8 @@ def main(dirs):
             if m and m.group(2) != "0":  # run 0 is the warm-up
                 runs[m.group(1)].append(parse(os.path.join(d, name)))
         print(f"## {os.path.basename(os.path.normpath(d))}\n")
-        print("| # | Scenario | Runs | Total ms median (min–max) | Action ms | To projectsLoaded | projectsLoaded→buildFinished | Tasks | CC |")
-        print("|---|---|---|---|---|---|---|---|---|")
+        print("| # | Scenario | Runs | Total ms median (min–max) | Action ms | To projectsLoaded | projectsLoaded→buildFinished | Tasks | CC | Max stall gap s |")
+        print("|---|---|---|---|---|---|---|---|---|---|")
         for s in sorted(runs):
             rs = runs[s]
             ok = [r for r in rs if r.get("status") == "OK"]
@@ -63,7 +63,7 @@ def main(dirs):
                   f"{fmt_ms([r['action_ms'] for r in ok if 'action_ms' in r])} | "
                   f"{fmt_ms([r['toProjectsLoaded_ms'] for r in ok if 'toProjectsLoaded_ms' in r])} | "
                   f"{fmt_ms([r['projectsLoadedToBuildFinished_ms'] for r in ok if 'projectsLoadedToBuildFinished_ms' in r])} | "
-                  f"{'; '.join(tasks)} | {cc_short} |")
+                  f"{'; '.join(tasks)} | {cc_short} | {', '.join(r.get('stall_max_gap_s', '-') for r in ok)} |")
         print()
 
 
