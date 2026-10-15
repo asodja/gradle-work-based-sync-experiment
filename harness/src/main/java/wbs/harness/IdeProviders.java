@@ -50,6 +50,15 @@ final class IdeProviders {
         "GradleTaskModelProvider", "org.jetbrains.plugins.gradle.model.GradleTaskModel",
         "GradleBuildScriptClasspathModelProvider", "org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel");
 
+    /** All-tasks floor (D14): no builder model at all, only the request and file providers. */
+    void useTasksOnly(IdeTasksTransport transport) {
+        List<String> removed = new ArrayList<>();
+        providers.forEach(p -> removed.add(p.toString()));
+        providers.clear();
+        providers.addAll(transport.providers());
+        log.add("TASKS-ONLY MODE: removed all " + removed.size() + " providers; added " + transport.providers());
+    }
+
     /** Task mode: the file transport replaces the IntelliJ providers of every ported model. */
     void useTaskTransport(IdeTasksTransport transport) {
         java.util.Set<String> ported = new java.util.HashSet<>(com.intellij.gradle.toolingExtension.impl.ideTask.PortedModels.all());

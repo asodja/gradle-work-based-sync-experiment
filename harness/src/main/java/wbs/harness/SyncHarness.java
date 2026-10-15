@@ -123,7 +123,11 @@ public final class SyncHarness {
             IdeTasksTransport transport = null;
             if (o.tasks) {
                 transport = new IdeTasksTransport();
-                providers.useTaskTransport(transport);
+                if (o.tasksOnly) {
+                    providers.useTasksOnly(transport);
+                } else {
+                    providers.useTaskTransport(transport);
+                }
             }
             providersLog.addAll(providers.log);
             InitScripts scripts = InitScripts.write(initDir, providers.toolingExtensionClasses(), o.extraToolingJars, o.tasks);
@@ -402,6 +406,7 @@ public final class SyncHarness {
         final List<String> dropArgPrefixes = new ArrayList<>();
         final List<Path> extraToolingJars = new ArrayList<>();
         boolean tasks;
+        boolean tasksOnly;
         Path dumpModels;
 
         static Options parse(String[] args) {
@@ -422,6 +427,7 @@ public final class SyncHarness {
                     case "--jvm-arg": o.jvmArgs.add(args[++i]); break;
                     case "--drop-arg-prefix": o.dropArgPrefixes.add(args[++i]); break;
                     case "--tasks": o.tasks = true; break;
+                    case "--tasks-only": o.tasks = true; o.tasksOnly = true; break;
                     case "--extra-tooling-jar": o.extraToolingJars.add(Path.of(args[++i]).toAbsolutePath()); break;
                     case "--dump-models": o.dumpModels = Path.of(args[++i]).toAbsolutePath(); break;
                     case "--no-streaming": o.streaming = false; break;
@@ -452,6 +458,6 @@ public final class SyncHarness {
 
         static final String USAGE = "\nusage: harness --project DIR --gradle-user-home DIR [--idea-home DIR] [--installation DIR]"
             + " [--out FILE(with {run})] [--repeat N] [--first-run N] [--before-run SHELL]"
-            + " [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--drop-arg-prefix P]... [--tasks] [--extra-tooling-jar JAR]... [--dump-models DIR] [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
+            + " [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--drop-arg-prefix P]... [--tasks|--tasks-only] [--extra-tooling-jar JAR]... [--dump-models DIR] [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
     }
 }

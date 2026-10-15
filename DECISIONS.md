@@ -166,3 +166,16 @@ store time anyway.
 Rejected: a star dependency of every `ideDependencyModel` on all `ideProjectModel` tasks to read the other
 projects' index files at execution (allowed by the contract, but the data it needs is produced at the same
 configuration time and the coupling is exactly what IP forbids in spirit).
+
+### D14: Gradle-owned models are in scope for the task version; measure the all-tasks floor first
+
+What: the owner widened the scope on 2026-10-15: `IdeaProject` and `KotlinDslScriptsModel` (and anything else
+that forces full configuration) are to become tasks too, so that a sync is a pure task run and only the affected
+projects are configured on an incremental re-sync. Step 1 (now): a harness mode `--tasks-only` that requests no
+builder model at all and runs only the model tasks, to measure the floor of the task version for the miss, hit,
+incremental and full-invalidation scenarios. Step 2: per-project substitutes for the two models (module content
+and dependencies are already in the ported models; the script classpath per project is new) and the IDE-side
+assembly, which is a resolver change and goes into M5.
+Why: with any build-level builder left, every incremental sync pays full configuration plus those builders, which
+is exactly the cost the thesis wants to remove; the floor tells whether the IDE-side rewrite is worth it before it
+is written. The "resolvers untouched" rule of README.md is relaxed for `IdeaProject` by the owner.
