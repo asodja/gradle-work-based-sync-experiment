@@ -147,3 +147,22 @@ Why: IntelliJ does the same today: `ToolingSerializerConverter.convert` catches
 Writing new Ion serializers for ten tiny models buys nothing for the measurement. `design/task-contract.md`
 ("Java serialization is not used") is amended to "not used for models that have an Ion serializer".
 Rejected: small Ion or JSON serializers now (deferred; a real implementation in the fork should add them).
+
+### D13: the dependency model is captured at configuration time too; cross-project index effects are documented, not reimplemented
+
+What: `GradleSourceSetDependencyModel`, `ProjectDependencies` and `KotlinGradleModel` join `PortedModels` and are
+captured with their IntelliJ builders at task configuration time (D8). Before the dependency builder runs, the
+capture runs `GradleSourceSetArtifactIndexBuilder` for the same project, so the shared index in the per-capture
+context holds this project's own jar → source set entries. Entries of *other* projects are not available (IP), so
+the parts of the model that depend on them (runtime output-dir file dependencies and artifact sources of project
+dependencies, classes-dir → jar substitution) differ from the builder output; the comparison records how many
+dependencies are affected and the report states that a complete port needs the consumer-side index processing
+described in `design/dependency-task.md`, which is IDE-side transport work (M5) and does not change timings.
+Why: LOG 2026-10-15, resolution cannot be deferred past the configuration cache store, so execution-time
+resolution with declarative inputs (the original dependency-task design) is not implementable; what remains to
+measure is the configuration-time capture against the builders, which the D8 pattern gives for the price of a
+list entry. Rewriting the 800-line resolver on the `ResolutionResult` API to run at execution would resolve at
+store time anyway.
+Rejected: a star dependency of every `ideDependencyModel` on all `ideProjectModel` tasks to read the other
+projects' index files at execution (allowed by the contract, but the data it needs is produced at the same
+configuration time and the coupling is exactly what IP forbids in spirit).

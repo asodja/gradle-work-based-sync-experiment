@@ -1,5 +1,10 @@
 # `ideDependencyModel`: the hard-group task (draft, 2026-10-15)
 
+**Superseded the same day by D13**: the execution-time design below is not implementable because the configuration
+cache resolves `ArtifactCollection`s at store time (`ArtifactCollectionCodec`, LOG 2026-10-15). The dependency
+model is captured at configuration time with the builder code; what is kept from this draft is the consumer-side
+handling of the cross-project artifact index, needed for a complete IDE-side port (M5).
+
 Target models: `GradleSourceSetDependencyModel` (two thirds of all per-project builder time on gradle/gradle,
 `results/m0-baseline/models.md`), later `ProjectDependencies` and `KotlinGradleModel`. Unlike the cheap models (D8),
 the cost here *is* the work (dependency resolution), so it has to move to execution time and be skipped when the

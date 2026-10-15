@@ -186,3 +186,14 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   date, the remaining builders (dependency, Kotlin, Kotlin DSL) 13 s. The miss is not faster than the builders'
   21–23 s yet because the same remaining builders run and the capture still computes the cheap models at
   configuration time; the hard group decides the outcome.
+- **Finding (deferral of resolution is impossible under CC):** `ArtifactCollectionCodec.encode`
+  (`platforms/core-configuration/dependency-management-serialization-codecs/.../ArtifactCollectionCodec.kt`) visits
+  the artifacts when the entry is stored and writes `FixedFileArtifactSpec`s (only artifact transforms stay lazy),
+  so an `ArtifactCollection` or a configuration-backed file collection held by a task is resolved at configuration
+  cache store time, never at execution. There is no public or internal API to resolve a configuration at execution
+  time without the `Project`. Consequence for `design/dependency-task.md`: the dependency model cannot do its work
+  at execution; it is captured at configuration time like the cheap models (D8), so on a cache miss the task
+  version resolves exactly as much as the builders do, and on an incremental edit its granularity equals IP's
+  per-project reconfiguration, i.e. the opt-in per-model cache. The remaining structural difference between tasks
+  and builders is therefore only against IP *without* the opt-in cache (scenario 4: builders rebuild every model,
+  tasks recapture the reconfigured project only). Decision D13.
