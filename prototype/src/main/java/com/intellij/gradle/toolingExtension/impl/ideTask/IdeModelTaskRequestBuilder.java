@@ -29,8 +29,11 @@ public final class IdeModelTaskRequestBuilder extends AbstractModelBuilderServic
         List<String> files = new ArrayList<>();
         if (project.getTasks().getNames().contains(IdeProjectModelTask.NAME)) {
             taskPaths.add(absoluteTaskPath(project, IdeProjectModelTask.NAME));
-            files.add(project.getLayout().getBuildDirectory().file(IdeModelTasks.MODEL_DIR + "/" + IdeProjectModelTask.NAME + ".bin")
-                .get().getAsFile().getAbsolutePath());
+            java.io.File file = project.getLayout().getBuildDirectory().file(IdeModelTasks.MODEL_DIR + "/" + IdeProjectModelTask.NAME + ".bin")
+                .get().getAsFile();
+            // A stale bundle from an earlier sync must not be mistaken for this sync's output.
+            file.delete();
+            files.add(file.getAbsolutePath());
         }
         if (!taskPaths.isEmpty()) {
             Gradle rootBuild = project.getGradle();

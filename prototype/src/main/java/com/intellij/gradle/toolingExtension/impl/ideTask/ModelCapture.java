@@ -33,7 +33,15 @@ final class ModelCapture {
             ModelBuilderContext context = new DefaultModelBuilderContext(project.getGradle());
             List<ModelPayload> result = new ArrayList<>();
             for (String modelClassName : modelClassNames) {
-                Object model = build(modelClassName, project, context);
+                // Like ExtraModelBuilder.buildServiceModel: a failing builder reports and yields no model, it does
+                // not fail the sync (or here: the task's input evaluation).
+                Object model;
+                try {
+                    model = build(modelClassName, project, context);
+                } catch (Exception e) {
+                    report(modelClassName, project, context, e);
+                    continue;
+                }
                 if (model != null) {
                     result.add(serialize(modelClassName, model));
                 }
@@ -51,6 +59,20 @@ final class ModelCapture {
                 out.writeObject(model);
             }
             return new ModelPayload(modelClassName, ModelPayload.JAVA, bytes.toByteArray());
+        }
+    }
+
+    private static void report(String modelClassName, Project project, ModelBuilderContext context, Exception e) {
+        project.getLogger().warn("[ide-model-tasks] no {} for {}: {}", modelClassName, project.getPath(), e.toString());
+        for (ModelBuilderService builder : BUILDERS) {
+            if (builder.canBuild(modelClassName)) {
+                try {
+                    builder.reportErrorMessage(modelClassName, project, context, e);
+                } catch (RuntimeException ignored) {
+                    // the report itself must not break the capture
+                }
+                return;
+            }
         }
     }
 

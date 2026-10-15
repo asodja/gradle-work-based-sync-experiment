@@ -141,3 +141,13 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   and `IntelliJProjectSettingsBuilder` only call `Project.getParent()`).
 - Owner decision: continue with D6 (b), the comparison targets cache misses and incremental re-sync, measured
   against Gradle's opt-in per-model cache. Scenario 3 (no change) is reported as a tie.
+- **M3 second attempt**: with the Java-serialization fallback (D12) 278 of 287 projects store fine; 9 projects
+  (`:installation-beacon`, `:java-api-extractor`, `:java-compiler-plugin`, `:kotlin-dsl*`, `:problems`, `:test-kit`)
+  fail with "Configuration with name 'apiStubElements' not found" from
+  `ProjectExtensionsDataBuilderImpl.collectConfigurations` (iterates `configurations.names`, then `getByName`):
+  these build scripts `configurations.remove(configurations.apiStubElements.get())`, and at graph time the removed
+  name is still listed. IntelliJ's `ExtraModelBuilder` catches builder exceptions, reports and returns null; the
+  capture now does the same (model absent for that project), and the request builder deletes stale bundle files
+  before the tasks run so a missing file is unambiguous. Builder mode produces `GradleExtensions` for those 9
+  projects (it runs after task execution), so the comparison will show them as missing in task mode: a timing
+  difference to record per model, not a port bug.
