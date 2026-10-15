@@ -16,12 +16,24 @@ public final class ModelPayload implements Serializable {
 
     private final String modelClassName;
     private final String format;
+    private final String fingerprint;
     private final byte[] bytes;
 
-    public ModelPayload(String modelClassName, String format, byte[] bytes) {
+    public ModelPayload(String modelClassName, String format, String fingerprint, byte[] bytes) {
         this.modelClassName = modelClassName;
         this.format = format;
+        this.fingerprint = fingerprint;
         this.bytes = bytes;
+    }
+
+    /**
+     * Fingerprint of the model's content (ModelText), the up-to-date input. The serialized bytes are not an input:
+     * IntelliJ's Ion serializers number objects per writer and iterate hash collections, so the bytes differ
+     * between two captures of the same model.
+     */
+    @Input
+    public String getFingerprint() {
+        return fingerprint;
     }
 
     @Input
@@ -34,7 +46,7 @@ public final class ModelPayload implements Serializable {
         return format;
     }
 
-    @Input
+    @org.gradle.api.tasks.Internal
     public byte[] getBytes() {
         return bytes;
     }

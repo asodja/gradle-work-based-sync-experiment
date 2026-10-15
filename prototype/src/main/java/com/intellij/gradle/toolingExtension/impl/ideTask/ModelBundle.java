@@ -12,7 +12,7 @@ import java.util.List;
  */
 public final class ModelBundle {
 
-    private static final int MAGIC = 0x1DE0_0002;
+    private static final int MAGIC = 0x1DE0_0003;
 
     private ModelBundle() {
     }
@@ -23,6 +23,7 @@ public final class ModelBundle {
         for (ModelPayload payload : payloads) {
             out.writeUTF(payload.getModelClassName());
             out.writeUTF(payload.getFormat());
+            out.writeUTF(payload.getFingerprint());
             out.writeInt(payload.getBytes().length);
             out.write(payload.getBytes());
         }
@@ -37,9 +38,10 @@ public final class ModelBundle {
         for (int i = 0; i < count; i++) {
             String className = in.readUTF();
             String format = in.readUTF();
+            String fingerprint = in.readUTF();
             byte[] bytes = new byte[in.readInt()];
             in.readFully(bytes);
-            result.add(new ModelPayload(className, format, bytes));
+            result.add(new ModelPayload(className, format, fingerprint, bytes));
         }
         return result;
     }

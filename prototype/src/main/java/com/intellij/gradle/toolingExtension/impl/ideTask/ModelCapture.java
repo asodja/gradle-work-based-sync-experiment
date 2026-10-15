@@ -59,14 +59,15 @@ final class ModelCapture {
     }
 
     private static ModelPayload serialize(ToolingSerializer serializer, String modelClassName, Object model) throws IOException {
+        String fingerprint = ModelText.fingerprint(model);
         try {
-            return new ModelPayload(modelClassName, ModelPayload.ION, serializer.write(model));
+            return new ModelPayload(modelClassName, ModelPayload.ION, fingerprint, serializer.write(model));
         } catch (SerializationServiceNotFoundException e) {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
                 out.writeObject(model);
             }
-            return new ModelPayload(modelClassName, ModelPayload.JAVA, bytes.toByteArray());
+            return new ModelPayload(modelClassName, ModelPayload.JAVA, fingerprint, bytes.toByteArray());
         }
     }
 

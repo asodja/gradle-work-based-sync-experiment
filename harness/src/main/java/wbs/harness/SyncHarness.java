@@ -344,6 +344,10 @@ public final class SyncHarness {
                 File dir = new File(dumpDir, sanitize(id.getClassId()) + "/" + sanitize(id.getBuildId()));
                 dir.mkdirs();
                 try {
+                    // Consumption order matters: IntelliJ's Ion documents reference objects of earlier documents.
+                    Files.writeString(new File(dumpDir, "order.txt").toPath(),
+                        sanitize(id.getClassId()) + "/" + sanitize(id.getBuildId()) + "/" + sanitize(id.getProjectId()) + ".bin\n",
+                        StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.APPEND);
                     // Models without an Ion serializer travel as objects (Java-serialized by the Tooling API); write
                     // them Java-serialized so the comparison can read them back.
                     byte[] bytes;

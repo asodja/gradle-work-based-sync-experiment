@@ -205,3 +205,19 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   task entry. `results/m3-ports/compare-mechanical.md`. Not ported: GradleBuildScriptClasspathModel (parent-model
   dependency). Hard group (dependency model with own-project index, KotlinGradleModel, ProjectDependencies) added
   to the capture list per D13; comparison running.
+- **All-tasks floor (`--tasks-only`: no builder requested, only the model tasks; prototype with the hard group, one JVM):**
+  miss 33.6 s (projects loaded 8.5 s, then 23.6 s of graph calculation + CC store with the captures + 287 task
+  executions); hit 3.1 s (272 tasks re-executed because the serialized bytes differed between captures; with stable
+  inputs ~2 s); edit of `subprojects/core/build.gradle.kts` 33.2 s, "Configuration cache entry stored": the entry
+  was rebuilt in full, no "updated for N projects"; a comment appended to `gradle.properties` did not invalidate
+  (3.4 s, entry reused): Gradle fingerprints the parsed properties. Two consequences: (1) for a tooling build action
+  on stock 9.9.0-milestone-2 there is no incremental entry update without `isolated-projects.caching=tooling` (which
+  is broken, LOG above), so the incremental scenario is a full re-store for both versions; (2) the capture at store
+  time is slower than parallel model building (25 s vs 4 s for the dependency models); tracing to see whether the
+  store evaluates the task inputs serially. Scenario 7 changed to append a property, not a comment.
+- Hard group comparison: `KotlinGradleModel` 60/60 identical; `GradleSourceSetDependencyModel` and
+  `ProjectDependencies` differ in 272 projects, overwhelmingly in Ion `objectID`/`id` numbers: IntelliJ's serializers
+  number objects per writer across *all* documents of a sync and the IDE deserializes all models of a class in
+  consumption order with one serializer (`GradleIdeaModelHolder.convertModelsWithType`), so a per-document
+  comparison is meaningless for these two; `prototype/compare-ordered.sh` (ordered deserialization, reflective
+  text) is being added. Task inputs are now a content fingerprint (`ModelText`) instead of the bytes.

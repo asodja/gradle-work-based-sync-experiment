@@ -4,8 +4,9 @@
 #   run-scenarios.sh <label> [scenario...]        scenarios: 1 2 3 4 5 6 (default: 1 2 3 4 5 6)
 #   6 = incremental (scenario 4 edit) with the opt-in per-model cache (scenario 5 flag): the builder-side
 #       competitor of task-level incrementality (DECISIONS D6).
-#   7 = full invalidation, IP: a comment appended to the root gradle.properties before every measured run, which
-#       invalidates the whole entry and reconfigures every project without recompiling build logic (D6 case (a)).
+#   7 = full invalidation, IP: a new property appended to the root gradle.properties before every measured run
+#       (a comment is not enough: Gradle fingerprints the parsed values), which invalidates the whole entry and
+#       reconfigures every project without recompiling build logic (D6 case (a)).
 #   Task version: WBS_EXTRA="--tasks --extra-tooling-jar $REPO/prototype/build/libs/ide-model-tasks.jar" and a
 #   different label; scenarios 5 and 6 are builder-only.
 #
@@ -95,8 +96,8 @@ for s in "${SCENARIOS[@]}"; do
        traced_run 6 "${MODEL_CACHE[@]}"
        restore_edit ;;
     7) # full invalidation, IP: gradle.properties edited before every measured run
-       repeat 7 --before-run "[ \"\$RUN\" -gt 0 ] && echo \"# wbs invalidation edit $LABEL \$RUN \$(date +%s)\" >> '$PROPS_FILE' || true"
-       echo "# wbs invalidation edit $LABEL trace $(date +%s)" >> "$PROPS_FILE"
+       repeat 7 --before-run "[ \"\$RUN\" -gt 0 ] && echo \"wbs.invalidation.$LABEL.\$RUN=\$(date +%s)\" >> '$PROPS_FILE' || true"
+       echo "wbs.invalidation.$LABEL.trace=$(date +%s)" >> "$PROPS_FILE"
        traced_run 7
        restore_edit ;;
     *) echo "unknown scenario $s" >&2; exit 2 ;;
