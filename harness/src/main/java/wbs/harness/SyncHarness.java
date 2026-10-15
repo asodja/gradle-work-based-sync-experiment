@@ -120,8 +120,13 @@ public final class SyncHarness {
             t.mark("buildEnvironment");
 
             IdeProviders providers = IdeProviders.create();
+            IdeTasksTransport transport = null;
+            if (o.tasks) {
+                transport = new IdeTasksTransport();
+                providers.useTaskTransport(transport);
+            }
             providersLog.addAll(providers.log);
-            InitScripts scripts = InitScripts.write(initDir, providers.toolingExtensionClasses());
+            InitScripts scripts = InitScripts.write(initDir, providers.toolingExtensionClasses(), o.extraToolingJars, o.tasks);
 
             GradleModelFetchAction action = new GradleModelFetchAction(gradleVersion);
             action.addProjectImportModelProviders(providers.providers());
@@ -152,6 +157,7 @@ public final class SyncHarness {
             arguments.addAll(o.gradleArgs);
 
             Results results = new Results();
+            results.dumpDir = o.dumpModels == null ? null : o.dumpModels.toFile();
             CountDownLatch done = new CountDownLatch(1);
             AtomicReference<Throwable> failure = new AtomicReference<>();
 
@@ -224,6 +230,7 @@ public final class SyncHarness {
         p.println();
         p.println("# resolver extensions");
         providersLog.forEach(p::println);
+
         p.println();
         p.println("# timing (ms from start)");
         long start = t.marks.get("start");
@@ -300,9 +307,14 @@ public final class SyncHarness {
             return streamed;
         }
 
+        File dumpDir;
+
         synchronized void addModels(String phase, GradleModelHolderState state) {
             if (phase.startsWith("streamed:") || state.getPhase() != null) {
                 streamed = true;
+            }
+            if (dumpDir != null) {
+                dump(state);
             }
             if (state.getRootBuild() != null) {
                 builds = 1 + state.getNestedBuilds().size();
@@ -318,6 +330,26 @@ public final class SyncHarness {
                 pc.count++;
                 pc.bytes += size;
             }
+        }
+
+        private void dump(GradleModelHolderState state) {
+            for (Map.Entry<GradleModelId, Object> e : state.getModels().entrySet()) {
+                if (!(e.getValue() instanceof byte[])) {
+                    continue;
+                }
+                GradleModelId id = e.getKey();
+                File dir = new File(dumpDir, sanitize(id.getClassId()) + "/" + sanitize(id.getBuildId()));
+                dir.mkdirs();
+                try {
+                    Files.write(new File(dir, sanitize(id.getProjectId()) + ".bin").toPath(), (byte[]) e.getValue());
+                } catch (IOException ex) {
+                    throw new java.io.UncheckedIOException(ex);
+                }
+            }
+        }
+
+        private static String sanitize(String s) {
+            return s.replaceAll("[^A-Za-z0-9._-]", "_");
         }
 
         void onTaskEvent(ProgressEvent event) {
@@ -357,6 +389,9 @@ public final class SyncHarness {
         final List<String> gradleArgs = new ArrayList<>();
         final List<String> jvmArgs = new ArrayList<>();
         final List<String> dropArgPrefixes = new ArrayList<>();
+        final List<Path> extraToolingJars = new ArrayList<>();
+        boolean tasks;
+        Path dumpModels;
 
         static Options parse(String[] args) {
             Options o = new Options();
@@ -375,6 +410,9 @@ public final class SyncHarness {
                     case "--arg": o.gradleArgs.add(args[++i]); break;
                     case "--jvm-arg": o.jvmArgs.add(args[++i]); break;
                     case "--drop-arg-prefix": o.dropArgPrefixes.add(args[++i]); break;
+                    case "--tasks": o.tasks = true; break;
+                    case "--extra-tooling-jar": o.extraToolingJars.add(Path.of(args[++i]).toAbsolutePath()); break;
+                    case "--dump-models": o.dumpModels = Path.of(args[++i]).toAbsolutePath(); break;
                     case "--no-streaming": o.streaming = false; break;
                     case "--no-parallel-fetch": o.parallelFetch = false; break;
                     default: throw new IllegalArgumentException("unknown option " + a + USAGE);
@@ -403,6 +441,6 @@ public final class SyncHarness {
 
         static final String USAGE = "\nusage: harness --project DIR --gradle-user-home DIR [--idea-home DIR] [--installation DIR]"
             + " [--out FILE(with {run})] [--repeat N] [--first-run N] [--before-run SHELL]"
-            + " [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--drop-arg-prefix P]... [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
+            + " [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--drop-arg-prefix P]... [--tasks] [--extra-tooling-jar JAR]... [--dump-models DIR] [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
     }
 }

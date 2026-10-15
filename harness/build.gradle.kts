@@ -19,6 +19,8 @@ repositories {
 
 dependencies {
     implementation("org.gradle:gradle-tooling-api:$toolingApiVersion")
+    // The model tasks prototype (request model interface, bundle format); built by ../prototype.
+    implementation(files("../prototype/build/libs/ide-model-tasks.jar"))
     runtimeOnly("org.slf4j:slf4j-simple:2.0.17")
     // IDE jars: the Gradle plugin, the Kotlin plugin and the platform libraries they depend on.
     // Order matters: plugin jars first so their classes win over anything in lib/.

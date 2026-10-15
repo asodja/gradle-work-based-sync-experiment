@@ -41,6 +41,13 @@ final class IdeProviders {
         return providers;
     }
 
+    /** Task mode: the file transport replaces IntelliJ's source set provider (and its task warm-up request). */
+    void useTaskTransport(IdeTasksTransport transport) {
+        providers.removeIf(p -> p.getClass().getSimpleName().equals("GradleSourceSetModelProvider"));
+        providers.addAll(transport.providers());
+        log.add("TASK MODE: GradleSourceSetModelProvider replaced by " + transport.providers());
+    }
+
     Set<Class<?>> toolingExtensionClasses() {
         return toolingExtensionClasses;
     }

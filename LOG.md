@@ -76,3 +76,12 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
 - M0 cost tables written: `results/m0-baseline/models.md` (scenario totals, per-phase wall times, per-model sums for
   scenarios 2, 3-miss, 4). Operation traces (5.9 GB) deleted after aggregation; the `*-models.md` files remain.
   Free disk 16 GB.
+- **M2 first end-to-end on the fixture** (`prototype/`, harness `--tasks`): `ideProjectModel` registered in every
+  project from the init script via `gradle.lifecycle.beforeProject`, scheduled per project by
+  `IdeModelTaskRequestBuilder` in the projects-loaded phase, executed (4 tasks), bundle files read by the harness in
+  the source set phase and fed to IntelliJ's consumer. `GradleSourceSetModel` bytes for the Java projects were
+  byte-identical to the builder output in one run; in another the only difference was the order of the
+  `sources` map entries (SOURCE/RESOURCE), which also differs between two builder runs: IntelliJ serializes that
+  map in hash order. The comparison therefore canonicalizes (sorted struct fields, map entries sorted by key;
+  `harness` `IonText --canonical`, `prototype/compare-models.sh`). Expected, accepted differences in task mode:
+  `GradleTaskModel` and `IdeaProject` list the new `ideProjectModel` task (group "other", not public).

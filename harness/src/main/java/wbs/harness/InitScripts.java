@@ -50,28 +50,44 @@ final class InitScripts {
         this.main = main;
     }
 
+    /** Extra script in task mode, registering the model tasks; null otherwise. */
+    Path modelTasks;
+
     List<Path> inOrder() {
-        return List.of(mapper, ideaPluginConfigurator, main);
+        List<Path> scripts = new ArrayList<>(List.of(mapper, ideaPluginConfigurator, main));
+        if (modelTasks != null) {
+            scripts.add(modelTasks);
+        }
+        return scripts;
     }
 
-    static InitScripts write(Path dir, Collection<Class<?>> resolverToolingExtensionClasses) throws IOException {
+    static InitScripts write(Path dir, Collection<Class<?>> resolverToolingExtensionClasses, List<Path> extraJars, boolean tasks) throws IOException {
         Set<Class<?>> base = new LinkedHashSet<>();
         for (String name : BASE_TOOLING_EXTENSION_CLASSES) {
             base.add(load(name));
         }
         Set<Class<?>> all = new LinkedHashSet<>(base);
         all.addAll(resolverToolingExtensionClasses);
+        Set<Path> baseJars = jarsOf(base);
+        Set<Path> allJars = jarsOf(all);
+        allJars.addAll(extraJars);
 
         Path mapper = write(dir, "ijMapper.gradle", resource("MapperInit.gradle"));
         Path configurator = write(dir, "ijIdeaPluginConfigurator.gradle", String.join(System.lineSeparator(),
-            classpathScript(base),
+            classpathScript(baseJars),
             resource("IdeaPluginConfigurator.gradle")));
         Path main = write(dir, "ijInit.gradle", String.join(System.lineSeparator(),
-            classpathScript(all),
+            classpathScript(allJars),
             resource("RegistryProcessor.gradle"),
             resource("JetGradlePlugin.gradle"),
             resource("Init.gradle").replaceFirst("IS_BUILD_SCR_PROJECT", "false")));
-        return new InitScripts(mapper, configurator, main);
+        InitScripts result = new InitScripts(mapper, configurator, main);
+        if (tasks) {
+            result.modelTasks = write(dir, "ijModelTasks.gradle", String.join(System.lineSeparator(),
+                classpathScript(allJars),
+                "com.intellij.gradle.toolingExtension.impl.ideTask.IdeModelTasks.apply(gradle)"));
+        }
+        return result;
     }
 
     static Set<Path> jarsOf(Collection<Class<?>> classes) {
@@ -90,8 +106,8 @@ final class InitScripts {
         }
     }
 
-    private static String classpathScript(Collection<Class<?>> classes) throws IOException {
-        String list = jarsOf(classes).stream()
+    private static String classpathScript(Collection<Path> jars) throws IOException {
+        String list = jars.stream()
             .map(p -> "mapPath(" + groovyString(p.toString()) + ")")
             .collect(Collectors.joining(", ", "[", "]"));
         return resource("ClassPathExtensionInitScript.gradle").replaceFirst("EXTENSIONS_JARS_PATH", Matcher.quoteReplacement(list));
