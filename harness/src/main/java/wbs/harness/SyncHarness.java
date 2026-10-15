@@ -336,14 +336,23 @@ public final class SyncHarness {
 
         private void dump(GradleModelHolderState state) {
             for (Map.Entry<GradleModelId, Object> e : state.getModels().entrySet()) {
-                if (!(e.getValue() instanceof byte[])) {
-                    continue;
-                }
                 GradleModelId id = e.getKey();
                 File dir = new File(dumpDir, sanitize(id.getClassId()) + "/" + sanitize(id.getBuildId()));
                 dir.mkdirs();
                 try {
-                    Files.write(new File(dir, sanitize(id.getProjectId()) + ".bin").toPath(), (byte[]) e.getValue());
+                    // Models without an Ion serializer travel as objects (Java-serialized by the Tooling API); write
+                    // them Java-serialized so the comparison can read them back.
+                    byte[] bytes;
+                    if (e.getValue() instanceof byte[]) {
+                        bytes = (byte[]) e.getValue();
+                    } else {
+                        java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+                        try (java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(buffer)) {
+                            out.writeObject(e.getValue());
+                        }
+                        bytes = buffer.toByteArray();
+                    }
+                    Files.write(new File(dir, sanitize(id.getProjectId()) + ".bin").toPath(), bytes);
                 } catch (IOException ex) {
                     throw new java.io.UncheckedIOException(ex);
                 }

@@ -47,6 +47,11 @@ public final class IonText {
         };
         for (String file : files) {
             byte[] bytes = Files.readAllBytes(Path.of(file));
+            if (!isIon(bytes)) {
+                // Java-serialized model (no Ion serializer): print a canonical reflective view instead.
+                System.out.println(ReflectiveText.canonical(readJava(bytes)));
+                continue;
+            }
             if (canonical) {
                 for (IonValue value : system.getLoader().load(bytes)) {
                     IonValue sorted = canonicalize(system, value);
@@ -62,6 +67,23 @@ public final class IonText {
                 }
                 System.out.println();
             }
+        }
+    }
+
+    private static boolean isIon(byte[] bytes) {
+        return bytes.length >= 4 && (bytes[0] & 0xff) == 0xE0 && bytes[1] == 0x01 && bytes[2] == 0x00 && (bytes[3] & 0xff) == 0xEA;
+    }
+
+    private static Object readJava(byte[] bytes) throws IOException {
+        try (java.io.ObjectInputStream in = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(bytes)) {
+            @Override
+            protected Class<?> resolveClass(java.io.ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+                return Class.forName(desc.getName(), false, IonText.class.getClassLoader());
+            }
+        }) {
+            return in.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new IOException(e);
         }
     }
 

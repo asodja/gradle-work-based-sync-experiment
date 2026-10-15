@@ -174,3 +174,15 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   read in the consumer (IntelliJ's IDE side also deserializes each model with its own context). The six models
   without an Ion serializer were "missing" in the dump only because the dump skipped non-byte values; the holder
   passes them through as objects, as in the IDE (D12). The dump now Java-serializes those for comparison.
+- **M3 mechanical group, Ion-serialized models, on gradle/gradle (task mode, one JVM, 3 runs):** identical to the
+  builder output for every project where the builder produces a model: `ExternalProject` 287/287,
+  `GradleSourceSetModel` 287/287, `GradleExtensions` 278/278 (the builder itself yields nothing for the 9 projects
+  that removed `apiStubElements`; the 54 capture warnings were those 9 projects × 6 input evaluations),
+  `ExternalTestsModel` 287/287, `AnnotationProcessingModel` 256/256, `RepositoryModels` 287/287; `GradleTaskModel`
+  differs in all 287 only by the new `ideProjectModel` entry. Six Java-serialized models still to be compared
+  (dump tooling). Timings with dumps on: run 0 (fresh JVM, CC miss) 22.6 s with **all 287 model tasks up to date**
+  (their outputs from the previous sync were still valid: task history survives a CC miss, which the whole-action
+  cache does not); run 1 (hit) 1.8 s, 288 up to date; run 2 (comment edit in `:core`) 16.3 s, all model tasks up to
+  date, the remaining builders (dependency, Kotlin, Kotlin DSL) 13 s. The miss is not faster than the builders'
+  21–23 s yet because the same remaining builders run and the capture still computes the cheap models at
+  configuration time; the hard group decides the outcome.
