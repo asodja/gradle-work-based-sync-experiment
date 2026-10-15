@@ -40,6 +40,11 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## In flight
 
+- **M4 comparison matrix** running via the benchmark-runner subagent: labels `m4-builders`, `m4-tasks`,
+  `m4-tasks-only`, `m4-launcher`, scenarios 1 2 3 4 7 (session scratchpad `logs/m4-*.log`); it writes
+  `results/m4-*/`, `results/m4-summary.md`, `results/m4-NOTES.md` and appends to LOG.md. Draft report:
+  `results/REPORT.md` (medians to be filled from the summary). Design note for D14 step 2:
+  `design/gradle-owned-models-as-tasks.md`.
 - **All-tasks floor measured** (LOG "All-tasks floor, corrected build"): miss 14.4 s vs builders 21.9 s, hit 1.9 s,
   edit 13.1 s vs 14.9 s. Launcher transport (`--launcher`: GradleBuild model + BuildLauncher task run + client-side
   bundle reading, D14) built and running: miss / hit / project edit / gradle.properties edit (session scratchpad
