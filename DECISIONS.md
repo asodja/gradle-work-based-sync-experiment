@@ -77,3 +77,38 @@ plus a Bazel plugin build costs 5–8 GB and an unverified build on aarch64 with
 the daemon-side classes. The `port-model` subagent brief ("commit on the fork branch") is read as "commit in
 `prototype/` on `main`" until the fork exists.
 Rejected: cloning JetBrains/intellij-community now (needed only for M5 and for IDE-side transport).
+
+### D8: cheap models are captured at task configuration time with the existing builder code; only expensive models do work at execution
+
+What: a model task's configuration action (run lazily when the task is realized for the graph, i.e. after all
+projects are configured, the same moment builders run today) calls the IntelliJ builder (`buildAll`) with a
+minimal `ModelBuilderContext`, serializes the result with IntelliJ's `SerializationService` and stores the bytes as
+an `@Input`. The task action only writes the bytes to the output file. This covers `GradleSourceSetModel` (M2) and
+the whole mechanical group (M3). Expensive models whose cost is the work itself, `GradleSourceSetDependencyModel`
+and `KotlinGradleModel`, capture declarative inputs at configuration (dependency notations, repositories, source
+set names, paths) and resolve at execution, so a reconfiguration that leaves those inputs unchanged (comment edit,
+build-logic edit) skips the resolution.
+Why: the M0 profile (`results/m0-baseline/models.md`) shows the per-project cost is concentrated in the
+dependency model (30 s summed) and `KotlinGradleModel` (6 s); the source set model costs 18 ms per project on
+average. Reusing the builder code makes those ports mechanical and the comparison test exact. The task approach
+can only beat IP's own caches where execution-time work is skipped on reconfiguration, so that is where the
+engineering goes.
+Rejected: `@Nested` input beans for the source set model (more code, same fingerprint quality, no measurable
+gain); execution-time recomputation of the source set model (needs CC-serializable captures of `Jar` task
+internals, which the contract forbids).
+
+### D9: task grouping: `ideProjectModel` and `ideDependencyModel` per project, bundle files
+
+What: two tasks per project. `ideProjectModel` bundles every cheap model of the project (M2: `GradleSourceSetModel`
+only; M3 adds `ExternalProject` and the mechanical group) into `<build dir>/ide/models/ideProjectModel.bin`;
+`ideDependencyModel` writes the dependency model (and, as part of it, this project's artifact-index entries:
+jar path → source set name and output dirs) into `ideDependencyModel.bin`. Bundle format: count, then per entry
+model class name, byte length, bytes. The shared `GradleSourceSetArtifactIndex` is not a file another task reads:
+the consumer (harness/IDE, build-finished phase) sees every project's entries and does the cross-project lookup
+that `GradleSourceSetDependencyResolver.resolveSourceSetOutputDirsRuntimeFileDependencies` does today.
+Why: input overlap (cheap models change together with the build script), failure isolation (a dependency
+resolution failure must not lose the source set model), incrementality (dependencies are the separately
+invalidated part), and 2 × 254 tasks instead of 15 × 254. Consumer-side lookup keeps tasks free of
+cross-project inputs, which IP forbids anyway.
+Rejected: one task per model (task count, 15 snapshots of the same project); one task per project (a resolution
+failure would lose everything); a model-task-on-model-task dependency for the index (cross-project coupling).

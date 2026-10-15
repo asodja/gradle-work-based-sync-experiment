@@ -1,4 +1,4 @@
-# Task contract (draft; M2 turns it into decisions)
+# Task contract (decided in M2, 2026-10-15: DECISIONS D7, D8, D9; items below not covered by a decision are still as drafted)
 
 Every ported model follows the same contract so that ports are mechanical and the transport is one piece
 of code.
