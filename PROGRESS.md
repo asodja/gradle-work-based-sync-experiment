@@ -34,32 +34,43 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## In flight
 
-- First harness sync of gradle/gradle, in the background, with the operation trace:
-  output `scratchpad/logs/gg-first.txt` (+ `.build.log`, `.console`), trace `scratchpad/logs/gg-first-trace-log.txt`
-  of session `03bfd696`. It started by downloading the distribution into `~/.gradle-wbs/wrapper/dists` because the
-  harness used `useBuildDistribution()`; for scenario runs pass `--installation` or accept the one-off download.
-- Not yet applied: the M0 gate. Key open question from the fixture: with CC + IP on and a reused entry the whole
-  action result is served from the cache (60 ms). Whether gradle/gradle ever reuses the entry between syncs, and
-  what scenario 4 costs there, decides the experiment (LOG 2026-10-15).
+- First (cold) harness sync of gradle/gradle done: 26 min with downloads, LOG 2026-10-15; per-model table in
+  `results/m0-baseline/first-cold-sync-models.md`.
+- Scenario 3 done (`results/m0-baseline/3-*`). Scenarios 1, 2, 4, 5 running via the benchmark-runner subagent
+  (`harness/run-scenarios.sh m0-baseline 1 2 4 5`, log in the session scratchpad `logs/scenarios-1245.log`); it
+  writes `results/m0-baseline/{summary.md,NOTES.md}` and appends to LOG.md.
+- Unexplained: scenario 3 run 0 (warm miss, untraced) took 66 s with 41 s in the dependency phase, while the
+  traced warm miss right after took 21 s / 3.7 s. Run 0 overlapped with a 911 MB trace aggregation and was the
+  first run after the cold sync; check whether scenarios 1 and 2 show the same spread before trusting any
+  single miss number.
 
 ## Next step
 
-1. Read the first gradle/gradle sync result; fix whatever fails (likely candidates: proxy/dependency downloads,
-   IP problems from IntelliJ builders, memory).
-2. Run `harness/run-scenarios.sh m0-baseline` in the background (benchmark-runner subagent), scenarios 1-5.
-3. Fill `results/m0-baseline/models.md` from the scenario 2 trace (sequential, honest per-model costs) and the
-   scenario 3 trace, apply the M0 gate, update `design/model-inventory.md` cost columns, and revisit
-   `design/measurement.md` in the light of the whole-action caching finding (what does "warm, IP" mean for
-   builders when the entry is reused: that is the real baseline for tasks).
+1. When the benchmark-runner reports: read `results/m0-baseline/summary.md`, add scenario 6 (incremental + model
+   cache, `-Dorg.gradle.internal.isolated-projects.caching=tooling` with the scenario 4 edit) to
+   `harness/run-scenarios.sh` (do not edit the script while a run is in progress) and run it; then write
+   `results/m0-baseline/models.md` from the scenario 2 trace (sequential, no overlap) and the scenario 3 trace,
+   and update `design/model-inventory.md` cost columns and `design/measurement.md` (headline per D6).
+2. Start M2: decide `design/task-contract.md` (grouping), clone the IntelliJ fork (branch from 253, see D5), port
+   `GradleSourceSetModel`. Disk: 18 GB free after the traces; delete `results/m0-baseline/*-trace-log.txt` and the
+   scratchpad traces (`logs/gg-first-trace-log.txt`, 911 MB) once `*-models.md` exist, before the fork clone.
 
 ## Blocked on owner
 
-(none)
+- **Does the experiment continue given the whole-action cache?** Finding: with Gradle 9.9 and gradle/gradle's
+  defaults (CC + IP on), a no-change re-sync in the same client JVM is served whole from the configuration cache
+  entry: 1.1–2.3 s for 287 projects and 113 MB of models, no builder runs (`results/m0-baseline/3-*.txt`). A
+  warm miss (new client JVM, e.g. IDE restart, or any invalidation) costs ~21 s, of which ~14 s is model building.
+  The plan assumed builders re-run on every warm sync; they do not. Options: (a) stop and report that Gradle
+  already solves the no-change case; (b) continue with the thesis refocused on misses and incremental re-sync,
+  measured against the opt-in per-model cache (DECISIONS D6); (c) continue the original plan unchanged.
+  **Assumption while waiting: (b).** Work that does not depend on the answer continues: finishing M0 (scenarios
+  1, 2, 4, 5 and the new 6), M1 is done, and the M2 contract work is unaffected.
 
 ## Gates applied
 
 | Gate | Criterion | Outcome | Date |
 |---|---|---|---|
-| after M0 | per-project IntelliJ models sum to > 3 s on warm sync | | |
+| after M0 | per-project IntelliJ models sum to > 3 s on warm sync | Met on a warm **miss**: ~48 s summed fetch time, ~14 s wall of IntelliJ per-project models in `results/m0-baseline/3-models.md` (traced warm miss, 21 s total). Not applicable on a warm **hit**: 0 s, whole action result from the CC entry, 1–2 s total. See "Blocked on owner" and D6. | 2026-10-15 |
 | after M2 | task up to date on all 254 projects in the warm IP run, no IP problems | | |
 | after M4 | warm IP task sync faster than the warm IP builder sync by the margin fixed in LOG.md | | |

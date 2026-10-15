@@ -46,3 +46,21 @@ What: tooling jars come from `~/tools/ideaIC/` (IDEA 2025.3 for Linux aarch64); 
 based on the matching 253 branch so built plugin jars can be dropped into this installation.
 Why: it is the current release; `design/context.md` was gathered from master, so paths may differ and are
 verified against the jars before use.
+
+### D6: refocus the comparison on the cache-miss and incremental cases (assumption while the owner question is open)
+
+What: scenario 3 (warm, no change, IP on) is kept as a scenario but is no longer the headline: with Gradle 9.9
+under IP, a no-change re-sync in the same client process is served whole from the configuration cache entry
+(gradle/gradle: 1–2 s, no builder runs; LOG 2026-10-15). The comparison that can still show a difference is
+(a) the warm miss (first sync in a new client JVM, i.e. after an IDE restart, or any fingerprint invalidation):
+builders rebuild every model (~21 s warm on gradle/gradle) while tasks would only re-run work whose inputs
+changed, since task history survives a configuration cache miss; and (b) incremental re-sync after one build
+script edit (scenario 4), where builders without the opt-in per-model cache rebuild everything, builders with
+`-Dorg.gradle.internal.isolated-projects.caching=tooling` rebuild the affected projects' models (new scenario 6:
+incremental + model cache), and tasks re-run the affected projects' tasks. The M4 gate margin will be defined
+against scenarios 4 and 6 and against the warm miss, not against scenario 3.
+Why: the plan's premise that builders re-run on every warm sync is false for the no-change case; the
+experiment can still answer whether tasks beat the opt-in per-model cache on invalidation, which is the
+remaining open question. The owner is asked to confirm (PROGRESS.md, "Blocked on owner").
+Rejected: stopping at the M0 gate (the gate's criterion is met on a miss, 48 s summed / ~14 s wall of
+per-project IntelliJ models; it is only moot on a hit).
