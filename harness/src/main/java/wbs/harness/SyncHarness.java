@@ -49,24 +49,53 @@ public final class SyncHarness {
     public static void main(String[] args) throws Exception {
         Options o = Options.parse(args);
         Path initDir = Files.createTempDirectory("wbs-init");
-        PrintStream summary = o.out == null ? System.out : new PrintStream(new FileOutputStream(o.out), true, "UTF-8");
-        try {
-            int code = new SyncHarness(o, initDir, summary).run();
-            System.exit(code);
-        } finally {
-            summary.flush();
+        int code = 0;
+        // All repeats run in this one JVM: the configuration cache key hashes the serialized action, which
+        // carries the client classloader's UUID (ClientSidePayloadClassLoaderRegistry), so a new JVM per run
+        // could never reuse an entry, while the IDE process keeps one classloader across syncs.
+        for (int run = 1; run <= o.repeat; run++) {
+            if (o.beforeRun != null) {
+                runHook(o.beforeRun, run);
+            }
+            File out = o.outFor(run);
+            PrintStream summary = out == null ? System.out : new PrintStream(new FileOutputStream(out), true, "UTF-8");
+            try {
+                int c = new SyncHarness(o, initDir, summary, out).run();
+                if (c != 0) {
+                    code = c;
+                }
+            } finally {
+                summary.flush();
+                if (out != null) {
+                    summary.close();
+                    System.out.println("run " + run + "/" + o.repeat + " -> " + out + " exit " + code);
+                }
+            }
+        }
+        System.exit(code);
+    }
+
+    private static void runHook(String command, int run) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder("/bin/sh", "-c", command);
+        pb.environment().put("RUN", Integer.toString(run));
+        pb.inheritIO();
+        int exit = pb.start().waitFor();
+        if (exit != 0) {
+            throw new IllegalStateException("--before-run command failed with exit " + exit + ": " + command);
         }
     }
 
     private final Options o;
     private final Path initDir;
     private final PrintStream summary;
+    private final File out;
     private final List<String> providersLog = new ArrayList<>();
 
-    private SyncHarness(Options o, Path initDir, PrintStream summary) {
+    private SyncHarness(Options o, Path initDir, PrintStream summary, File out) {
         this.o = o;
         this.initDir = initDir;
         this.summary = summary;
+        this.out = out;
     }
 
     private int run() throws Exception {
@@ -80,7 +109,7 @@ public final class SyncHarness {
         }
 
         Timing t = new Timing();
-        File buildLog = o.out == null ? null : new File(o.out.getPath() + ".build.log");
+        File buildLog = out == null ? null : new File(out.getPath() + ".build.log");
         try (ProjectConnection connection = connector.connect();
              OutputStream buildOut = buildLog == null ? System.out : new FileOutputStream(buildLog)) {
 
@@ -111,7 +140,11 @@ public final class SyncHarness {
             if (o.parallelFetch) {
                 arguments.add("-Didea.parallelModelFetch.enabled=true");
             }
-            arguments.addAll(providers.extraCommandLineArgs());
+            for (String extra : providers.extraCommandLineArgs()) {
+                if (o.dropArgPrefixes.stream().noneMatch(extra::startsWith)) {
+                    arguments.add(extra);
+                }
+            }
             for (Path script : scripts.inOrder()) {
                 arguments.add("--init-script");
                 arguments.add(script.toString());
@@ -314,12 +347,15 @@ public final class SyncHarness {
         Path gradleUserHome;
         Path ideaHome;
         Path installation;
-        File out;
+        String out;
+        int repeat = 1;
+        String beforeRun;
         String ideaVersion = "2025.3";
         boolean streaming = true;
         boolean parallelFetch = true;
         final List<String> gradleArgs = new ArrayList<>();
         final List<String> jvmArgs = new ArrayList<>();
+        final List<String> dropArgPrefixes = new ArrayList<>();
 
         static Options parse(String[] args) {
             Options o = new Options();
@@ -330,10 +366,13 @@ public final class SyncHarness {
                     case "--gradle-user-home": o.gradleUserHome = Path.of(args[++i]).toAbsolutePath(); break;
                     case "--idea-home": o.ideaHome = Path.of(args[++i]).toAbsolutePath(); break;
                     case "--installation": o.installation = Path.of(args[++i]).toAbsolutePath(); break;
-                    case "--out": o.out = new File(args[++i]); break;
+                    case "--out": o.out = args[++i]; break;
+                    case "--repeat": o.repeat = Integer.parseInt(args[++i]); break;
+                    case "--before-run": o.beforeRun = args[++i]; break;
                     case "--idea-version": o.ideaVersion = args[++i]; break;
                     case "--arg": o.gradleArgs.add(args[++i]); break;
                     case "--jvm-arg": o.jvmArgs.add(args[++i]); break;
+                    case "--drop-arg-prefix": o.dropArgPrefixes.add(args[++i]); break;
                     case "--no-streaming": o.streaming = false; break;
                     case "--no-parallel-fetch": o.parallelFetch = false; break;
                     default: throw new IllegalArgumentException("unknown option " + a + USAGE);
@@ -342,13 +381,26 @@ public final class SyncHarness {
             if (o.project == null || o.gradleUserHome == null) {
                 throw new IllegalArgumentException("--project and --gradle-user-home are required" + USAGE);
             }
-            if (o.out != null && o.out.getParentFile() != null) {
-                o.out.getParentFile().mkdirs();
+            if (o.repeat > 1 && o.out != null && !o.out.contains("{run}")) {
+                throw new IllegalArgumentException("--out must contain {run} when --repeat > 1" + USAGE);
             }
             return o;
         }
 
+        /** Output file of one run; {@code {run}} in --out is replaced by the run number. */
+        File outFor(int run) {
+            if (out == null) {
+                return null;
+            }
+            File f = new File(out.replace("{run}", Integer.toString(run)));
+            if (f.getParentFile() != null) {
+                f.getParentFile().mkdirs();
+            }
+            return f;
+        }
+
         static final String USAGE = "\nusage: harness --project DIR --gradle-user-home DIR [--idea-home DIR] [--installation DIR]"
-            + " [--out FILE] [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
+            + " [--out FILE(with {run})] [--repeat N] [--before-run SHELL]"
+            + " [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--drop-arg-prefix P]... [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
     }
 }
