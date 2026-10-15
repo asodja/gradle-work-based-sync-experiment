@@ -37,6 +37,14 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## In flight
 
+- **M2 end to end**: `prototype/` (task base class `IdeModelTask`, `IdeProjectModelTask`, registration `IdeModelTasks.apply(gradle)`
+  from an extra init script, `IdeModelTaskRequestBuilder` scheduling the tasks in the projects-loaded phase) and the
+  harness task transport (`--tasks --extra-tooling-jar prototype/build/libs/ide-model-tasks.jar`, `IdeTasksTransport`).
+  Works on the fixture with identical `GradleSourceSetModel` content (`prototype/compare-models.sh`). Running on
+  gradle/gradle now: builder dump, task-mode miss/hit/incremental, comparison (session scratchpad `logs/gg-m2.log`,
+  dumps `dump/gg-builders`, `dump/gg-tasks`). The M2 gate (task up to date in all projects on the warm IP hit, entry
+  reused, no IP problems) is read from `logs/gg-m2-tasks-1.txt`.
+
 - First (cold) harness sync of gradle/gradle done: 26 min with downloads, LOG 2026-10-15; per-model table in
   `results/m0-baseline/first-cold-sync-models.md`.
 - Investigator subagent looking into the scenario 6 failure (IP per-model cache incremental update fails with
