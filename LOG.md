@@ -249,3 +249,13 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   ignore fields named `id`. Housekeeping: every client JVM creates a new CC entry of ~100 MB (whole-action result
   included); 81 entries had grown to 7.7 GB and were deleted (`.gradle/configuration-cache` of the benchmark
   worktree); free disk 17 GB.
+- **Launcher transport (`--launcher`: GradleBuild model, BuildLauncher task run, bundles read in the client; one JVM,
+  gradle/gradle):** miss **15.0 s** (GradleBuild 0.9 s, task run 13.0 s, reading and deserializing 132 MB of bundles
+  in the client 0.9 s); hit 4.7 s then 3.1 s (first hit after a store re-hashes the 132 MB of outputs for the
+  up-to-date check); edit of `subprojects/core/build.gradle.kts` **12.7 s**, "Calculating task graph as configuration
+  cache cannot be reused because file 'subprojects/core/build.gradle.kts' has changed" + entry stored: a full
+  re-store even for a plain task run, so on gradle/gradle a project build script is a *build-scoped* input (something
+  in its settings/build logic reads project build scripts) and Isolated Projects' per-project update never applies.
+  Appending a property to `gradle.properties` did not invalidate either (only properties that are read count);
+  scenario 7 now appends a comment to `settings.gradle.kts`. Fixture run in flight to show the per-project update on
+  a simple build. All 17 models arrive from the bundles (287/287/287/… as in the comparison).
