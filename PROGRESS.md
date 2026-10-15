@@ -4,15 +4,17 @@ Keep this file current. A resuming agent continues from here alone.
 
 ## Current milestone
 
-M0: baseline on gradle/gradle. Not started.
+M0 + M1 together: baseline on gradle/gradle measured with the harness (no IDE can run here, DECISIONS D1).
+In progress.
 
 ## Environment
 
 This machine; details and disk budget in `design/environment.md`. Fill in as things are created:
 
-- Benchmark worktree of gradle/gradle: not yet created (`~/projects/gradle-wbs-benchmark`, pin the commit here)
-- Gradle distribution used for measurements: not yet built
-- IntelliJ Community download for tooling jars: not yet downloaded (`~/tools/ideaIC/`, version here)
+- Benchmark worktree of gradle/gradle: `~/projects/gradle-wbs-benchmark`, detached at `dedc5d14f2d` (master of 2026-10-14)
+- Gradle distribution used for measurements: the worktree's own wrapper distribution `gradle-9.9.0-milestone-2`
+  (DECISIONS D2); Gradle user home for all benchmark runs: `~/.gradle-wbs` (D4)
+- IntelliJ for tooling jars: IDEA 2025.3 (253.28294.334) Linux aarch64, unpacking into `~/tools/ideaIC/` (D5)
 - IntelliJ Community fork: not yet cloned (M3)
 - Disk free at last check: 28 GB (2026-10-15, after cleanup)
 
@@ -22,13 +24,21 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## In flight
 
-(nothing yet; when something is, say exactly where: branch, commit, file, failing test, command that reproduces)
+- `harness/`: Gradle build (`build.gradle.kts`, TAPI 9.9.0-milestone-2 + IDE jars via `-PideaHome`),
+  `aggregate_trace.py` (trace -> per-model table), `run-scenarios.sh` (scenarios 1-5, traced profiling run per
+  scenario). Missing: `src/main/java/wbs/harness/SyncHarness.java`, the TAPI client itself. Its CLI is fixed by
+  `run-scenarios.sh`: `--project --gradle-user-home --idea-home [--installation] [--arg X]... [--out file]`.
+- First `./gradlew help -g ~/.gradle-wbs --no-build-cache --no-scan` in the benchmark worktree, to populate
+  `~/.gradle-wbs` (log: session scratchpad `logs/warmup-help.log`).
 
 ## Next step
 
-1. Disk already reclaimed (28 GB free); reclaim more per `design/environment.md` only if needed.
-2. Create the benchmark worktree, build the logging distribution, download IntelliJ Community.
-3. Start M0 per `design/plan.md`.
+1. Write `SyncHarness.java` against the 2025.3 jars (provider list mirrors `CommonGradleProjectResolverExtension`,
+   `JavaGradleProjectResolver`, manifest/repositories resolvers, Kotlin resolvers; init script assembled from the
+   same resources IntelliJ uses: MapperInit, IdeaPluginConfigurator, ClassPathExtensionInitScript +
+   RegistryProcessor + JetGradlePlugin + Init). Smoke-test on a small fixture, then on gradle/gradle.
+2. Run `harness/run-scenarios.sh m0-baseline` in the background (benchmark-runner subagent).
+3. Fill `results/m0-baseline/models.md`, apply the M0 gate, update `design/model-inventory.md` cost columns.
 
 ## Blocked on owner
 
