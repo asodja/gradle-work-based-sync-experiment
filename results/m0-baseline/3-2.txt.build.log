@@ -1,0 +1,6 @@
+Isolated Projects is an incubating feature.
+Reusing configuration cache.
+> Task :prepareKotlinBuildScriptModel UP-TO-DATE
+
+BUILD SUCCESSFUL in 1s
+Configuration cache entry reused.

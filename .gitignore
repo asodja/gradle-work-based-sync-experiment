@@ -4,3 +4,4 @@ harness/.gradle/
 harness/fixture/.gradle/
 harness/fixture/build/
 harness/fixture/*/build/
+results/**/*-trace-log.txt

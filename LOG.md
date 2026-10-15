@@ -58,3 +58,9 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   345 s (4 builds), GradleSourceSetModel 162 s, DummyModel 112 s (first request, waits for configuration),
   GradleBuild 11 s; everything else < 1 s per model summed over 287 projects. Configure project: sum 369 s, root
   57 s. Operation trace of this sync: 911 MB, 668k operations (too heavy for timed runs, as decided in D3).
+
+- **M0 baseline, scenarios 1, 2, 4, 5** (builder version, gradle/gradle `dedc5d14f2d`, 9.9.0-milestone-2, 3 timed runs each after a
+  warm-up run 0 where the script does one). Median total_ms (min-max): 1 cold 34696 (34520-38185); 2 warm plain 16895 (16691-18532);
+  3 warm IP 1445 (1055-2330, run earlier by the lead session); 4 incremental 14933 (14306-15963); 5 IP + model cache 1278
+  (1234-1864). Tasks: scenarios 1, 2, 4 executed=27 skipped=66 up-to-date=271; scenarios 3, 5 up-to-date=1. All runs status=OK, no
+  IP problems in the logs. Details: `results/m0-baseline/NOTES.md`, table: `results/m0-baseline/summary.md`.
