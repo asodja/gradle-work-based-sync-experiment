@@ -19,3 +19,6 @@ build/install/harness/bin/harness --project <build> --gradle-user-home <dir> --i
 
 The harness is a plain JVM, so it cannot validate against IntelliJ's `GRADLE_CALL` on this machine (no display);
 that comparison is deferred to M5 (DECISIONS D1).
+
+Do not run `installDist` while a harness JVM is running: the jar is replaced in place and the running JVM fails
+with `NoClassDefFoundError` the next time it loads a class.
