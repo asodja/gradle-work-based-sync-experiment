@@ -1,8 +1,9 @@
 # M0: where sync time goes on gradle/gradle (builder version)
 
 gradle/gradle `dedc5d14f2d`, Gradle 9.9.0-milestone-2, IntelliJ 2025.3 jars, harness (see `harness/README.md`),
-this machine (`NOTES.md`). 4 builds, 287 projects, 5755 models per sync (113 MB serialized; IdeaProject and
-KotlinDslScriptsModel are 100 MB of it). Raw per-run files: `<scenario>-<run>.txt`; run 0 is the warm-up.
+this machine (`NOTES.md`). 4 builds, 287 projects, 5755 models per sync (113 MB serialized: GradleSourceSetDependencyModel 28.9 MB,
+IdeaProject 9.5 MB, GradleTaskModel 9.0 MB, KotlinDslScriptsModel 4.2 MB, GradleSourceSetModel 3.1 MB, the rest
+spread over the ~4900 small ADDITIONAL-phase models). Raw per-run files: `<scenario>-<run>.txt`; run 0 is the warm-up.
 
 ## Scenario totals (median of 3, ms)
 
