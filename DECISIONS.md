@@ -64,3 +64,16 @@ experiment can still answer whether tasks beat the opt-in per-model cache on inv
 remaining open question. The owner is asked to confirm (PROGRESS.md, "Blocked on owner").
 Rejected: stopping at the M0 gate (the gate's criterion is met on a miss, 48 s summed / ~14 s wall of
 per-project IntelliJ models; it is only moot on a hit).
+
+### D7: the Gradle-side prototype lives in `prototype/` of this repo, not in an IntelliJ fork, until M5
+
+What: `prototype/` is a small Gradle build that compiles the model tasks, the request model builder and the
+comparison tests against the installed IDE's `gradle-tooling-extension-{api,impl}.jar`, `kotlin-gradle-tooling.jar`
+and the Gradle API of the measured distribution (its wrapper is 9.9.0-milestone-2, same as the benchmark). The
+harness puts the prototype jar on IntelliJ's init-script classpath next to the IDE jars. Packages are kept as they
+would be in `plugins/gradle/tooling-extension-impl` so the code moves into the fork for M5 unchanged.
+Why: no `intellij-community` fork exists under the owner's GitHub account (checked 2026-10-15), a shallow clone
+plus a Bazel plugin build costs 5–8 GB and an unverified build on aarch64 with 16 GB free, and M2–M4 only need
+the daemon-side classes. The `port-model` subagent brief ("commit on the fork branch") is read as "commit in
+`prototype/` on `main`" until the fork exists.
+Rejected: cloning JetBrains/intellij-community now (needed only for M5 and for IDE-side transport).

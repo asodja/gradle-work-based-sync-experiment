@@ -17,7 +17,7 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 - IntelliJ for tooling jars: `~/tools/ideaIC/idea-IU-253.28294.334` (IDEA 2025.3, unified installer, Linux aarch64; D5).
   Harness classpath uses only `plugins/gradle`, `plugins/gradle-java`, `plugins/Kotlin` and `lib`, so Ultimate-only
   resolvers are not loaded.
-- IntelliJ Community fork: not yet cloned (M3)
+- IntelliJ Community fork: none exists (see "Blocked on owner"); prototype in `prototype/` (D7)
 - Disk free at last check: 28 GB (2026-10-15, after cleanup)
 
 ## Done
@@ -57,6 +57,11 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
    names in the projects-loaded phase and reads the files in the build-finished phase).
 
 ## Blocked on owner
+
+- **Where do the fork branches live?** README deliverable 2 asks for branches `work-based-sync` on the IntelliJ
+  Community fork (and the Gradle fork if needed). `asodja/intellij-community` does not exist on GitHub and
+  `asodja/gradle` has no such branch (2026-10-15). Assumption while waiting: the prototype is developed in
+  `prototype/` of this repo (DECISIONS D7) and moved to the fork for M5 once the owner names it.
 
 - **Does the experiment continue given the whole-action cache?** Finding: with Gradle 9.9 and gradle/gradle's
   defaults (CC + IP on), a no-change re-sync in the same client JVM is served whole from the configuration cache
