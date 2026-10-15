@@ -13,7 +13,21 @@ import java.nio.file.Path;
 public final class BundleDump {
 
     public static void main(String[] args) throws Exception {
-        ToolingSerializer serializer = new ToolingSerializer();
+        // --text <ClassSimpleName> <bundle>: print the canonical reflective text of that entry instead of the listing
+        if (args.length >= 3 && args[0].equals("--text")) {
+            try (InputStream in = Files.newInputStream(Path.of(args[2])); DataInputStream data = new DataInputStream(in)) {
+                for (ModelPayload payload : ModelBundle.read(data)) {
+                    if (!payload.getModelClassName().endsWith("." + args[1])) continue;
+                    Class<?> modelClass = Class.forName(payload.getModelClassName());
+                    Object model = ModelPayload.JAVA.equals(payload.getFormat())
+                        ? IdeTasksTransport.readJava(payload.getBytes())
+                        : new ToolingSerializer().read(payload.getBytes(), modelClass);
+                    System.out.println("fingerprint=" + payload.getFingerprint());
+                    System.out.println(com.intellij.gradle.toolingExtension.impl.ideTask.ModelText.canonical(model));
+                }
+            }
+            return;
+        }
         for (String arg : args) {
             System.out.println("== " + arg);
             try (InputStream in = Files.newInputStream(Path.of(arg)); DataInputStream data = new DataInputStream(in)) {

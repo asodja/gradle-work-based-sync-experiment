@@ -162,6 +162,23 @@ public final class SyncHarness {
 
             Results results = new Results();
             results.dumpDir = o.dumpModels == null ? null : o.dumpModels.toFile();
+
+            if (o.launcher) {
+                // Pure task run: GradleBuild for the structure, BuildLauncher for the tasks, bundles read here.
+                t.mark("actionStart");
+                LauncherSync.Outcome outcome;
+                Throwable launcherFailure = null;
+                try {
+                    outcome = LauncherSync.run(connection, o, arguments, t, results, buildOut);
+                } catch (Exception e) {
+                    outcome = new LauncherSync.Outcome();
+                    launcherFailure = e;
+                }
+                t.mark("end");
+                buildOut.flush();
+                reportLauncher(gradleVersion, arguments, t, results, outcome, launcherFailure, buildLog);
+                return launcherFailure == null ? 0 : 1;
+            }
             CountDownLatch done = new CountDownLatch(1);
             AtomicReference<Throwable> failure = new AtomicReference<>();
 
@@ -208,6 +225,59 @@ public final class SyncHarness {
             buildOut.flush();
             report(gradleVersion, arguments, t, results, failure.get(), buildLog);
             return failure.get() == null ? 0 : 1;
+        }
+    }
+
+    private void reportLauncher(GradleVersion gradleVersion, List<String> arguments, Timing t, Results results,
+                                LauncherSync.Outcome outcome, Throwable failure, File buildLog) throws IOException {
+        PrintStream p = summary;
+        p.println("project=" + o.project);
+        p.println("gradleUserHome=" + o.gradleUserHome);
+        p.println("gradleVersion=" + gradleVersion.getVersion());
+        p.println("mode=launcher");
+        p.println("arguments=" + String.join(" ", arguments));
+        p.println("status=" + (failure == null ? "OK" : "FAILED"));
+        p.println();
+        p.println("# timing (ms from start)");
+        long start = t.marks.get("start");
+        for (Map.Entry<String, Long> e : t.marks.entrySet()) {
+            p.printf("%-40s %8d%n", e.getKey(), e.getValue() - start);
+        }
+        p.println();
+        p.printf("total_ms=%d%n", t.marks.get("end") - start);
+        p.printf("stall_max_gap_s=%d%n", StallDetector.maxGapSeconds(o.gradleUserHome, start, t.marks.get("end")));
+        p.printf("buildEnvironment_ms=%d%n", t.marks.get("buildEnvironment") - start);
+        if (t.marks.containsKey("gradleBuild")) {
+            p.printf("gradleBuild_ms=%d%n", t.marks.get("gradleBuild") - t.marks.get("actionStart"));
+        }
+        if (t.marks.containsKey("tasksEnd")) {
+            p.printf("tasks_ms=%d%n", t.marks.get("tasksEnd") - t.marks.get("tasksStart"));
+        }
+        if (t.marks.containsKey("bundlesRead")) {
+            p.printf("bundlesRead_ms=%d%n", t.marks.get("bundlesRead") - t.marks.get("tasksEnd"));
+        }
+        p.println();
+        p.println("# tasks");
+        p.println("tasks=" + results.taskOutcomes);
+        p.println();
+        p.println("# models read from bundles (count, bytes)");
+        outcome.modelsPerClass.forEach((k, v) -> p.printf("%-60s %5d%n", k, v));
+        p.printf("bundleBytes=%d missingBundles=%d%n", outcome.bytes, outcome.missingBundles);
+        p.println("builds=" + outcome.builds + " projects=" + outcome.projects);
+        outcome.errors.stream().limit(20).forEach(e -> p.println("error: " + e));
+        if (buildLog != null) {
+            p.println();
+            p.println("# configuration cache / problems lines from " + buildLog.getName());
+            String log = new String(Files.readAllBytes(buildLog.toPath()), StandardCharsets.UTF_8);
+            Matcher m = Pattern.compile("(?m)^.*(Configuration cache entry|Reusing configuration cache|Calculating task graph|problems? (was|were) found|Isolated projects|BUILD (SUCCESSFUL|FAILED)|FAILURE:|What went wrong|cannot be reused).*$").matcher(log);
+            while (m.find()) {
+                p.println(m.group());
+            }
+        }
+        if (failure != null) {
+            p.println();
+            p.println("# failure");
+            failure.printStackTrace(p);
         }
     }
 
@@ -411,6 +481,7 @@ public final class SyncHarness {
         final List<Path> extraToolingJars = new ArrayList<>();
         boolean tasks;
         boolean tasksOnly;
+        boolean launcher;
         Path dumpModels;
 
         static Options parse(String[] args) {
@@ -432,6 +503,7 @@ public final class SyncHarness {
                     case "--drop-arg-prefix": o.dropArgPrefixes.add(args[++i]); break;
                     case "--tasks": o.tasks = true; break;
                     case "--tasks-only": o.tasks = true; o.tasksOnly = true; break;
+                    case "--launcher": o.tasks = true; o.launcher = true; break;
                     case "--extra-tooling-jar": o.extraToolingJars.add(Path.of(args[++i]).toAbsolutePath()); break;
                     case "--dump-models": o.dumpModels = Path.of(args[++i]).toAbsolutePath(); break;
                     case "--no-streaming": o.streaming = false; break;
@@ -462,6 +534,6 @@ public final class SyncHarness {
 
         static final String USAGE = "\nusage: harness --project DIR --gradle-user-home DIR [--idea-home DIR] [--installation DIR]"
             + " [--out FILE(with {run})] [--repeat N] [--first-run N] [--before-run SHELL]"
-            + " [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--drop-arg-prefix P]... [--tasks|--tasks-only] [--extra-tooling-jar JAR]... [--dump-models DIR] [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
+            + " [--arg GRADLE_ARG]... [--jvm-arg ARG]... [--drop-arg-prefix P]... [--tasks|--tasks-only|--launcher] [--extra-tooling-jar JAR]... [--dump-models DIR] [--no-streaming] [--no-parallel-fetch] [--idea-version V]";
     }
 }

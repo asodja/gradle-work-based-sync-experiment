@@ -235,3 +235,8 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   incrementally on this Gradle version; a plain task run (`BuildLauncher`, `RunTasksRequirements`) does. Next
   transport to measure: `BuildLauncher.forTasks(...)` for the model tasks plus client-side bundle reading, which is
   also the "pure task run" the owner asked for (D14) and removes the daemon-side re-serialization.
+- **Correction**: the two floor runs after the `@Internal` change (32.1 s / 5.6 s / 33.6 s, and the 34.8 s traced
+  miss) measured the *old* prototype: its compilation had failed on a syntax slip and my build chain hid the error
+  behind `grep … || true`. Fixed; `build-all.sh` now fails loudly and checks that the harness embeds the fresh
+  prototype jar. The trace of that old build is still informative: under "Calculate task graph" (19.6 s) sit 3704
+  "Resolve dependencies of …" operations (8.7 s) and 36925 task realizations (2.0 s), i.e. the captures ran there.

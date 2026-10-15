@@ -71,7 +71,7 @@ final class ModelCapture {
                 }
             }
             return result;
-        });
+        }
     }
 
     private static ModelPayload serialize(ToolingSerializer serializer, String modelClassName, Object model) throws IOException {
