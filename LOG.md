@@ -259,3 +259,17 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   Appending a property to `gradle.properties` did not invalidate either (only properties that are read count);
   scenario 7 now appends a comment to `settings.gradle.kts`. Fixture run in flight to show the per-project update on
   a simple build. All 17 models arrive from the bundles (287/287/287/… as in the comparison).
+- **Why no per-project entry update after a build-script edit, in any transport (fixture included):** the change is
+  reported as a *build-scoped* invalidation ("cannot be reused because file 'app/build.gradle.kts' has changed" →
+  `CheckedFingerprint.Invalid`, full re-store). Project evaluation itself is wrapped in the project-scoped sink
+  (`ConfigurationCacheAwareProjectEvaluator`), but resolved script files are also reported through
+  `ScriptFileResolvedListener` → `ConfigurationCacheFingerprintWriter.onScriptFileResolved` → `fileObserved`, which
+  writes to `sink()` = the build-scoped sink when no project is being evaluated on that thread (script file
+  resolution happens when project descriptors are created, at settings time). So every project build script is a
+  build-scoped input and the `Update` path (`CheckedFingerprint.Valid` with `invalidProjects`) is only reached when
+  the build-scoped check passes, e.g. in scenario 6 where `isolated-projects.caching=tooling` changes what is
+  recorded. Verified: the call chain and the messages; not verified: which caller resolves the script file at build
+  scope (`DefaultScriptFileResolverListeners` is the broadcast). Consequence for the report: on 9.9.0-milestone-2 an
+  IDE sync after a build-script edit reconfigures everything in every variant; the task variants still win there
+  because the capture runs in parallel at store time and the models are not re-sent (13.1 s / 12.7 s vs 14.9 s), and
+  the structural win on misses stands (14.4 s / 15.0 s vs 21.9 s).
