@@ -64,3 +64,15 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   3 warm IP 1445 (1055-2330, run earlier by the lead session); 4 incremental 14933 (14306-15963); 5 IP + model cache 1278
   (1234-1864). Tasks: scenarios 1, 2, 4 executed=27 skipped=66 up-to-date=271; scenarios 3, 5 up-to-date=1. All runs status=OK, no
   IP problems in the logs. Details: `results/m0-baseline/NOTES.md`, table: `results/m0-baseline/summary.md`.
+- **Scenario 6 (incremental, IP + opt-in per-model cache `isolated-projects.caching=tooling`) fails on Gradle
+  9.9.0-milestone-2**: run 0 and the traced run (fresh client JVM, entry stored) succeed in 20–23 s, but every
+  incremental run from the same JVM after the one-line edit ends in `CONFIGURE FAILED` after < 1 s: "Could not
+  resolve project ':build-logic-settings:…' … Could not create an instance of type
+  org.jetbrains.kotlin.gradle.plugin.mpp.KotlinUsages$KotlinUsagesCompatibility … Class … is private", then
+  "Configuration cache entry updated for no projects, no projects up-to-date" (`results/m0-baseline/6-{1,2,3}.txt.build.log`).
+  The harness marks them `status=FAILED`; summarize.py excludes them. Without the option (scenario 4) the same edit
+  invalidates the entry and the sync succeeds in 14.9 s. Handed to the investigator subagent; until resolved the
+  builder-side competitor for the incremental case cannot be measured on this Gradle version.
+- M0 cost tables written: `results/m0-baseline/models.md` (scenario totals, per-phase wall times, per-model sums for
+  scenarios 2, 3-miss, 4). Operation traces (5.9 GB) deleted after aggregation; the `*-models.md` files remain.
+  Free disk 16 GB.

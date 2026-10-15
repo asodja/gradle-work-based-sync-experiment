@@ -49,8 +49,16 @@ Each three times; report median and spread.
 | 3 | Warm, IP | daemon alive, no change, project defaults (CC + IP on, model cache off), entry present | **headline**: builders re-run in parallel vs tasks up to date from the CC entry |
 | 4 | Incremental, IP | as 3, then edit one subproject build script (add a comment to `subprojects/core/build.gradle.kts`), restore after | invalidation granularity: how much re-runs on each side |
 | 5 | Warm, IP + model cache (builders only) | as 3 plus `-Dorg.gradle.internal.isolated-projects.caching=tooling` | reference: what the existing opt-in model cache gives, to compare with the task version's scenario 3 |
+| 6 | Incremental, IP + model cache (builders only) | as 4 plus the scenario 5 flag | the builder-side competitor of task-level incrementality (fails on 9.9.0-milestone-2, LOG 2026-10-15) |
 
-Both versions run 1–4; scenario 5 is for the builder version. Run 3–5 with the project's own
+Both versions run 1–4; scenarios 5 and 6 are for the builder version.
+
+**Measured on 2026-10-15 (M0, `results/m0-baseline/models.md`)**: scenario 3 is already ~1.4 s for the builder
+version because under IP the whole action result is cached in the configuration cache entry
+(`design/context.md` §3). The headline is therefore not scenario 3 alone but the pair *warm miss* (first sync in
+a new client process: 21.9 s builders) and *incremental* (scenario 4: 14.9 s builders, everything rebuilt), each
+against the task version, plus scenario 6 if it can be made to run (DECISIONS D6). Runs of scenarios 2–6 must
+happen inside one harness JVM (`--repeat`), because the entry key includes the client classloader UUID. Run 3–5 with the project's own
 `gradle.properties`, and 1–2 with `--no-configuration-cache -Dorg.gradle.isolated-projects=false`. A
 task-version run under 3 or 4 that reports IP problems is a failed run, not a data point; fix the port
 first.

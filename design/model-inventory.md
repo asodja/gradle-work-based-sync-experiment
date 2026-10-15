@@ -56,4 +56,28 @@ and the Kotlin equivalent. Requesters: `CommonGradleProjectResolverExtension.jav
 resolvers), `plugins/kotlin/gradle/gradle-java/src/org/jetbrains/kotlin/idea/gradleJava/configuration/*Resolver*.kt`,
 `plugins/kotlin/gradle/scripting/src/org/jetbrains/kotlin/gradle/scripting/importing/KotlinDslScriptModelResolver.kt`.
 
-Update the M0 cost columns here once the gradle/gradle baseline exists.
+## M0 cost on gradle/gradle (2026-10-15, `results/m0-baseline/models.md`)
+
+Summed fetch time over 287 projects, ms, builders in parallel on 8 cores (wall share roughly a third). S2 = warm
+without CC/IP, S3 = warm miss under IP. Everything not listed is < 350 ms summed in both.
+
+| Model | S2 sum | S3 sum | S3 max per project |
+|---|---|---|---|
+| GradleSourceSetDependencyModel | 20080 | 29814 | 866 |
+| DummyModel (IJ bootstrap, waits for root configuration) | 7856 | 6246 | – |
+| KotlinDslScriptsModel (Gradle, 4 builds) | 4898 | 5855 | 5818 |
+| GradleTaskWarmUpRequest | 4281 | 5290 | 308 |
+| KotlinGradleModel | 3291 | 6130 | 532 |
+| GradleSourceSetModel | 1709 | 5193 | 328 |
+| GradleBuild (Gradle) | 304 | 444 | – |
+| IdeaProject (Gradle, 4 builds) | 387 | 191 | – |
+| GradleBuildScriptClasspathModel | 300 | 314 | 26 |
+| AnnotationProcessingModel | 227 | 213 | 4 |
+| ProjectDependencies | 189 | 327 | 23 |
+
+So the port's payload is three models: `GradleSourceSetDependencyModel` (two thirds of all per-project time),
+`KotlinGradleModel` and `GradleSourceSetModel`; `GradleTaskWarmUpRequest` disappears with tasks. The mechanical
+group costs ~1 s summed in total and is ported for completeness of the comparison, not for time. Also measured:
+`KotlinMPPGradleModel`, `KaptGradleModel` and the Kotlin compiler-plugin models (AllOpen, NoArg, SamWithReceiver,
+Assignment, Parcelize, Lombok, `AnnotationBasedPluginModel`) are requested for every project by the installed
+Kotlin plugin (~25 ms summed each); the latter are not in the table above and are out of scope (`skip`).

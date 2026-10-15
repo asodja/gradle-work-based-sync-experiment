@@ -4,8 +4,8 @@ Keep this file current. A resuming agent continues from here alone.
 
 ## Current milestone
 
-M0 + M1 together: baseline on gradle/gradle measured with the harness (no IDE can run here, DECISIONS D1).
-In progress.
+M0 and M1 done (2026-10-15). Next: M2 (task contract + `GradleSourceSetModel` end to end), under the D6
+assumption while the owner question below is open.
 
 ## Environment
 
@@ -26,6 +26,9 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## Done
 
+- **M0**: `results/m0-baseline/` (models.md = cost tables, summary.md, NOTES.md, per-run files, `<s>-models.md`
+  per-model tables from traces). Medians: cold 34.7 s; warm plain 16.9 s; warm IP hit 1.4 s; warm IP miss 21.9 s;
+  incremental IP 14.9 s; IP + model cache hit 1.3 s; incremental + model cache: fails (Gradle). Gate applied below.
 - M1 harness works end to end on `harness/fixture` (see `harness/README.md`): real `GradleModelFetchAction`, providers
   from the IDE's 22 `projectResolve` extensions, IntelliJ's init scripts, phase timings, model counts, task outcomes,
   CC lines; `--repeat` runs in one JVM (needed for CC entry reuse, LOG 2026-10-15); `--before-run` hook; trace
@@ -36,24 +39,22 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 - First (cold) harness sync of gradle/gradle done: 26 min with downloads, LOG 2026-10-15; per-model table in
   `results/m0-baseline/first-cold-sync-models.md`.
-- Scenario 3 done (`results/m0-baseline/3-*`). Scenarios 1, 2, 4, 5 running via the benchmark-runner subagent
-  (`harness/run-scenarios.sh m0-baseline 1 2 4 5`, log in the session scratchpad `logs/scenarios-1245.log`); it
-  writes `results/m0-baseline/{summary.md,NOTES.md}` and appends to LOG.md.
-- Unexplained: scenario 3 run 0 (warm miss, untraced) took 66 s with 41 s in the dependency phase, while the
-  traced warm miss right after took 21 s / 3.7 s. Run 0 overlapped with a 911 MB trace aggregation and was the
-  first run after the cold sync; check whether scenarios 1 and 2 show the same spread before trusting any
-  single miss number.
+- Investigator subagent looking into the scenario 6 failure (IP per-model cache incremental update fails with
+  "Class KotlinUsages.KotlinUsagesCompatibility is private" on 9.9.0-milestone-2; LOG 2026-10-15). Its answer decides
+  whether scenario 6 can be measured on this distribution, needs a distribution built from the pinned commit, or
+  is a Gradle bug to report.
+- Unexplained, low priority: scenario 3 run 0 (warm miss) took 66 s vs 21–23 s for the other warm misses
+  (3-trace, 6-0, 6-trace); it overlapped with a 911 MB trace aggregation.
 
 ## Next step
 
-1. When the benchmark-runner reports: read `results/m0-baseline/summary.md`, add scenario 6 (incremental + model
-   cache, `-Dorg.gradle.internal.isolated-projects.caching=tooling` with the scenario 4 edit) to
-   `harness/run-scenarios.sh` (do not edit the script while a run is in progress) and run it; then write
-   `results/m0-baseline/models.md` from the scenario 2 trace (sequential, no overlap) and the scenario 3 trace,
-   and update `design/model-inventory.md` cost columns and `design/measurement.md` (headline per D6).
-2. Start M2: decide `design/task-contract.md` (grouping), clone the IntelliJ fork (branch from 253, see D5), port
-   `GradleSourceSetModel`. Disk: 18 GB free after the traces; delete `results/m0-baseline/*-trace-log.txt` and the
-   scratchpad traces (`logs/gg-first-trace-log.txt`, 911 MB) once `*-models.md` exist, before the fork clone.
+1. Read the investigator's answer on scenario 6; record it in LOG.md; if a workaround exists, rerun
+   `harness/run-scenarios.sh m0-baseline 6` with it (script must not be edited while running).
+2. M2: decide `design/task-contract.md` (grouping; artifact index -> per-project entries + consumer-side lookup, see
+   the reading notes in `DECISIONS.md` once written), clone the IntelliJ fork shallow at the 253 branch (D5) into
+   `~/projects/intellij-community` (16 GB free; budget 5–8 GB), add the task base class and port
+   `GradleSourceSetModel`, transport in the harness first (`harness/` gets a `--tasks` mode that adds the task
+   names in the projects-loaded phase and reads the files in the build-finished phase).
 
 ## Blocked on owner
 
