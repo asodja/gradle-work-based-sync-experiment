@@ -53,7 +53,18 @@ public final class PortedModels {
         return m;
     }
 
-    public static List<String> all() {
+    /** Requests that only fill IntelliJ's builder context for later builders; they yield no model to deliver. */
+    public static final java.util.Set<String> CONTEXT_ONLY = java.util.Set.of(
+        "com.intellij.gradle.toolingExtension.impl.model.dependencyDownloadPolicyModel.GradleDependencyDownloadPolicy",
+        "com.intellij.gradle.toolingExtension.impl.model.sourceSetArtifactIndex.GradleSourceSetArtifactBuildRequest");
+
+    /** Model class names to capture, in order, context-only requests included. */
+    public static List<String> captureOrder() {
         return PROJECT_MODEL_TASK.values().stream().flatMap(List::stream).toList();
+    }
+
+    /** Model class names the bundles deliver (and the consumer stops requesting from builders). */
+    public static List<String> all() {
+        return captureOrder().stream().filter(n -> !CONTEXT_ONLY.contains(n)).toList();
     }
 }

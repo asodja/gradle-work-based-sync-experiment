@@ -45,8 +45,13 @@ final class ModelCapture {
                     report(modelClassName, project, context, e);
                     continue;
                 }
-                if (model != null) {
+                if (model == null || PortedModels.CONTEXT_ONLY.contains(modelClassName)) {
+                    continue;
+                }
+                try {
                     result.add(serialize(serializer, modelClassName, model));
+                } catch (Exception e) {
+                    report(modelClassName, project, context, e);
                 }
             }
             return result;

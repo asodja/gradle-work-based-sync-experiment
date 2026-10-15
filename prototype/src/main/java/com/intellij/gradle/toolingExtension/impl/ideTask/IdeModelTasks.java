@@ -34,7 +34,7 @@ public final class IdeModelTasks {
             task.getModelFile().set(project.getLayout().getBuildDirectory().file(MODEL_DIR + "/" + IdeProjectModelTask.NAME + ".bin"));
             // Evaluated when the task is realized for the graph, after the project is configured: the same
             // moment the builder runs today. Stored by value in the configuration cache entry.
-            task.getModels().addAll(ModelCapture.payloads(project, PortedModels.all()));
+            task.getModels().addAll(ModelCapture.payloads(project, PortedModels.captureOrder()));
         });
     }
 
