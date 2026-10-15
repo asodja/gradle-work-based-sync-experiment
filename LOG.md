@@ -240,3 +240,12 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   behind `grep … || true`. Fixed; `build-all.sh` now fails loudly and checks that the harness embeds the fresh
   prototype jar. The trace of that old build is still informative: under "Calculate task graph" (19.6 s) sit 3704
   "Resolve dependencies of …" operations (8.7 s) and 36925 task realizations (2.0 s), i.e. the captures ran there.
+- **All-tasks floor, corrected build (`--tasks-only`, 17 models captured at store time, fingerprint input, one JVM):**
+  miss **14.4 s** (projects loaded 6.7 s, graph + store with the captures + 287 executions + bundle read 7.3 s) vs
+  builders 21.9 s; hit **1.9 s**, 287 tasks up to date (two captures of `:core` give identical canonical text and
+  fingerprint for all models); edit of `subprojects/core/build.gradle.kts` **13.1 s** vs builders 14.9 s, entry
+  re-stored in full (no per-project update for a model action, see above), and 272 tasks re-executed because the
+  `ProjectDependencies` model carries per-build node `id`s that change on every recapture; fingerprints now
+  ignore fields named `id`. Housekeeping: every client JVM creates a new CC entry of ~100 MB (whole-action result
+  included); 81 entries had grown to 7.7 GB and were deleted (`.gradle/configuration-cache` of the benchmark
+  worktree); free disk 17 GB.

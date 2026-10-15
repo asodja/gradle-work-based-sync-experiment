@@ -20,17 +20,24 @@ public final class ModelText {
     private ModelText() {
     }
 
+    /** Field names that are per-build identifiers, not content: node ids of the dependency graph model. */
+    private static final java.util.Set<String> VOLATILE_FIELDS = java.util.Set.of("id");
+
     public static String canonical(Object root) {
+        return canonical(root, java.util.Set.of());
+    }
+
+    public static String canonical(Object root, java.util.Set<String> ignoredFields) {
         StringBuilder out = new StringBuilder();
-        write(root, out, 0, new IdentityHashMap<>());
+        write(root, out, 0, new IdentityHashMap<>(), ignoredFields);
         return out.toString();
     }
 
-    /** SHA-256 of the canonical text, hex. */
+    /** SHA-256 of the canonical text without per-build identifier fields, hex. */
     public static String fingerprint(Object root) {
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
-            byte[] digest = md.digest(canonical(root).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            byte[] digest = md.digest(canonical(root, VOLATILE_FIELDS).getBytes(java.nio.charset.StandardCharsets.UTF_8));
             StringBuilder hex = new StringBuilder();
             for (byte b : digest) {
                 hex.append(String.format("%02x", b));
@@ -41,7 +48,7 @@ public final class ModelText {
         }
     }
 
-    private static void write(Object o, StringBuilder out, int depth, IdentityHashMap<Object, Boolean> seen) {
+    private static void write(Object o, StringBuilder out, int depth, IdentityHashMap<Object, Boolean> seen, java.util.Set<String> ignored) {
         if (o == null) {
             out.append("null");
             return;
@@ -61,9 +68,9 @@ public final class ModelText {
             TreeMap<String, String> entries = new TreeMap<>();
             for (Map.Entry<?, ?> e : ((Map<?, ?>) o).entrySet()) {
                 StringBuilder k = new StringBuilder();
-                write(e.getKey(), k, depth + 1, seen);
+                write(e.getKey(), k, depth + 1, seen, ignored);
                 StringBuilder v = new StringBuilder();
-                write(e.getValue(), v, depth + 1, seen);
+                write(e.getValue(), v, depth + 1, seen, ignored);
                 entries.put(k.toString(), v.toString());
             }
             out.append("{\n");
@@ -74,7 +81,7 @@ public final class ModelText {
             Iterable<?> iterable = o instanceof Collection ? (Collection<?>) o : java.util.Arrays.asList((Object[]) o);
             for (Object item : iterable) {
                 StringBuilder b = new StringBuilder();
-                write(item, b, depth + 1, seen);
+                write(item, b, depth + 1, seen, ignored);
                 items.add(b.toString());
             }
             java.util.Collections.sort(items);
@@ -86,7 +93,7 @@ public final class ModelText {
             TreeMap<String, Object> fields = new TreeMap<>();
             for (Class<?> c = o.getClass(); c != null && c != Object.class; c = c.getSuperclass()) {
                 for (Field f : c.getDeclaredFields()) {
-                    if (Modifier.isStatic(f.getModifiers()) || Modifier.isTransient(f.getModifiers())) {
+                    if (Modifier.isStatic(f.getModifiers()) || Modifier.isTransient(f.getModifiers()) || ignored.contains(f.getName())) {
                         continue;
                     }
                     try {
@@ -99,7 +106,7 @@ public final class ModelText {
             }
             for (Map.Entry<String, Object> f : fields.entrySet()) {
                 out.append(indent).append(f.getKey()).append(": ");
-                write(f.getValue(), out, depth + 1, seen);
+                write(f.getValue(), out, depth + 1, seen, ignored);
                 out.append("\n");
             }
             out.append("  ".repeat(depth)).append("}");
