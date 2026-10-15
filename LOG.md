@@ -45,3 +45,16 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   creator wraps `fromBuildModel` in `DefaultConfigurationCache.loadOrCreateModel`: loaded entry → return the
   saved action result, no builders run; miss → run, then save unless the result has failures. `design/context.md`
   §3 corrected accordingly (it previously described only the opt-in per-model cache).
+- **First harness sync of gradle/gradle** (`dedc5d14f2d`, 9.9.0-milestone-2, project defaults CC + IP on, fresh
+  `~/.gradle-wbs` dependency cache, traced): BUILD SUCCESSFUL in 26 min 9 s, harness total 1570 s. Cold with all
+  dependency downloads through the proxy, so a floor only. 4 builds (root + 3 build-logic builds), 287 projects,
+  5755 models, 113 MB serialized: PROJECT_MODEL 287 models / 0.2 MB, SOURCE_SET 287 / 3.1 MB, DEPENDENCY 287 /
+  28.9 MB, ADDITIONAL 4894 / 81 MB (IdeaProject + KotlinDslScriptsModel dominate the bytes). Phase ends (s from
+  action start): projects loaded 124, project model 125, source sets 154, dependencies 1106, additional 1570.
+  Tasks: 27 executed (`checkKotlinCompilerVersion` in build-logic), 271 up-to-date, 66 skipped. No IP problems
+  reported; "Could not resolve Gradle distribution sources" warning; CC entry stored. Per-model table (parallel,
+  overlapping wall time): `results/m0-baseline/first-cold-sync-models.md`. Top by summed fetch time:
+  GradleSourceSetDependencyModel 7250 s (max 623 s, downloads), KotlinGradleModel 868 s, KotlinDslScriptsModel
+  345 s (4 builds), GradleSourceSetModel 162 s, DummyModel 112 s (first request, waits for configuration),
+  GradleBuild 11 s; everything else < 1 s per model summed over 287 projects. Configure project: sum 369 s, root
+  57 s. Operation trace of this sync: 911 MB, 668k operations (too heavy for timed runs, as decided in D3).
