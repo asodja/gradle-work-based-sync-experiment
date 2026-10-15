@@ -37,6 +37,12 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## In flight
 
+- **Open performance problem in task mode**: with all 287 `ideProjectModel` tasks scheduled (including the 33 in
+  the build-logic builds), the warm miss takes 113 s instead of ~25 s; the extra ~100 s is in IntelliJ's
+  ADDITIONAL_MODEL_PHASE (after task execution, which itself takes ~3 s), not in configuration or tasks. With only
+  the 212 root-build tasks scheduled (the lost-update run) the miss was 25 s. Suspect: scheduling tasks in the
+  included builds changes what a later builder does (KotlinDslScriptsModel? IdeaProject?). A traced task-mode run
+  is in flight (session scratchpad `logs/gg-m2d-*`); its per-model table names the slow operation.
 - **M2 end to end**: `prototype/` (task base class `IdeModelTask`, `IdeProjectModelTask`, registration `IdeModelTasks.apply(gradle)`
   from an extra init script, `IdeModelTaskRequestBuilder` scheduling the tasks in the projects-loaded phase) and the
   harness task transport (`--tasks --extra-tooling-jar prototype/build/libs/ide-model-tasks.jar`, `IdeTasksTransport`).
