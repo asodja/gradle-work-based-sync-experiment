@@ -85,6 +85,17 @@ final class IdeTasksTransport implements Serializable {
         }
     }
 
+    private static Object readJava(byte[] bytes) throws IOException, ClassNotFoundException {
+        try (java.io.ObjectInputStream in = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(bytes)) {
+            @Override
+            protected Class<?> resolveClass(java.io.ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+                return Class.forName(desc.getName(), false, IdeTasksTransport.class.getClassLoader());
+            }
+        }) {
+            return in.readObject();
+        }
+    }
+
     /** Build-finished: read the bundles the tasks wrote and hand this phase's models to the consumer. */
     final class FileModelProvider implements ProjectImportModelProvider {
         private final GradleModelFetchPhase phase;
@@ -126,7 +137,9 @@ final class IdeTasksTransport implements Serializable {
                                     continue;
                                 }
                                 Class<?> modelClass = Class.forName(payload.getModelClassName(), true, IdeTasksTransport.class.getClassLoader());
-                                Object model = serializer.read(payload.getBytes(), modelClass);
+                                Object model = ModelPayload.JAVA.equals(payload.getFormat())
+                                    ? readJava(payload.getBytes())
+                                    : serializer.read(payload.getBytes(), modelClass);
                                 if (model != null) {
                                     consumer.consumeProjectModel(project, model, modelClass);
                                 }

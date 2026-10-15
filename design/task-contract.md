@@ -113,7 +113,8 @@ follow-up:
   get a small Ion serializer written the same way, or JSON if that is quicker; record the choice. Ion's
   text writer is the debugging aid: a `-Pide.models.text=true` switch that writes `.ion` text next to the
   binary is cheap and worth having from M2.
-- Java serialization is not used. It ties the file to the tooling classloader and is not inspectable.
+- Java serialization is used only for models without an Ion serializer (DECISIONS D12); it ties those entries to
+  the tooling classloader and is not inspectable, so a real implementation should add Ion serializers for them.
 - Delete the output on failure (a failed task leaves no stale model). The consumer checks the file's
   mtime is after the build start.
 - Shared builder state (`GradleSourceSetArtifactIndex`) becomes either a file the dependent model task

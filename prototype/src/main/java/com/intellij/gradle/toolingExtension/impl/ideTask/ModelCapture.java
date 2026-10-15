@@ -1,12 +1,16 @@
 package com.intellij.gradle.toolingExtension.impl.ideTask;
 
 import com.intellij.gradle.toolingExtension.impl.modelBuilder.DefaultModelBuilderContext;
+import com.intellij.gradle.toolingExtension.impl.modelSerialization.SerializationServiceNotFoundException;
 import com.intellij.gradle.toolingExtension.impl.modelSerialization.ToolingSerializer;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderContext;
 import org.jetbrains.plugins.gradle.tooling.ModelBuilderService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -31,11 +35,23 @@ final class ModelCapture {
             for (String modelClassName : modelClassNames) {
                 Object model = build(modelClassName, project, context);
                 if (model != null) {
-                    result.add(new ModelPayload(modelClassName, SERIALIZER.write(model)));
+                    result.add(serialize(modelClassName, model));
                 }
             }
             return result;
         });
+    }
+
+    private static ModelPayload serialize(String modelClassName, Object model) throws IOException {
+        try {
+            return new ModelPayload(modelClassName, ModelPayload.ION, SERIALIZER.write(model));
+        } catch (SerializationServiceNotFoundException e) {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+                out.writeObject(model);
+            }
+            return new ModelPayload(modelClassName, ModelPayload.JAVA, bytes.toByteArray());
+        }
     }
 
     private static Object build(String modelClassName, Project project, ModelBuilderContext context) {

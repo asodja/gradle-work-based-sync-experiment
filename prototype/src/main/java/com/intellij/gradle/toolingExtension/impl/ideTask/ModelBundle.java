@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Bundle file format: magic, entry count, then per entry the model class name (UTF), the byte length and the
- * bytes. Readable without any IDE class; the consumer picks the serializer by class name.
+ * Bundle file format: magic, entry count, then per entry the model class name (UTF), the format (UTF), the byte
+ * length and the bytes. Readable without any IDE class; the consumer picks the serializer by class name.
  */
 public final class ModelBundle {
 
-    private static final int MAGIC = 0x1DE0_0001;
+    private static final int MAGIC = 0x1DE0_0002;
 
     private ModelBundle() {
     }
@@ -22,6 +22,7 @@ public final class ModelBundle {
         out.writeInt(payloads.size());
         for (ModelPayload payload : payloads) {
             out.writeUTF(payload.getModelClassName());
+            out.writeUTF(payload.getFormat());
             out.writeInt(payload.getBytes().length);
             out.write(payload.getBytes());
         }
@@ -35,9 +36,10 @@ public final class ModelBundle {
         List<ModelPayload> result = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             String className = in.readUTF();
+            String format = in.readUTF();
             byte[] bytes = new byte[in.readInt()];
             in.readFully(bytes);
-            result.add(new ModelPayload(className, bytes));
+            result.add(new ModelPayload(className, format, bytes));
         }
         return result;
     }

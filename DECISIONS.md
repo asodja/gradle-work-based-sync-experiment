@@ -136,3 +136,14 @@ Why: the policy in `design/models-and-effort.md` assumed each port is a rewrite 
 more. Spawning 13 agents for 13 one-line edits would cost more than the edits and fragment the comparison.
 The hard group (`GradleSourceSetDependencyModel`, `KotlinGradleModel`, `ProjectDependencies`) stays with the
 lead session as planned.
+
+### D12: models without an Ion serializer go into the bundle Java-serialized, tagged as such
+
+What: `ModelPayload` carries a format: `ion` for models with an IntelliJ `SerializationService`, `java` for the
+rest (`DefaultDependencyAccessorsModel`, `VersionCatalogsModel`, `IntelliJSettings`, manifest, kapt, ...), which are
+written with `ObjectOutputStream` and read back by the consumer with the IDE classes on its classloader.
+Why: IntelliJ does the same today: `ToolingSerializerConverter.convert` catches
+`SerializationServiceNotFoundException` and passes the object through, and the Tooling API Java-serializes it.
+Writing new Ion serializers for ten tiny models buys nothing for the measurement. `design/task-contract.md`
+("Java serialization is not used") is amended to "not used for models that have an Ion serializer".
+Rejected: small Ion or JSON serializers now (deferred; a real implementation in the fork should add them).
