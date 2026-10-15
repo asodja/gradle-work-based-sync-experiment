@@ -111,12 +111,24 @@ scenarios in `design/measurement.md`.
 - The build operation trace writes every build operation, including "Fetch model '<name>' for <target>",
   to a file: daemon JVM arg `-Dorg.gradle.internal.operations.trace=<path-prefix>`. Zero-code alternative to
   the request logger.
-- A per-model cache exists only under Isolated Projects **and** only when the internal option
-  `org.gradle.internal.isolated-projects.caching` is `tooling` or `true` (default `false`;
-  `BuildModelParametersProvider.kt`, `BuildModelParameters.isCachingModelBuilding`). With gradle/gradle's
-  defaults (IP on, option unset) every builder runs on every sync, in parallel. Without IP, CC does not
-  apply to a model-building invocation at all. A task-based sync is a task run and CC applies. This is
-  the whole thesis; the opt-in IP model cache is the competing feature and is measured as a reference.
+- Two different caches exist for model building, both only under Isolated Projects:
+  1. **Whole-action result cache** (always on under IP, verified 2026-10-15 on the harness fixture): the
+     `BuildTreeLifecycleControllerFactory` in IP mode is `ConfigurationCacheBuildTreeLifecycleControllerFactory`,
+     whose `ConfigurationCacheAwareBuildTreeModelCreator.fromBuildModel` calls
+     `DefaultConfigurationCache.loadOrCreateModel`: on a reused entry the serialized result of the whole
+     build-finished action (IntelliJ's complete `GradleModelHolderState`, streamed values included) is loaded
+     and no builder runs; on a miss the result is saved into the entry unless it has failures
+     (`runAndDiscardEntryOnFailures`). The entry key hashes the serialized action, including the TAPI client
+     classloader UUID, so it is only stable within one client process (`ClientSidePayloadClassLoaderRegistry`).
+  2. **Per-model (intermediate) cache**, opt-in: `org.gradle.internal.isolated-projects.caching=tooling|true`
+     (default `false`; `BuildModelParametersProvider.kt`, `BuildModelParameters.isCachingModelBuilding`) wraps
+     the per-project model requests (`IntermediateModelController`), so after a change only affected projects'
+     models are rebuilt.
+  With gradle/gradle's defaults (IP on, option unset): a no-change re-sync in the same IDE process is served
+  from the entry if the fingerprint still holds; otherwise every builder runs on every sync, in parallel.
+  Without IP, CC does not apply to a model-building invocation at all (`vintageMode` for `isCreatesModel`).
+  A task-based sync is a task run and CC applies with task-level incrementality. So the thesis competes with
+  cache 1 on the no-change case and with cache 2 on the incremental case; both are measured.
 
 ## 4. Pitfalls already hit
 

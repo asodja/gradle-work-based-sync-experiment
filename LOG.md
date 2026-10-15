@@ -40,3 +40,8 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   Consequence for the plan: the headline comparison (scenario 3) is against this whole-action cache, and the
   decisive question becomes what invalidates it on gradle/gradle and how incremental re-sync (scenario 4)
   behaves. To be confirmed on gradle/gradle before applying the M0 gate.
+- Mechanism of the whole-action caching (verified in the pinned source): IP mode registers
+  `ConfigurationCacheBuildTreeLifecycleControllerFactory` (`BuildTreeModelControllerServices.kt`), whose model
+  creator wraps `fromBuildModel` in `DefaultConfigurationCache.loadOrCreateModel`: loaded entry → return the
+  saved action result, no builders run; miss → run, then save unless the result has failures. `design/context.md`
+  §3 corrected accordingly (it previously described only the opt-in per-model cache).
