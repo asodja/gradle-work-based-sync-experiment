@@ -14,7 +14,7 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 - Gradle distribution used for measurements: not yet built
 - IntelliJ Community download for tooling jars: not yet downloaded (`~/tools/ideaIC/`, version here)
 - IntelliJ Community fork: not yet cloned (M3)
-- Disk free at last check: 9.3 GB (2026-10-15)
+- Disk free at last check: 28 GB (2026-10-15, after cleanup)
 
 ## Done
 
@@ -26,7 +26,7 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 ## Next step
 
-1. Reclaim disk per `design/environment.md` items 1–2 and note the result in LOG.md.
+1. Disk already reclaimed (28 GB free); reclaim more per `design/environment.md` only if needed.
 2. Create the benchmark worktree, build the logging distribution, download IntelliJ Community.
 3. Start M0 per `design/plan.md`.
 

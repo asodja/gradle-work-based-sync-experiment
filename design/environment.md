@@ -6,7 +6,7 @@ The experiment runs on this machine unless a milestone is impossible here. Measu
 |---|---|
 | Host | `gradle-ai-workspace`, Ubuntu 26.04, **aarch64** (ARM64), Linux 7.0 |
 | CPU / RAM | 8 cores, 31 GB RAM |
-| Disk | 89 GB total, **9.3 GB free** at the time of writing (see budget below) |
+| Disk | 89 GB total, **28 GB free** after the 2026-10-15 cleanup (see budget below) |
 | JDKs | `/usr/lib/jvm/java-17-openjdk-arm64`, `java-25-openjdk-arm64` (default), `java-8-openjdk-arm64` |
 | Network | outbound HTTPS through a proxy (`JAVA_TOOL_OPTIONS` already carries the proxy settings); github.com and download.jetbrains.com reachable |
 | IntelliJ | **not installed**. Download IntelliJ IDEA Community for Linux aarch64 from download.jetbrains.com into `~/tools/ideaIC/` (≈1.3 GB download, ≈2.5 GB unpacked). Its `plugins/gradle/lib` and `plugins/Kotlin/lib` provide the tooling jars for the harness. |
