@@ -85,3 +85,16 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   map in hash order. The comparison therefore canonicalizes (sorted struct fields, map entries sorted by key;
   `harness` `IonText --canonical`, `prototype/compare-models.sh`). Expected, accepted differences in task mode:
   `GradleTaskModel` and `IdeaProject` list the new `ideProjectModel` task (group "other", not public).
+- **Scenario 6 failure explained (investigator, code-verified on `dedc5d14f2d`, identical to `v9.9.0-M2` in every
+  cited file).** `isolated-projects.caching=tooling` turns on, besides the per-model cache, the per-project
+  component cache (`BuildTreeModelControllerServices.kt:176` → `ConfigurationCacheAwareLocalComponentCache` →
+  `ProjectMetadataController`), which serializes each project's `ImmutableAttributesSchema`. Since `db79ac69208`
+  (2026-07-16) `DefaultCompatibilityRuleChain.createAction` wraps rules in a private `ValidatingAction`, so
+  `ImmutableAttributesSchemaCodec`'s rule branch (`:85-95`) no longer matches and rules are written as opaque beans;
+  the bean's `Instantiator` field is restored by `ServicesCodec` as the global `InstanceGenerator` service
+  (`GlobalScopeServices.java:171-174`, `decorateLenient()`), whose class generator rejects private and final classes
+  (`AsmBackedClassGenerator.java:380-390`). The normal path uses `instantiatorFactory.inject()` which takes the
+  `NoOpBuilder` shortcut. KGP's `KotlinUsages.KotlinUsagesCompatibility` is private → every resolution after a cache
+  load that reaches it fails; any final Kotlin rule class would too. Not fixed on master; `gh search issues` finds
+  nothing (2 queries). Smallest fix: expose the delegate of `ValidatingAction` and match it in the codec's
+  `writeStrategy` (2 jars: dependency-management, dependency-management-serialization-codecs). See DECISIONS D10.

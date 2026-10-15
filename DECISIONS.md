@@ -112,3 +112,17 @@ invalidated part), and 2 × 254 tasks instead of 15 × 254. Consumer-side lookup
 cross-project inputs, which IP forbids anyway.
 Rejected: one task per model (task count, 15 snapshots of the same project); one task per project (a resolution
 failure would lose everything); a model-task-on-model-task dependency for the index (cross-project coupling).
+
+### D10: scenario 6 is measured later on a distribution built from the pinned commit with the codec fix
+
+What: the builder-side incremental competitor (scenario 6) is not measurable on stock 9.9.0-milestone-2 (Gradle
+bug, LOG 2026-10-15). Before M4, build `binDist` from `dedc5d14f2d` plus the two-line fix in
+`ImmutableAttributesSchemaCodec`/`DefaultCompatibilityRuleChain` (and the disambiguation chain), point the benchmark
+worktree's wrapper at it (`design/building.md`) and rerun all scenarios for both versions on that distribution so
+the M4 comparison is same-distribution. Until then the M2 and M3 work continues on milestone-2. The owner is asked
+to file the bug upstream (PROGRESS.md), since it affects everyone who turns the model cache on.
+Why: the fix only changes which instantiator rebuilds a rule after a cache load, not what is cached or how much
+work runs, so timings are unaffected; mixing two patched jars into the milestone-2 distribution would mix
+commits. Measuring only on the fixture would leave the central competitor unmeasured on the benchmark build.
+Rejected: an init-script consumer rule that pre-empts KGP's rule (changes the measured build, fragile); dropping
+scenario 6.

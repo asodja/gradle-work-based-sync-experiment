@@ -47,10 +47,6 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 
 - First (cold) harness sync of gradle/gradle done: 26 min with downloads, LOG 2026-10-15; per-model table in
   `results/m0-baseline/first-cold-sync-models.md`.
-- Investigator subagent looking into the scenario 6 failure (IP per-model cache incremental update fails with
-  "Class KotlinUsages.KotlinUsagesCompatibility is private" on 9.9.0-milestone-2; LOG 2026-10-15). Its answer decides
-  whether scenario 6 can be measured on this distribution, needs a distribution built from the pinned commit, or
-  is a Gradle bug to report.
 - Unexplained, low priority: scenario 3 run 0 (warm miss) took 66 s vs 21–23 s for the other warm misses
   (3-trace, 6-0, 6-trace); it overlapped with a 911 MB trace aggregation.
 
@@ -65,6 +61,12 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
    names in the projects-loaded phase and reads the files in the build-finished phase).
 
 ## Blocked on owner
+
+- **Not blocking, for the owner to file**: Gradle bug found by scenario 6 (LOG 2026-10-15, "Scenario 6 failure
+  explained"): with `-Dorg.gradle.internal.isolated-projects.caching=tooling`, a re-sync after a cache load fails
+  on any private or final attribute compatibility rule class (KGP's `KotlinUsagesCompatibility`), because
+  `ImmutableAttributesSchemaCodec` stopped recognizing rules when `db79ac69208` wrapped them in `ValidatingAction`.
+  Reproducer: `harness/run-scenarios.sh <label> 6` on gradle/gradle. Plan here: D10.
 
 - **Where do the fork branches live?** README deliverable 2 asks for branches `work-based-sync` on the IntelliJ
   Community fork (and the Gradle fork if needed). `asodja/intellij-community` does not exist on GitHub and
