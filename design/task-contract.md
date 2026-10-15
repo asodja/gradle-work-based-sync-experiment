@@ -54,12 +54,39 @@ of code.
   excludes, classes dirs, resources dir, compiler args, toolchain home, isTest) rather than flat maps.
 - No `Project` access in the task action. Services via `@Inject`. This keeps the task CC-compatible.
 
+## Isolated Projects and configuration cache compatibility
+
+gradle/gradle runs with `org.gradle.isolated-projects=true` and `org.gradle.configuration-cache=true`
+(its `gradle.properties`), so the tasks must be IP- and CC-compatible from the first port, not as a
+follow-up:
+
+- Registration from the init script with `gradle.lifecycle.beforeProject` (an `IsolatedAction`), never
+  `allprojects {}` / `subprojects {}`.
+- A task reads only its own project's state at configuration time. No `project.getRootProject()`,
+  `getParent()`, `getAllprojects()`, `project(":x")`, no `evaluationDependsOn`. Cross-project facts the
+  builders read today (e.g. the artifact index across projects) come from another model task's output or
+  from the build-finished consumer that sees all files.
+- No `Project`, `Gradle` or `TaskContainer` captured in task fields or providers. Values are plain or
+  providers derived from the project's own objects; services via `@Inject`. The action must work when
+  the task is deserialized from the CC entry.
+- Verify on gradle/gradle: a sync with `--configuration-cache` and IP on produces no IP violations in
+  the CC report and reuses the entry on the second run. A port is not done until this holds.
+- The consumer side (the IDE provider) only reads files; it has no IP constraints.
+
 ## Output and serialization
 
-- Java serialization of the existing `Default*` model class (`DefaultGradleSourceSetModel`,
-  `DefaultExternalProject`, …). They are `Serializable` already. The consumer deserializes with the
-  tooling extension classloader. If a model is not `Serializable`, IntelliJ's `SerializationService` for
-  that model is the fallback.
+- Use IntelliJ's existing `SerializationService<T>` for the model (Amazon Ion binary, `byte[] write(T,
+  Class)` / `T read(byte[], Class)`, registered in `META-INF/services/…SerializationService`). Thirteen
+  models already have one, including `ExternalProject`, `GradleSourceSetModel`,
+  `GradleSourceSetDependencyModel`, `GradleTaskModel`, `GradleBuildScriptClasspathModel`, repositories,
+  extensions, tests, annotation processing and project dependencies. The task writes `write(model)` to the
+  output file; the consumer calls `read`. The same code path IntelliJ uses for its streamed values, so the
+  format is maintained by JetBrains and independent of the tooling classloader.
+- Models without a serializer (small ones: settings, manifest, catalogs, accessors, download policy, kapt)
+  get a small Ion serializer written the same way, or JSON if that is quicker; record the choice. Ion's
+  text writer is the debugging aid: a `-Pide.models.text=true` switch that writes `.ion` text next to the
+  binary is cheap and worth having from M2.
+- Java serialization is not used. It ties the file to the tooling classloader and is not inspectable.
 - Delete the output on failure (a failed task leaves no stale model). The consumer checks the file's
   mtime is after the build start.
 - Shared builder state (`GradleSourceSetArtifactIndex`) becomes either a file the dependent model task

@@ -54,10 +54,11 @@ Goal: settle the design on the hardest representative before fanning out.
 4. Comparison test: import gradle/gradle (or a 20-project fixture during development), serialize both
    the builder model and the file model, diff field by field.
 
-Exit: gradle/gradle syncs through the harness with `GradleSourceSetModel` from a task, identical content.
-Gate: in the warm CC-on scenario the task is up to date in all 254 projects and the CC entry is reused.
-If not, find out why (an input that fingerprints file contents, a provider capturing `Project`, a task
-dependency that slipped in) before porting anything else.
+Exit: gradle/gradle syncs through the harness with `GradleSourceSetModel` from a task, identical content,
+with the project's own settings (CC + IP on) and no IP problems reported.
+Gate: in the warm IP scenario the task is up to date in all 254 projects and the CC entry is reused.
+If not, find out why (an input that fingerprints file contents, a provider capturing `Project`, a
+cross-project access, a task dependency that slipped in) before porting anything else.
 
 ## M3: port the per-project models (40–60 h, parallelizable)
 

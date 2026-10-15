@@ -166,5 +166,8 @@ Includes `BrokenBuildTaskReference`/`BrokenBuildTaskNode` for cross-build task d
 - IntelliJ resolvers and data services are not changed. Producers and transport only.
 - Transport for the Gradle-side measurement: start-parameter task injection in the projects-loaded phase,
   file read in the build-finished phase. Streaming via task-finish events is M5.
+- File format: IntelliJ's existing Ion-based `SerializationService`s, not Java serialization.
+- Tasks are Isolated-Projects- and configuration-cache-compatible from the first port; gradle/gradle runs
+  with both on, and the baseline on that build is the IP model cache, not uncached builders.
 - Kotlin Multiplatform, Ultimate models, resilient sync, public API: out of scope.
 - Measurements are done with the harness (M1) first; the IDE only confirms at the end (M5).

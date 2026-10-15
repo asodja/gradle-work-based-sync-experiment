@@ -39,5 +39,5 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
 | Gate | Criterion | Outcome | Date |
 |---|---|---|---|
 | after M0 | per-project IntelliJ models sum to > 3 s on warm sync | | |
-| after M2 | task up to date on all 254 projects in warm CC-on run | | |
-| after M4 | warm CC-on task sync faster than today's warm sync by a clear margin | | |
+| after M2 | task up to date on all 254 projects in the warm IP run, no IP problems | | |
+| after M4 | warm IP task sync faster than the warm IP builder sync by the margin fixed in LOG.md | | |

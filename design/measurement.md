@@ -9,6 +9,22 @@ configuration, no model computation, only up-to-date checks and file reads), lar
 cost × projects, parallel execution), and incremental re-sync after a small change. gradle/gradle
 provides the second; the scenarios provide the other two.
 
+## The baseline already caches models: Isolated Projects
+
+gradle/gradle's `gradle.properties` sets `org.gradle.isolated-projects=true`,
+`org.gradle.configuration-cache=true`, `configuration-cache.parallel=true` and `tooling.parallel=true`.
+With IP on, Gradle already caches each project's tooling models in the CC entry
+(`BuildModelParameters.isCachingModelBuilding`) and serves them without configuring the project on a
+warm sync. So on this build the comparison is **tasks vs IP-cached model builders**, and the expected gap
+is smaller than against uncached builders. What tasks can still win: finer invalidation (a task re-runs
+when its inputs change, an IP model is invalidated with its project and anything coupled to it),
+parallel execution through the scheduler, and no model-building phase at all on a full CC hit. What they
+can lose: task scheduling and up-to-date-check overhead for 254 × N tasks, and file reading.
+
+Measure both baselines: IP on (the project's default, the realistic one) and IP off with CC off (the
+"plain" builder path, for the magnitude of the per-project model cost). Report the task version against
+both and say which is which.
+
 ## gradle/gradle as the benchmark
 
 254 projects with a build script, Kotlin DSL throughout, three included builds (`build-logic-settings`,
@@ -28,12 +44,14 @@ Each three times; report median and spread.
 
 | # | Scenario | Setup | What it shows |
 |---|---|---|---|
-| 1 | Cold | `gradle --stop`, CC off | floor, nothing beats it |
-| 2 | Warm | daemon alive from a previous sync, no change, CC off | today's typical re-sync |
-| 3 | Warm + CC | daemon alive, CC on, entry present | headline: task path reuses the entry and skips tasks; builder path cannot use CC |
-| 4 | Incremental | warm, CC on, edit one subproject build script (add a comment to `subprojects/core/build.gradle.kts`), restore after | affected projects only |
+| 1 | Cold | `gradle --stop`, CC off, IP off | floor, nothing beats it |
+| 2 | Warm, plain | daemon alive, no change, CC off, IP off | per-project model cost without any caching |
+| 3 | Warm, IP | daemon alive, no change, CC + IP on (project defaults), entry present | **headline**: builders served from the IP model cache vs tasks up to date from the CC entry |
+| 4 | Incremental, IP | as 3, then edit one subproject build script (add a comment to `subprojects/core/build.gradle.kts`), restore after | invalidation granularity: how much re-runs on each side |
 
-Baseline (model builders) runs all four too; in scenario 3 it behaves like scenario 2, which is the point.
+Both versions run all four. Run each with the project's own `gradle.properties` for 3 and 4, and with
+`--no-configuration-cache -Dorg.gradle.isolated-projects=false` for 1 and 2. A task-version run under
+3 or 4 that reports IP problems is a failed run, not a data point; fix the port first.
 
 ## Metrics
 
