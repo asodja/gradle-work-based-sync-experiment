@@ -41,9 +41,12 @@ previous agent's conversation.
 
 **Rules that are not negotiable**
 
-- Model tasks never depend on other tasks. Use `getLocationOnly()` for file providers
-  and `@Input` strings for paths. The base task class fails if the task has task
-  dependencies. "Sync never builds" is the property the whole experiment rests on.
+- Model tasks never pull build work into the sync: no compilation, jars, code generation
+  or publishing. Use `getLocationOnly()` for file providers and `@Input` strings for
+  paths. Dependencies on other model tasks and on the IDE's own prepare tasks
+  (`prepareKotlinIdeaImport`, `prepareKotlinBuildScriptModel`) are allowed; the base task
+  class fails on any other task dependency and names it. "Sync never builds" is the
+  property the whole experiment rests on; see `design/task-contract.md` for why.
 - IntelliJ resolvers and data services stay untouched. Change producers and transport.
 - Every ported model has a field-by-field comparison test against the builder output
   on a real import. Never weaken a comparison to make a port pass; record the

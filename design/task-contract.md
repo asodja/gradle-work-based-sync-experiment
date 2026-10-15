@@ -22,8 +22,20 @@ of code.
   `<project build dir>/ide/models/<ModelSimpleName>.bin`.
 - `@Internal` project identity captured at configuration time (identity path, project dir) for the
   consumer to key the model.
-- A validation in the constructor's configure step (or a `doFirst` in development builds) that fails if
-  `getTaskDependencies().getDependencies(this)` is non-empty. The message names the offending input.
+- A validation (at graph time via `gradle.taskGraph.whenReady`, or a `doFirst` in development builds)
+  over `getTaskDependencies().getDependencies(this)`: every dependency must be another `IdeModelTask` or
+  one of the IDE's prepare tasks (`prepareKotlinIdeaImport`, `prepareKotlinBuildScriptModel`); anything
+  else fails with the offending task and the input that introduced it.
+
+  Why an allow-list and not a ban: a model task depending on another model task is how shared builder
+  state (the source set artifact index) becomes a file, and the prepare tasks are what IntelliJ already
+  schedules during sync today. Why a ban on everything else: compiling user code during sync is slow,
+  can fail for IDE-unrelated reasons and has side effects; a dependency on `jar` would make the task
+  out of date on every source edit and destroy the warm-sync win; and timings would then compare
+  compilation, not sync. Build logic (`buildSrc`, included plugin builds) is compiled by configuration
+  regardless and is not a violation. Generated source directories are registered as roots without being
+  generated. Project dependencies are mapped to modules by component identity, never by building jars;
+  resolve metadata and lenient artifact views, and never declare a configuration as `@InputFiles`.
 - `@DisableCachingByDefault` initially. Enable the build cache per task later only if inputs are stable
   across machines (they contain absolute paths today).
 
@@ -50,9 +62,9 @@ of code.
   that model is the fallback.
 - Delete the output on failure (a failed task leaves no stale model). The consumer checks the file's
   mtime is after the build start.
-- Shared builder state (`GradleSourceSetArtifactIndex`) becomes either a file the dependent task reads as
-  an `@InputFile` (then it is a real task dependency and allowed as the single exception, documented) or a
-  recomputation in each task. Decide in M2 and record.
+- Shared builder state (`GradleSourceSetArtifactIndex`) becomes either a file the dependent model task
+  reads as an `@InputFile` (a model-task-on-model-task dependency, allowed) or a recomputation in each
+  task. Decide in M2 and record.
 
 ## Warnings and partial models
 
