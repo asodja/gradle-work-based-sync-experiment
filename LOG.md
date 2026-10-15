@@ -112,3 +112,10 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   the builder side (`__$$asciidoctorj_*$$__d/_r` and similar), i.e. configurations created while tasks executed
   (builders run after task execution, the task captures at graph time). Verdict: acceptable, no information lost.
   M2 gate (task up to date in all projects on the warm IP run, entry reused, no IP problems): **passed**.
+- Re-measured task mode on gradle/gradle after the parallel request fix: miss 25.0 s (projects loaded 6.9 s,
+  builders 22–23 s in the same session), hit 1.5 s, entry reused. But only 212 of 287 `ideProjectModel` tasks were
+  scheduled: the per-project requests now run in parallel and `IdeModelTaskRequestBuilder` did an unsynchronized
+  read-modify-write of the root build's `StartParameter.taskNames`, losing updates. Fixed with a lock. Note:
+  `PrepareKotlinIdeaImportTaskModelBuilder` does the same unsynchronized update and IntelliJ requests it in
+  parallel too; with many Kotlin projects it can lose prepare tasks the same way (potential IntelliJ bug, not
+  verified in the IDE).

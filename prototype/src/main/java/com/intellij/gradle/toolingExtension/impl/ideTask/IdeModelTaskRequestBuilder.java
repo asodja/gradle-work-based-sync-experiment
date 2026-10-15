@@ -37,12 +37,18 @@ public final class IdeModelTaskRequestBuilder extends AbstractModelBuilderServic
             while (rootBuild.getParent() != null) {
                 rootBuild = rootBuild.getParent();
             }
-            Set<String> names = new LinkedHashSet<>(rootBuild.getStartParameter().getTaskNames());
-            names.addAll(taskPaths);
-            rootBuild.getStartParameter().setTaskNames(names);
+            // Requests for different projects run in parallel; the read-modify-write of the task names must not
+            // lose updates (PrepareKotlinIdeaImportTaskModelBuilder has the same race).
+            synchronized (LOCK) {
+                Set<String> names = new LinkedHashSet<>(rootBuild.getStartParameter().getTaskNames());
+                names.addAll(taskPaths);
+                rootBuild.getStartParameter().setTaskNames(names);
+            }
         }
         return new DefaultIdeModelTaskRequest(taskPaths, files);
     }
+
+    private static final Object LOCK = new Object();
 
     /** {@code :path:task} in the root build, {@code :buildPath:path:task} in an included build. */
     private static String absoluteTaskPath(Project project, String taskName) {
