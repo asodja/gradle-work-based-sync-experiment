@@ -139,3 +139,5 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   Lesson for the contract: a builder is only capturable as is if it reads no other project's model from the
   context; `javap` scan of the remaining mechanical builders shows no cache use (`ProjectExtensionsDataBuilderImpl`
   and `IntelliJProjectSettingsBuilder` only call `Project.getParent()`).
+- Owner decision: continue with D6 (b), the comparison targets cache misses and incremental re-sync, measured
+  against Gradle's opt-in per-model cache. Scenario 3 (no change) is reported as a tie.

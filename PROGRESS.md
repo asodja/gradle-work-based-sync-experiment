@@ -79,6 +79,17 @@ This machine; details and disk budget in `design/environment.md`. Fill in as thi
   `asodja/gradle` has no such branch (2026-10-15). Assumption while waiting: the prototype is developed in
   `prototype/` of this repo (DECISIONS D7) and moved to the fork for M5 once the owner names it.
 
+- **Not blocking, for the owner to file**: Gradle bug found by scenario 6 (LOG 2026-10-15, "Scenario 6 failure
+  explained"): with `-Dorg.gradle.internal.isolated-projects.caching=tooling`, a re-sync after a cache load fails
+  on any private or final attribute compatibility rule class (KGP's `KotlinUsagesCompatibility`), because
+  `ImmutableAttributesSchemaCodec` stopped recognizing rules when `db79ac69208` wrapped them in `ValidatingAction`.
+  Reproducer: `harness/run-scenarios.sh <label> 6` on gradle/gradle. Plan here: D10.
+
+- **Where do the fork branches live?** README deliverable 2 asks for branches `work-based-sync` on the IntelliJ
+  Community fork (and the Gradle fork if needed). `asodja/intellij-community` does not exist on GitHub and
+  `asodja/gradle` has no such branch (2026-10-15). Assumption while waiting: the prototype is developed in
+  `prototype/` of this repo (DECISIONS D7) and moved to the fork for M5 once the owner names it.
+
 - **Does the experiment continue given the whole-action cache?** Finding: with Gradle 9.9 and gradle/gradle's
   defaults (CC + IP on), a no-change re-sync in the same client JVM is served whole from the configuration cache
   entry: 1.1–2.3 s for 287 projects and 113 MB of models, no builder runs (`results/m0-baseline/3-*.txt`). A

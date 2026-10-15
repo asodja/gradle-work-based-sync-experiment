@@ -47,7 +47,7 @@ based on the matching 253 branch so built plugin jars can be dropped into this i
 Why: it is the current release; `design/context.md` was gathered from master, so paths may differ and are
 verified against the jars before use.
 
-### D6: refocus the comparison on the cache-miss and incremental cases (assumption while the owner question is open)
+### D6: refocus the comparison on the cache-miss and incremental cases (confirmed by the owner, 2026-10-15)
 
 What: scenario 3 (warm, no change, IP on) is kept as a scenario but is no longer the headline: with Gradle 9.9
 under IP, a no-change re-sync in the same client process is served whole from the configuration cache entry
@@ -61,7 +61,7 @@ incremental + model cache), and tasks re-run the affected projects' tasks. The M
 against scenarios 4 and 6 and against the warm miss, not against scenario 3.
 Why: the plan's premise that builders re-run on every warm sync is false for the no-change case; the
 experiment can still answer whether tasks beat the opt-in per-model cache on invalidation, which is the
-remaining open question. The owner is asked to confirm (PROGRESS.md, "Blocked on owner").
+remaining open question. The owner confirmed (b) on 2026-10-15: "b is the most interesting case".
 Rejected: stopping at the M0 gate (the gate's criterion is met on a miss, 48 s summed / ~14 s wall of
 per-project IntelliJ models; it is only moot on a hit).
 
