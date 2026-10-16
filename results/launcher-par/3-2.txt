@@ -1,0 +1,54 @@
+project=/home/agent/projects/gradle-wbs-benchmark
+gradleUserHome=/home/agent/.gradle-wbs
+gradleVersion=9.9.0-milestone-2
+mode=launcher
+arguments=-Didea.active=true -Didea.version=2025.3 -Didea.vendor.name=JetBrains -Didea.gradle.download.sources=false -Didea.sync.active=true -Didea.resolveSourceSetDependencies=true -Didea.parallelModelFetch.enabled=true -Porg.gradle.kotlin.dsl.provider.cid=56507240701005 -Pkotlin.mpp.enableIntransitiveMetadataConfiguration=true --init-script /tmp/wbs-init15598496217374026472/ijMapper.gradle --init-script /tmp/wbs-init15598496217374026472/ijIdeaPluginConfigurator.gradle --init-script /tmp/wbs-init15598496217374026472/ijInit.gradle --init-script /tmp/wbs-init15598496217374026472/ijModelTasks.gradle --no-scan --no-build-cache
+status=OK
+
+# timing (ms from start)
+start                                           0
+buildEnvironment                                3
+actionStart                                    19
+gradleBuild                                    68
+tasksStart                                     69
+tasksEnd                                    11308
+bundlesRead                                 11526
+end                                         11526
+
+total_ms=11526
+stall_max_gap_s=-1
+buildEnvironment_ms=3
+gradleBuild_ms=49
+tasks_ms=11239
+bundlesRead_ms=218
+
+# tasks
+tasks={up-to-date=287}
+
+# models read from bundles (count, bytes)
+ExternalProject                                                287
+IdeaModulePayload                                              287
+GradleSourceSetModel                                           287
+GradleSourceSetDependencyModel                                 287
+ProjectDependencies                                            272
+GradleTaskModel                                                287
+GradleExtensions                                               278
+ExternalTestsModel                                             287
+DependencyAccessorsModel                                       287
+VersionCatalogsModel                                           287
+AnnotationProcessingModel                                      256
+JavaGradleManifestModel                                        287
+RepositoryModels                                               287
+ProjectRepositoriesModel                                       287
+KaptGradleModel                                                287
+KotlinDslScriptPayload                                         287
+IntelliJProjectSettings                                          1
+IntelliJSettings                                                 1
+KotlinGradleModel                                               60
+bundleBytes=196593467 missingBundles=0
+builds=4 projects=287
+
+# configuration cache / problems lines from 3-2.txt.build.log
+Reusing configuration cache.
+BUILD SUCCESSFUL in 11s
+Configuration cache entry reused.

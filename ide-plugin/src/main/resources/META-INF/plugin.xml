@@ -1,0 +1,13 @@
+<idea-plugin>
+  <id>wbs.task-transport</id>
+  <name>WBS Task Transport</name>
+  <vendor>work-based-sync experiment</vendor>
+  <description>Per-project IDE model tasks as the sync transport (work-based sync prototype).</description>
+  <idea-version since-build="253"/>
+  <depends>com.intellij.gradle</depends>
+  <!-- the Kotlin plugin's model classes must be loadable here: Java-serialized Kotlin payloads are read by this plugin -->
+  <depends optional="true" config-file="wbs-kotlin.xml">org.jetbrains.kotlin</depends>
+  <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
+    <projectResolve implementation="wbs.ide.WbsTaskTransportResolverExtension"/>
+  </extensions>
+</idea-plugin>

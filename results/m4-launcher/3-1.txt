@@ -1,0 +1,52 @@
+project=/home/agent/projects/gradle-wbs-benchmark
+gradleUserHome=/home/agent/.gradle-wbs
+gradleVersion=9.9.0-milestone-2
+mode=launcher
+arguments=-Didea.active=true -Didea.version=2025.3 -Didea.vendor.name=JetBrains -Didea.gradle.download.sources=false -Didea.sync.active=true -Didea.resolveSourceSetDependencies=true -Didea.parallelModelFetch.enabled=true -Porg.gradle.kotlin.dsl.provider.cid=20508398725391 -Pkotlin.mpp.enableIntransitiveMetadataConfiguration=true --init-script /tmp/wbs-init9136772179493331067/ijMapper.gradle --init-script /tmp/wbs-init9136772179493331067/ijIdeaPluginConfigurator.gradle --init-script /tmp/wbs-init9136772179493331067/ijInit.gradle --init-script /tmp/wbs-init9136772179493331067/ijModelTasks.gradle --no-scan --no-build-cache
+status=OK
+
+# timing (ms from start)
+start                                           0
+buildEnvironment                                4
+actionStart                                    20
+gradleBuild                                    73
+tasksStart                                     76
+tasksEnd                                     3410
+bundlesRead                                  3995
+end                                          3995
+
+total_ms=3995
+stall_max_gap_s=-1
+buildEnvironment_ms=4
+gradleBuild_ms=53
+tasks_ms=3334
+bundlesRead_ms=585
+
+# tasks
+tasks={up-to-date=287}
+
+# models read from bundles (count, bytes)
+ExternalProject                                                287
+GradleSourceSetModel                                           287
+GradleSourceSetDependencyModel                                 287
+GradleTaskModel                                                287
+GradleExtensions                                               278
+ExternalTestsModel                                             287
+IntelliJProjectSettings                                          1
+IntelliJSettings                                                 1
+DependencyAccessorsModel                                       287
+VersionCatalogsModel                                           287
+JavaGradleManifestModel                                        287
+RepositoryModels                                               287
+ProjectRepositoriesModel                                       287
+KaptGradleModel                                                287
+ProjectDependencies                                            272
+AnnotationProcessingModel                                      256
+KotlinGradleModel                                               60
+bundleBytes=132663991 missingBundles=0
+builds=4 projects=287
+
+# configuration cache / problems lines from 3-1.txt.build.log
+Reusing configuration cache.
+BUILD SUCCESSFUL in 3s
+Configuration cache entry reused.

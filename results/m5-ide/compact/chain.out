@@ -1,0 +1,107 @@
+== part 1: launcher 2026-10-17T01:19:33+00:00
+== compact-coldwarmup 2026-10-17T01:19:33+00:00
+run 1 -> /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58
+Calculating task graph as configuration cache cannot be reused because the build timestamp (from current date) has chang
+[ide-model-tasks] no org.jetbrains.plugins.gradle.model.GradleExtensions for :problems: org.gradle.api.artifacts.Unknown
+> Task :configuration-problems-base:ideProjectModel
+> Task :problems:ideProjectModel
+> Task :problems-api:ideProjectModel
+> Task :problems-impl:ideProjectModel
+bundlesRead                                 22307 bundlesRead_ms=486 
+cc dir: 68 -> 107 MB
+== compact-miss 2026-10-17T01:19:57+00:00
+run 1 -> /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58
+Calculating task graph as no cached configuration is available for tasks: :ideProjectModel :ant:ideProjectModel :ant-api
+[ide-model-tasks] no org.jetbrains.plugins.gradle.model.GradleExtensions for :problems: org.gradle.api.artifacts.Unknown
+> Task :configuration-problems-base:ideProjectModel UP-TO-DATE
+> Task :problems:ideProjectModel UP-TO-DATE
+> Task :problems-api:ideProjectModel UP-TO-DATE
+> Task :problems-rendering:ideProjectModel UP-TO-DATE
+bundlesRead                                 13969 bundlesRead_ms=495 
+cc dir:  -> 39 MB
+overall span 12584 ms, 610679 operations
+     4664 ms  +   294  Configure build
+     7170 ms  +  5018  Store configuration cache state
+      0 ms  +     6  depth 1  Check configuration cache fingerprint
+   4664 ms  +   294  depth 1  Configure build
+   7170 ms  +  5018  depth 1  Store configuration cache state
+     93 ms  + 12197  depth 1  Load configuration cache state
+     56 ms  + 12290  depth 1  Run main tasks
+entry 80708c0f-4c59-4577-9496-f298921ae2b6: 39 MB, strings 2452 KB
+entry dfac700a-4fbb-4f9f-8943-1a32eaaebcfc: 1 MB, strings  KB
+== compact-hit 2026-10-17T01:20:16+00:00
+run 1 -> /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58
+Reusing configuration cache.
+> Task :configuration-problems-base:ideProjectModel UP-TO-DATE
+> Task :problems:ideProjectModel UP-TO-DATE
+> Task :problems-api:ideProjectModel UP-TO-DATE
+> Task :problems-impl:ideProjectModel UP-TO-DATE
+> Task :problems-rendering:ideProjectModel UP-TO-DATE
+bundlesRead                                  2152 bundlesRead_ms=452 
+cc dir: 39 -> 39 MB
+overall span 1222 ms, 1750 operations
+      885 ms  +     6  Check configuration cache fingerprint
+    885 ms  +     6  depth 1  Check configuration cache fingerprint
+    222 ms  +   898  depth 1  Load configuration cache state
+     58 ms  +  1120  depth 1  Run main tasks
+    885 ms  +     6  Check configuration cache fingerprint
+    222 ms  +   898  Load configuration cache state
+     58 ms  +  1120  Run main tasks
+bundles: 287 files, 43060228 bytes
+== delete :core's bundle, hit again (compact): must be recreated
+== compact-recreate 2026-10-17T01:20:20+00:00
+run 1 -> /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58
+Reusing configuration cache.
+> Task :configuration-problems-base:ideProjectModel UP-TO-DATE
+> Task :problems:ideProjectModel UP-TO-DATE
+> Task :problems-impl:ideProjectModel UP-TO-DATE
+> Task :problems-rendering:ideProjectModel UP-TO-DATE
+> Task :problems-api:ideProjectModel UP-TO-DATE
+bundlesRead                                  1607 bundlesRead_ms=448 
+cc dir: 39 -> 39 MB
+core bundle: 226284 bytes
+== bytes-miss 2026-10-17T01:20:22+00:00
+run 1 -> /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58
+Calculating task graph as no cached configuration is available for tasks: :ideProjectModel :ant:ideProjectModel :ant-api
+[ide-model-tasks] no org.jetbrains.plugins.gradle.model.GradleExtensions for :problems: org.gradle.api.artifacts.Unknown
+> Task :configuration-problems-base:ideProjectModel UP-TO-DATE
+> Task :problems:ideProjectModel UP-TO-DATE
+> Task :problems-api:ideProjectModel UP-TO-DATE
+> Task :problems-impl:ideProjectModel UP-TO-DATE
+bundlesRead                                 12897 bundlesRead_ms=489 
+cc dir:  -> 57 MB
+overall span 11633 ms, 620307 operations
+     4207 ms  +   287  Configure build
+     6689 ms  +  4615  Store configuration cache state
+      0 ms  +     5  depth 1  Check configuration cache fingerprint
+   4207 ms  +   287  depth 1  Configure build
+   6689 ms  +  4615  depth 1  Store configuration cache state
+     76 ms  + 11313  depth 1  Load configuration cache state
+     69 ms  + 11389  depth 1  Run main tasks
+entry 5e4dbd4a-c5b5-4ebf-96da-b4227fbc74d2: 56 MB, strings 1248 KB
+entry e2c24cea-af28-4ce1-89e1-8ea16cb21ef2: 1 MB, strings  KB
+== bytes-hit 2026-10-17T01:20:41+00:00
+run 1 -> /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58
+Reusing configuration cache.
+> Task :configuration-problems-base:ideProjectModel UP-TO-DATE
+> Task :problems-rendering:ideProjectModel UP-TO-DATE
+> Task :problems:ideProjectModel UP-TO-DATE
+> Task :problems-impl:ideProjectModel UP-TO-DATE
+> Task :problems-api:ideProjectModel UP-TO-DATE
+bundlesRead                                  2092 bundlesRead_ms=451 
+cc dir: 57 -> 57 MB
+overall span 1195 ms, 1750 operations
+      911 ms  +     6  Check configuration cache fingerprint
+    911 ms  +     6  depth 1  Check configuration cache fingerprint
+    182 ms  +   920  depth 1  Load configuration cache state
+     65 ms  +  1102  depth 1  Run main tasks
+    911 ms  +     6  Check configuration cache fingerprint
+    182 ms  +   920  Load configuration cache state
+     65 ms  +  1102  Run main tasks
+bundles: 287 files, 43060085 bytes
+== fidelity: expanded compact model vs Ion model, canonical text per project
+identical=287 different=0
+compact read errors: 0
+== part 2: IDE restart scenario 2026-10-17T01:20:45+00:00
+installed, patched jars: 4
+== IDE compact run 1 2026-10-17T01:20:46+00:00

@@ -4,7 +4,6 @@ import com.intellij.gradle.toolingExtension.impl.ideTask.IdeModelTasks;
 import com.intellij.gradle.toolingExtension.impl.ideTask.IdeProjectModelTask;
 import com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle;
 import com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload;
-import com.intellij.gradle.toolingExtension.impl.modelSerialization.ToolingSerializer;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnectionException;
 import org.gradle.tooling.ProjectConnection;
@@ -109,36 +108,58 @@ final class LauncherSync {
             throw new IllegalStateException("task run failed", failure.get());
         }
 
-        // 3. Read the bundles here, in the client.
-        for (File bundle : bundles) {
-            if (!bundle.isFile()) {
+        // 3. Read the bundles here, in the client: one bundle per worker, every available core (the bundles are
+        // deflated and most model classes have an Ion reader; both are CPU work, 287 bundles took 2–3 s on one thread).
+        java.util.concurrent.ExecutorService pool = java.util.concurrent.Executors.newFixedThreadPool(
+            Math.max(2, Runtime.getRuntime().availableProcessors()));
+        try {
+            List<java.util.concurrent.Future<?>> reads = new ArrayList<>();
+            for (File bundle : bundles) {
+                reads.add(pool.submit(() -> readBundle(bundle, outcome)));
+            }
+            for (java.util.concurrent.Future<?> read : reads) {
+                read.get();
+            }
+        } finally {
+            pool.shutdown();
+        }
+        t.mark("bundlesRead");
+        return outcome;
+    }
+
+    private static void readBundle(File bundle, Outcome outcome) {
+        if (!bundle.isFile()) {
+            synchronized (outcome) {
                 outcome.missingBundles++;
-                continue;
             }
-            List<ModelPayload> payloads;
-            try (InputStream in = Files.newInputStream(bundle.toPath()); DataInputStream data = new DataInputStream(in)) {
-                payloads = ModelBundle.read(data);
-            } catch (IOException | RuntimeException e) {
+            return;
+        }
+        List<ModelPayload> payloads;
+        try (InputStream in = Files.newInputStream(bundle.toPath()); DataInputStream data = new DataInputStream(in)) {
+            payloads = ModelBundle.read(data);
+        } catch (IOException | RuntimeException e) {
+            synchronized (outcome) {
                 outcome.errors.add(bundle + ": " + e);
-                continue;
             }
-            for (ModelPayload payload : payloads) {
-                try {
-                    Class<?> modelClass = Class.forName(payload.getModelClassName());
-                    Object model = ModelPayload.JAVA.equals(payload.getFormat())
-                        ? IdeTasksTransport.readJava(payload.getBytes())
-                        : new ToolingSerializer().read(payload.getBytes(), modelClass);
-                    if (model != null) {
+            return;
+        }
+        for (ModelPayload payload : payloads) {
+            try {
+                Class<?> modelClass = Class.forName(payload.getModelClassName());
+                Object model = payload.readModel(LauncherSync.class.getClassLoader());
+                int bytes = payload.getLength();
+                if (model != null) {
+                    synchronized (outcome) {
                         outcome.modelsPerClass.merge(modelClass.getSimpleName(), 1, Integer::sum);
-                        outcome.bytes += payload.getBytes().length;
+                        outcome.bytes += bytes;
                     }
-                } catch (Exception e) {
+                }
+            } catch (Exception e) {
+                synchronized (outcome) {
                     outcome.errors.add(bundle + " " + payload.getModelClassName() + ": " + e);
                 }
             }
         }
-        t.mark("bundlesRead");
-        return outcome;
     }
 
     /** {@code :name} for an included build: the build path is its root dir name relative to the root build's includes. */

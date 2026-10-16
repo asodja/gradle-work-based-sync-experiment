@@ -1,0 +1,50 @@
+overall span 14153 ms, 662295 operations
+  14146 ms  +     0  Run build
+      553 ms  +    45  Fetch model 'org.gradle.tooling.model.gradle.GradleBuild' for default scope
+        553 ms  +    45  Build model 'org.gradle.tooling.model.gradle.GradleBuild' for build ':'
+     5754 ms  +   603  Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' for default scope
+       5753 ms  +   603  Configure build
+      705 ms  +  6455  Run nested tooling build actions (287)
+        437 ms  +  6640  Tooling API client action
+      636 ms  +  7160  Run nested tooling build actions (287)
+     2780 ms  +  7832  Run nested tooling build actions (287)
+        300 ms  +  7833  Tooling API client action
+        303 ms  +  8534  Tooling API client action
+        476 ms  +  9202  Tooling API client action
+        846 ms  +  9556  Tooling API client action
+        303 ms  + 10309  Tooling API client action
+      499 ms  + 10997  Run nested tooling build actions (287)
+        359 ms  + 11020  Tooling API client action
+        357 ms  + 11023  Tooling API client action
+        315 ms  + 11064  Tooling API client action
+      343 ms  + 11499  Fetch model 'org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel' for project scope
+        343 ms  + 11499  Build model 'org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel' for root project 'gradle'
+      510 ms  + 12944  Fetch model 'org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel' for project scope
+        510 ms  + 12944  Build model 'org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel' for project ':plugin-use'
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)
+
+-- Fetch model 'org.gradle.tooling.model.gradle.GradleBuild' for default scope (553 ms)
+       553 ms sum      1x  wall    553 ms  Build model * for build *
+
+-- Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' fo (5754 ms)
+      5753 ms sum      1x  wall   5753 ms  Configure build
+         1 ms sum      1x  wall      1 ms  Build model * for root project *
+
+-- Run nested tooling build actions (287) (705 ms)
+      5566 ms sum    287x  wall    705 ms  Tooling API client action
+
+-- Run nested tooling build actions (287) (636 ms)
+      4692 ms sum    287x  wall    636 ms  Tooling API client action
+
+-- Run nested tooling build actions (287) (2780 ms)
+     23997 ms sum    287x  wall   2780 ms  Tooling API client action
+
+-- Run nested tooling build actions (287) (499 ms)
+      4001 ms sum    287x  wall    498 ms  Tooling API client action
+
+-- Fetch model 'org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel' for project scope (343 ms)
+       343 ms sum      1x  wall    343 ms  Build model * for root project *
+
+-- Fetch model 'org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel' for proje (510 ms)
+       510 ms sum      1x  wall    510 ms  Build model * for project *

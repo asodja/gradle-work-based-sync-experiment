@@ -1,0 +1,78 @@
+overall span 12968 ms, 610569 operations
+  12963 ms  +     0  Run build
+      319 ms  +     8  Load build
+     5420 ms  +   328  Configure build
+        457 ms  +   375  Configure build (:build-logic)
+        581 ms  +   832  Parallelize configuration
+        440 ms  +  1413  Parallelize configuration
+        440 ms  +  1413  Parallelize configuration
+        441 ms  +  1413  Parallelize configuration
+        473 ms  +  1413  Parallelize configuration
+        485 ms  +  1413  Parallelize configuration
+        536 ms  +  1413  Parallelize configuration
+        606 ms  +  1414  Parallelize configuration
+        436 ms  +  1417  Parallelize configuration
+        435 ms  +  1418  Parallelize configuration
+        611 ms  +  1856  Parallelize configuration
+        307 ms  +  2546  Parallelize configuration
+        750 ms  +  2736  Parallelize configuration
+       1045 ms  +  4703  Notify projectsEvaluated listeners
+     6771 ms  +  5807  Store configuration cache state
+        449 ms  +  5815  Storing configuration for :ant-worker
+        451 ms  +  5815  Storing configuration for :ant
+        483 ms  +  5815  Storing configuration for :ant-api
+        920 ms  +  5815  Storing configuration for :ant-impl
+        922 ms  +  5815  Storing configuration for :antlr
+        452 ms  +  5816  Storing configuration for :architecture-test
+        466 ms  +  5816  Storing configuration for :api-metadata
+        414 ms  +  5874  Storing configuration for :base-asm
+        471 ms  +  6264  Storing configuration for :base-diagnostics
+        409 ms  +  6266  Storing configuration for :base-ide-plugins
+        465 ms  +  6271  Storing configuration for :base-services
+        451 ms  +  6288  Storing configuration for :build-cache
+        311 ms  +  6739  Storing configuration for :build-init
+        390 ms  +  7050  Storing configuration for :code-quality
+        930 ms  +  7074  Storing configuration for :configuration-cache
+        449 ms  +  7218  Storing configuration for :core
+        473 ms  +  7629  Storing configuration for :declarative-dsl-provider
+        748 ms  +  7676  Storing configuration for :dependency-management
+        825 ms  +  7903  Storing configuration for :docs
+        462 ms  +  8102  Storing configuration for :enterprise-plugin-performance
+        358 ms  +  8109  Storing configuration for :execution
+        317 ms  +  8809  Storing configuration for :integ-test
+        303 ms  +  9215  Storing configuration for :java-platform
+        304 ms  +  9254  Storing configuration for :kotlin-dsl
+        334 ms  +  9286  Storing configuration for :kotlin-dsl-integ-tests
+        430 ms  +  9382  Storing configuration for :kotlin-dsl-tooling-builders
+        330 ms  +  9660  Storing configuration for :model-core
+        340 ms  +  9660  Storing configuration for :maven
+        527 ms  +  9879  Storing configuration for :performance
+        332 ms  +  9926  Storing configuration for :platform-base
+        323 ms  +  9933  Storing configuration for :platform-jvm
+        666 ms  + 10022  Storing configuration for :plugins-application
+        360 ms  + 10039  Storing configuration for :plugins-groovy
+       1123 ms  + 10256  Storing configuration for :plugins-java
+        304 ms  + 10260  Storing configuration for :plugins-java-library
+        353 ms  + 10293  Storing configuration for :plugins-model-native
+        378 ms  + 10517  Storing configuration for :precondition-tester
+        314 ms  + 10535  Storing configuration for :problems
+        740 ms  + 11062  Storing configuration for :scala
+        316 ms  + 11583  Storing configuration for :testing-native
+        446 ms  + 11633  Storing configuration for :toolchains-jvm
+        377 ms  + 11714  Storing configuration for :tooling-api
+        354 ms  + 11771  Storing configuration for :tooling-native
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)
+
+-- Configure build (5420 ms)
+     27552 ms sum    254x  wall   3871 ms  Parallelize configuration
+      1045 ms sum      1x  wall   1045 ms  Notify projectsEvaluated listeners
+       457 ms sum      1x  wall    457 ms  Configure build *
+        35 ms sum      1x  wall     35 ms  Load projects
+         2 ms sum      1x  wall      2 ms  Notify projectsLoaded listeners
+         0 ms sum      4x  wall      5 ms  Execute container callback action
+
+-- Store configuration cache state (6771 ms)
+     57101 ms sum    287x  wall   6761 ms  Storing configuration for *
+         1 ms sum      1x  wall      1 ms  Storing configuration for build
+         1 ms sum      3x  wall    252 ms  Storing configuration for build*

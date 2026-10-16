@@ -1,0 +1,91 @@
+project=/home/agent/projects/gradle-wbs-benchmark
+gradleUserHome=/home/agent/.gradle-wbs
+gradleVersion=9.9.0-milestone-2
+ideaHome=/home/agent/tools/ideaIC/idea-IU-253.28294.334
+arguments=-Didea.active=true -Didea.version=2025.3 -Didea.vendor.name=JetBrains -Didea.gradle.download.sources=false -Didea.sync.active=true -Didea.resolveSourceSetDependencies=true -Didea.parallelModelFetch.enabled=true -Porg.gradle.kotlin.dsl.provider.cid=49072671022719 -Pkotlin.mpp.enableIntransitiveMetadataConfiguration=true --init-script /tmp/wbs-init11718676052161546741/ijMapper.gradle --init-script /tmp/wbs-init11718676052161546741/ijIdeaPluginConfigurator.gradle --init-script /tmp/wbs-init11718676052161546741/ijInit.gradle --init-script /tmp/wbs-init11718676052161546741/ijModelTasks.gradle --no-scan --no-build-cache
+jvmArgs=
+streaming=true parallelFetch=true
+status=OK
+
+# resolver extensions
+OK org.jetbrains.kotlin.idea.gradleJava.testing.KotlinTestTasksResolver -> []
+OK org.jetbrains.plugins.gradle.service.telemetry.GradleOpenTelemetryResolverExtension -> []
+OK org.jetbrains.plugins.gradle.service.project.MavenRepositoriesProjectResolver -> [ProjectModel(org.jetbrains.plugins.gradle.model.RepositoryModels)]
+OK org.jetbrains.plugins.gradle.service.project.JavaGradleManifestResolver -> [ProjectModel(org.jetbrains.plugins.gradle.javaModel.JavaGradleManifestModel)]
+OK org.jetbrains.plugins.gradle.service.project.ProjectRepositoriesResolver -> [ProjectModel(com.intellij.gradle.toolingExtension.model.repositoryModel.ProjectRepositoriesModel)]
+OK org.jetbrains.kotlin.idea.compilerPlugin.parcelize.gradleJava.ParcelizeProjectResolverExtension -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.parcelize.ParcelizeGradleModel)]
+OK org.jetbrains.kotlin.idea.compilerPlugin.allopen.gradleJava.AllOpenProjectResolverExtension -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.allopen.AllOpenModel), ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.annotation.AnnotationBasedPluginModel)]
+OK org.jetbrains.kotlin.idea.compilerPlugin.kapt.gradleJava.KaptProjectResolverExtension -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel)]
+OK org.jetbrains.kotlin.idea.compilerPlugin.noarg.gradleJava.NoArgProjectResolverExtension -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.noarg.NoArgModel), ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.annotation.AnnotationBasedPluginModel)]
+OK org.jetbrains.kotlin.idea.compilerPlugin.samWithReceiver.gradleJava.SamWithReceiverProjectResolverExtension -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.samWithReceiver.SamWithReceiverModel), ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.annotation.AnnotationBasedPluginModel)]
+OK org.jetbrains.kotlin.idea.compilerPlugin.assignment.gradleJava.AssignmentProjectResolverExtension -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.assignment.AssignmentModel), ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.annotation.AnnotationBasedPluginModel)]
+OK org.jetbrains.kotlin.idea.compilerPlugin.lombok.gradleJava.LombokGradleProjectResolverExtension -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.lombok.LombokModel)]
+OK org.jetbrains.kotlin.idea.gradleJava.configuration.PrepareKotlinIdeImportTaskResolver -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.PrepareKotlinIdeImportTaskModel)]
+OK org.jetbrains.kotlin.idea.gradleJava.configuration.KotlinGradleProjectResolverExtension -> [org.jetbrains.kotlin.idea.gradleTooling.AndroidAwareGradleModelProvider@27508c5d]
+OK org.jetbrains.kotlin.gradle.scripting.shared.importing.KotlinDslScriptModelResolver -> [BuildModel(org.jetbrains.kotlin.idea.gradleTooling.KotlinDslScriptAdditionalTask), org.jetbrains.kotlin.idea.gradleTooling.KotlinDslScriptModelProvider@4f704591]
+OK org.jetbrains.plugins.gradle.service.project.JavaGradleProjectResolver -> [ProjectModel(com.intellij.openapi.externalSystem.model.project.dependencies.ProjectDependencies), ProjectModel(org.jetbrains.plugins.gradle.model.AnnotationProcessingModel)]
+OK org.jetbrains.kotlin.idea.gradleJava.configuration.KotlinMppGradleProjectResolver -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.KotlinMPPGradleModel), ProjectModel(org.jetbrains.kotlin.idea.projectModel.KotlinTarget), ProjectModel(org.jetbrains.kotlin.gradle.idea.tcs.IdeaKotlinDependency), ProjectModel(org.jetbrains.kotlin.tooling.core.Extras)]
+OK org.jetbrains.kotlin.idea.gradleJava.configuration.kpm.KotlinKPMGradleProjectResolver -> [org.jetbrains.kotlin.idea.gradleTooling.IdeaKpmProjectProvider@47d90b9e]
+OK com.jetbrains.kotlin.commonNative.gradle.KonanTargetProjectResolver -> [ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.KotlinMPPGradleModel), ProjectModel(org.jetbrains.kotlin.idea.projectModel.KotlinTarget)]
+OK org.jetbrains.plugins.gradle.service.project.CommonGradleProjectResolverExtension -> [ProjectModel(org.jetbrains.plugins.gradle.model.GradleExtensions), ProjectModel(org.jetbrains.plugins.gradle.model.tests.ExternalTestsModel), ProjectModel(org.jetbrains.plugins.gradle.model.IntelliJProjectSettings), ProjectModel(org.jetbrains.plugins.gradle.model.IntelliJSettings), ProjectModel(org.jetbrains.plugins.gradle.model.DependencyAccessorsModel), ProjectModel(org.jetbrains.plugins.gradle.model.VersionCatalogsModel), BuildModel(org.gradle.tooling.model.idea.IdeaProject), com.intellij.gradle.toolingExtension.impl.model.sourceSetModel.GradleSourceSetModelProvider@4b5189ac, com.intellij.gradle.toolingExtension.impl.model.sourceSetDependencyModel.GradleSourceSetDependencyModelProvider@1e4d3ce5, com.intellij.gradle.toolingExtension.impl.model.projectModel.GradleExternalProjectModelProvider@3ddc6915, com.intellij.gradle.toolingExtension.impl.model.taskModel.GradleTaskModelProvider@704deff2, com.intellij.gradle.toolingExtension.impl.model.buildScriptClasspathModel.GradleBuildScriptClasspathModelProvider@379614be]
+OK org.jetbrains.plugins.gradle.service.project.BaseResolverExtension -> []
+TASKS-ONLY MODE: removed all 39 providers; added [wbs.harness.IdeTasksTransport$RequestProvider@404bbcbd, wbs.harness.IdeTasksTransport$FileModelProvider@1e81f160, wbs.harness.IdeTasksTransport$FileModelProvider@1acaf3d, wbs.harness.IdeTasksTransport$FileModelProvider@6986852, wbs.harness.IdeTasksTransport$FileModelProvider@1bab8268]
+
+# timing (ms from start)
+start                                           0
+buildEnvironment                                3
+actionStart                                    30
+streamed:PROJECT_LOADED_PHASE                7563
+projectsLoaded                               7563
+streamed:PROJECT_MODEL_PHASE                 7565
+streamed:SOURCE_SET_MODEL_PHASE              7567
+streamed:DEPENDENCY_MODEL_PHASE              7576
+streamed:ADDITIONAL_MODEL_PHASE              7736
+buildFinished                                7737
+end                                          7738
+
+total_ms=7738
+stall_max_gap_s=-1
+buildEnvironment_ms=3
+action_ms=7708
+toProjectsLoaded_ms=7533
+projectsLoadedToBuildFinished_ms=174
+afterBuildFinished_ms=1
+
+# tasks
+tasks={up-to-date=287}
+
+# models per phase (count, serialized bytes)
+PROJECT_LOADED_PHASE         models=0     bytes=0
+PROJECT_MODEL_PHASE          models=574   bytes=210552
+SOURCE_SET_MODEL_PHASE       models=287   bytes=3089346
+DEPENDENCY_MODEL_PHASE       models=287   bytes=28859768
+ADDITIONAL_MODEL_PHASE       models=3451  bytes=63329453
+
+# models per class
+AnnotationProcessingModel-271669493                                                                    256    1207917
+DependencyAccessorsModel-1829422908                                                                    287          0
+ExternalProject-1310207950                                                                             287     210552
+ExternalTestsModel-1466771012                                                                          287    1436332
+GradleExtensions1020684503                                                                             278      70862
+GradleSourceSetDependencyModel-626173734                                                               287   28859768
+GradleSourceSetModel-1524096923                                                                        287    3089346
+GradleTaskModel2056544129                                                                              287    9019532
+IdeaModulePayload1995813690                                                                            287          0
+IntelliJProjectSettings-533912855                                                                        1          0
+IntelliJSettings-1189957578                                                                              1          0
+JavaGradleManifestModel-1597729901                                                                     287          0
+KaptGradleModel-1145720784                                                                             287          0
+KotlinDslScriptPayload-52693864                                                                        287          0
+KotlinGradleModel1730809738                                                                             60          0
+ProjectDependencies-1040615965                                                                         272   51587637
+ProjectRepositoriesModel1725750680                                                                     287          0
+RepositoryModels533226352                                                                              287       7173
+VersionCatalogsModel-1186359053                                                                        287          0
+
+builds=4 projects=287
+
+# configuration cache / problems lines from 3-3.txt.build.log
+Reusing configuration cache.
+BUILD SUCCESSFUL in 7s
+Configuration cache entry reused.

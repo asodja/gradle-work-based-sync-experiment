@@ -1,0 +1,9 @@
+287 bundles, formats {'ion': 2528, 'java': 3506, 'compact-deps': 287} stored bytes total 42.1 MB
+ProjectDependencies                        272 payloads  inflated   49.3 MB  stored  14.3 MB
+KotlinDslScriptPayload                     287 payloads  inflated   42.3 MB  stored  11.0 MB
+GradleSourceSetDependencyModel             287 payloads  inflated   30.4 MB  stored   7.1 MB
+GradleBuildScriptClasspathModel            287 payloads  inflated   15.0 MB  stored   4.0 MB
+GradleTaskModel                            287 payloads  inflated    9.0 MB  stored   2.1 MB
+GradleExtensions                           278 payloads  inflated    2.3 MB  stored   0.8 MB
+GradleSourceSetModel                       287 payloads  inflated    3.1 MB  stored   0.7 MB
+AnnotationProcessingModel                  256 payloads  inflated    1.2 MB  stored   0.5 MB

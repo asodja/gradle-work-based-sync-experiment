@@ -4,7 +4,6 @@ import com.intellij.gradle.toolingExtension.impl.ideTask.IdeModelTaskRequest;
 import com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle;
 import com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload;
 import com.intellij.gradle.toolingExtension.impl.ideTask.PortedModels;
-import com.intellij.gradle.toolingExtension.impl.modelSerialization.ToolingSerializer;
 import com.intellij.gradle.toolingExtension.impl.util.GradleModelProviderUtil;
 import com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase;
 import org.gradle.tooling.BuildController;
@@ -85,6 +84,8 @@ final class IdeTasksTransport implements Serializable {
         }
     }
 
+
+    /** Java-deserialized Tooling API model bytes (the dump comparisons). */
     static Object readJava(byte[] bytes) throws IOException, ClassNotFoundException {
         try (java.io.ObjectInputStream in = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(bytes)) {
             @Override
@@ -144,11 +145,7 @@ final class IdeTasksTransport implements Serializable {
                             // One entry that does not deserialize must not lose the others.
                             try {
                                 Class<?> modelClass = Class.forName(payload.getModelClassName(), true, IdeTasksTransport.class.getClassLoader());
-                                // A fresh serializer per read: IntelliJ's Ion readers keep an object table across read()
-                                // calls of one instance and return the previous document's objects for repeated ids.
-                                Object model = ModelPayload.JAVA.equals(payload.getFormat())
-                                    ? readJava(payload.getBytes())
-                                    : new ToolingSerializer().read(payload.getBytes(), modelClass);
+                                Object model = payload.readModel(IdeTasksTransport.class.getClassLoader());
                                 if (model != null) {
                                     consumer.consumeProjectModel(project, model, modelClass);
                                 }

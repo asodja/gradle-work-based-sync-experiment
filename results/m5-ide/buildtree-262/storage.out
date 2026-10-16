@@ -1,0 +1,11 @@
+== tree 2026-10-17T14:48:36+00:00
+exit 0
+2026-10-17 14:49:10,962 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 32 s 189 ms
+storage files: 1370
+== model 2026-10-17T14:50:09+00:00
+exit 0
+2026-10-17 14:50:41,211 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 29 s 269 ms
+storage files: 1370
+same=1370 different=0 only-in-A=0 only-in-B=0
+differing or missing files: 0
+== storage check done 2026-10-17T14:51:42+00:00

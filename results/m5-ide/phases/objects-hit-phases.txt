@@ -1,0 +1,24 @@
+overall span 2467 ms, 1750 operations
+   2465 ms  +     0  Run build
+      443 ms  +     5  Check configuration cache fingerprint
+     1875 ms  +   452  Load configuration cache state
+
+== every operation whose name mentions the task graph, task execution or the configuration cache (any duration)
+    443 ms  +     5  depth 1  Check configuration cache fingerprint
+   1875 ms  +   452  depth 1  Load configuration cache state
+    112 ms  +  2327  depth 1  Run main tasks
+    107 ms  +  2331  depth 2  Run tasks
+
+== direct children of the root operation (all, >= 50 ms)
+    443 ms  +     5  Check configuration cache fingerprint
+   1875 ms  +   452  Load configuration cache state
+    112 ms  +  2327  Run main tasks
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)
+
+-- Load configuration cache state (1875 ms)
+      5074 ms sum    287x  wall    680 ms  Loading configuration for *
+         5 ms sum      1x  wall      5 ms  Calculate build tree task graph
+         1 ms sum      1x  wall      1 ms  Loading configuration for build
+         1 ms sum      3x  wall     22 ms  Loading configuration for build*
+         0 ms sum      1x  wall      0 ms  Finalize build cache configuration

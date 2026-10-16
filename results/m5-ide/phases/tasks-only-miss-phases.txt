@@ -1,0 +1,53 @@
+overall span 15942 ms, 611538 operations
+  15937 ms  +     0  Run build
+      353 ms  +    45  Fetch model 'org.gradle.tooling.model.gradle.GradleBuild' for default scope
+        353 ms  +    45  Build model 'org.gradle.tooling.model.gradle.GradleBuild' for build ':'
+     6935 ms  +   402  Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' for default scope
+       6934 ms  +   402  Configure build
+     6165 ms  +  7458  Store configuration cache state
+        603 ms  +  7470  Storing configuration for :ant-impl
+        606 ms  +  7471  Storing configuration for :antlr
+        335 ms  +  7737  Storing configuration for :base-diagnostics
+        307 ms  +  7739  Storing configuration for :base-services
+        339 ms  +  7910  Storing configuration for :build-cache-http
+        343 ms  +  8044  Storing configuration for :build-configuration
+        351 ms  +  8078  Storing configuration for :build-init
+        383 ms  +  8384  Storing configuration for :classpath
+        329 ms  +  8410  Storing configuration for :code-quality
+        307 ms  +  8429  Storing configuration for :composite-builds
+        629 ms  +  8511  Storing configuration for :configuration-cache
+        544 ms  +  8650  Storing configuration for :core
+        423 ms  +  9109  Storing configuration for :declarative-dsl-provider
+        512 ms  +  9140  Storing configuration for :dependency-management
+        432 ms  +  9332  Storing configuration for :docs-asciidoctor-extensions
+        460 ms  +  9592  Storing configuration for :enterprise-plugin-performance
+        380 ms  + 10149  Storing configuration for :integ-test
+        311 ms  + 10151  Storing configuration for :internal-distribution-testing
+        310 ms  + 10332  Storing configuration for :ivy
+        343 ms  + 10576  Storing configuration for :kotlin-dsl
+        348 ms  + 10639  Storing configuration for :kotlin-dsl-tooling-builders
+        759 ms  + 10853  Storing configuration for :docs
+        457 ms  + 10919  Storing configuration for :maven
+        380 ms  + 11152  Storing configuration for :platform-jvm
+        427 ms  + 11178  Storing configuration for :performance
+        303 ms  + 11204  Storing configuration for :platform-native
+        416 ms  + 11376  Storing configuration for :plugins-application
+        576 ms  + 11507  Storing configuration for :plugins-java
+       1074 ms  + 12252  Storing configuration for :scala
+        301 ms  + 12429  Storing configuration for :software-diagnostics
+        345 ms  + 12693  Storing configuration for :toolchains-jvm
+        478 ms  + 12730  Storing configuration for :tooling-api
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)
+
+-- Fetch model 'org.gradle.tooling.model.gradle.GradleBuild' for default scope (353 ms)
+       353 ms sum      1x  wall    353 ms  Build model * for build *
+
+-- Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' fo (6935 ms)
+      6934 ms sum      1x  wall   6934 ms  Configure build
+         1 ms sum      1x  wall      1 ms  Build model * for root project *
+
+-- Store configuration cache state (6165 ms)
+     51269 ms sum    287x  wall   6151 ms  Storing configuration for *
+         1 ms sum      1x  wall      1 ms  Storing configuration for build
+         1 ms sum      3x  wall    172 ms  Storing configuration for build*

@@ -1,0 +1,112 @@
+overall span 14801 ms, 377598 operations
+  14796 ms  +     0  Run build
+     2957 ms  +     7  Load build
+       1689 ms  +     7  Run init scripts
+        939 ms  +  1696  Evaluate settings
+        314 ms  +  2650  Load build (:build-logic)
+    11646 ms  +  2964  Configure build
+        648 ms  +  3008  Configure build (:build-logic)
+        542 ms  +  3656  Parallelize configuration
+        528 ms  +  4198  Parallelize configuration
+        531 ms  +  4198  Parallelize configuration
+        537 ms  +  4198  Parallelize configuration
+        537 ms  +  4198  Parallelize configuration
+        551 ms  +  4198  Parallelize configuration
+        661 ms  +  4198  Parallelize configuration
+        673 ms  +  4198  Parallelize configuration
+        520 ms  +  4199  Parallelize configuration
+        636 ms  +  4200  Parallelize configuration
+        446 ms  +  4735  Parallelize configuration
+        568 ms  +  4749  Parallelize configuration
+        441 ms  +  4770  Parallelize configuration
+        405 ms  +  4859  Parallelize configuration
+        501 ms  +  4914  Parallelize configuration
+        302 ms  +  5532  Parallelize configuration
+        305 ms  +  5715  Parallelize configuration
+        447 ms  +  5854  Parallelize configuration
+        392 ms  +  5949  Parallelize configuration
+        332 ms  +  5954  Parallelize configuration
+        338 ms  +  5970  Parallelize configuration
+        313 ms  +  6301  Parallelize configuration
+        555 ms  +  6562  Parallelize configuration
+        440 ms  +  6568  Parallelize configuration
+        478 ms  +  6614  Parallelize configuration
+        380 ms  +  6617  Parallelize configuration
+        366 ms  +  6893  Parallelize configuration
+        390 ms  +  6900  Parallelize configuration
+        428 ms  +  6967  Parallelize configuration
+        763 ms  +  7117  Parallelize configuration
+        348 ms  +  7291  Parallelize configuration
+        400 ms  +  7501  Parallelize configuration
+        343 ms  +  8404  Parallelize configuration
+        302 ms  +  8432  Parallelize configuration
+        567 ms  +  8931  Parallelize configuration
+        507 ms  +  8942  Parallelize configuration
+        529 ms  +  8968  Parallelize configuration
+        404 ms  +  8991  Parallelize configuration
+        415 ms  +  9702  Parallelize configuration
+        304 ms  +  9914  Parallelize configuration
+        360 ms  + 10213  Parallelize configuration
+        335 ms  + 10458  Parallelize configuration
+        360 ms  + 11116  Parallelize configuration
+        336 ms  + 11134  Parallelize configuration
+        303 ms  + 11347  Parallelize configuration
+        455 ms  + 11666  Parallelize configuration
+       2251 ms  + 12359  Notify projectsEvaluated listeners
+
+== every operation whose name mentions the task graph, task execution or the configuration cache (any duration)
+      0 ms  +     6  depth 1  Check configuration cache fingerprint
+   2957 ms  +     7  depth 1  Load build
+    192 ms  +  1700  depth 5  Load build (:build-logic-settings)
+    677 ms  +  1892  depth 5  Configure build (:build-logic-settings)
+     43 ms  +  2584  depth 7  Run tasks (:build-logic-settings)
+    314 ms  +  2650  depth 2  Load build (:build-logic)
+    305 ms  +  2653  depth 6  Configure build (:build-logic-commons)
+  11646 ms  +  2964  depth 1  Configure build
+    648 ms  +  3008  depth 2  Configure build (:build-logic)
+     61 ms  +  3042  depth 9  Run tasks (:build-logic-commons)
+     29 ms  +  3347  depth 5  Notify afterEvaluate listeners of :build-logic:cleanup
+     75 ms  +  3682  depth 9  Calculate task graph (:build-logic)
+     76 ms  +  3682  depth 8  Calculate build tree task graph
+    162 ms  +  3758  depth 8  Run tasks (:build-logic)
+     39 ms  +  4208  depth 9  Calculate task graph (:build-logic)
+     43 ms  +  4208  depth 8  Calculate build tree task graph
+     22 ms  +  4251  depth 8  Run tasks (:build-logic-commons)
+    119 ms  +  4251  depth 8  Run tasks (:build-logic)
+     36 ms  +  5581  depth 4  Notify beforeEvaluate listeners of :classpath
+     80 ms  +  6583  depth 8  Run tasks (:build-logic)
+     21 ms  +  6774  depth 4  Notify afterEvaluate listeners of :declarative-dsl-api
+    184 ms  +  7696  depth 4  Notify afterEvaluate listeners of :docs
+     22 ms  +  8118  depth 4  Notify afterEvaluate listeners of :graph-isolation
+     23 ms  +  8229  depth 4  Notify afterEvaluate listeners of :guava-serialization-codecs
+     43 ms  +  9059  depth 4  Notify afterEvaluate listeners of :jvm-services
+     21 ms  +  9374  depth 4  Notify afterEvaluate listeners of :kotlin-dsl-tooling-builders
+     58 ms  +  9439  depth 4  Notify afterEvaluate listeners of :kotlin-dsl-plugins
+     29 ms  +  9469  depth 4  Notify afterEvaluate listeners of :kotlin-dsl
+     31 ms  + 11437  depth 4  Notify afterEvaluate listeners of :smoke-test
+     31 ms  + 11901  depth 4  Notify afterEvaluate listeners of :toolchains-jvm
+     33 ms  + 12225  depth 4  Notify afterEvaluate listeners of :wrapper-shared
+   2251 ms  + 12359  depth 2  Notify projectsEvaluated listeners
+     24 ms  + 14610  depth 1  Calculate build tree task graph
+     31 ms  + 14634  depth 1  Store configuration cache state
+     49 ms  + 14672  depth 1  Load configuration cache state
+     14 ms  + 14721  depth 1  Run main tasks
+
+== direct children of the root operation (all, >= 50 ms)
+   2957 ms  +     7  Load build
+  11646 ms  +  2964  Configure build
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)
+
+-- Load build (2957 ms)
+      1689 ms sum      1x  wall   1689 ms  Run init scripts
+       939 ms sum      1x  wall    939 ms  Evaluate settings
+       325 ms sum      2x  wall    326 ms  Load build *
+
+-- Configure build (11646 ms)
+     67389 ms sum    254x  wall   8703 ms  Parallelize configuration
+      2251 ms sum      1x  wall   2251 ms  Notify projectsEvaluated listeners
+       648 ms sum      1x  wall    648 ms  Configure build *
+        31 ms sum      1x  wall     31 ms  Load projects
+         3 ms sum      1x  wall      3 ms  Notify projectsLoaded listeners
+         0 ms sum      4x  wall      5 ms  Execute container callback action

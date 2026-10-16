@@ -47,6 +47,10 @@ Record the mapping in `design/model-inventory.md` (add a "task" column) as it is
 - `@OutputFile RegularFileProperty getModelFile()` defaulting to
   `<project build dir>/ide/models/<taskName>.bin`; a bundle holds several serialized models with an index
   (model class name → byte range), single-model tasks hold one.
+  State form per model class (D25, D26): compact string table + records for the dependency model (entry format
+  `compact-deps`, expanded by the consumer), the object itself for the script payload, deflated IntelliJ bytes for
+  the rest; `-PideModelTasks.compact=false` gives the all-bytes state. Whole object graphs (D25) were no faster and a
+  larger entry.
 - `@Internal` project identity captured at configuration time (identity path, project dir) for the
   consumer to key the model.
 - A validation (at graph time via `gradle.taskGraph.whenReady`, or a `doFirst` in development builds)

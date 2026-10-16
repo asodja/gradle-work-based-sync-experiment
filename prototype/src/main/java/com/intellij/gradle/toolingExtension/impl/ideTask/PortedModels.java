@@ -19,16 +19,20 @@ public final class PortedModels {
 
     private static Map<String, List<String>> projectModelTask() {
         Map<String, List<String>> m = new LinkedHashMap<>();
+        // Gradle-owned IdeaProject, per project (D14): consumed by the IDE in the project model phase, where it
+        // iterates IdeaProject.getModules() today.
         m.put("PROJECT_MODEL_PHASE", List.of(
-            "org.jetbrains.plugins.gradle.model.ExternalProject"));
+            "org.jetbrains.plugins.gradle.model.ExternalProject",
+            "com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload"));
         m.put("SOURCE_SET_MODEL_PHASE", List.of(
             "org.jetbrains.plugins.gradle.model.GradleSourceSetModel"));
-        // Hard group (D13): captured with the builders too, in IntelliJ's request order: the download policy and the
-        // artifact-index request fill the shared per-capture context first (the index then holds this project's
-        // own jar -> source set entries; the request itself yields no payload), then the dependency model.
+        // Hard group (D13): captured with the builders too, in IntelliJ's request order: the download policy fills the
+        // shared builder context for this project (no payload), then the dependency model. IntelliJ's other
+        // context-only request, GradleSourceSetArtifactBuildRequest, runs for every project when it is evaluated
+        // (ModelCapture.indexSourceSetArtifacts), because the dependency model of one project reads the index entries
+        // of the projects it depends on.
         m.put("DEPENDENCY_MODEL_PHASE", List.of(
             "com.intellij.gradle.toolingExtension.impl.model.dependencyDownloadPolicyModel.GradleDependencyDownloadPolicy",
-            "com.intellij.gradle.toolingExtension.impl.model.sourceSetArtifactIndex.GradleSourceSetArtifactBuildRequest",
             "org.jetbrains.plugins.gradle.model.GradleSourceSetDependencyModel"));
         // KotlinGradleModel and ProjectDependencies (hard group) plus the mechanical group (design/plan.md M3), all
         // served by GradleClassProjectModelProvider or a dedicated provider in IntelliJ's ADDITIONAL phase. Not here:
@@ -49,14 +53,24 @@ public final class PortedModels {
             "org.jetbrains.plugins.gradle.javaModel.JavaGradleManifestModel",
             "org.jetbrains.plugins.gradle.model.RepositoryModels",
             "com.intellij.gradle.toolingExtension.model.repositoryModel.ProjectRepositoriesModel",
-            "org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel"));
+            "org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel",
+            // M5 round 2c: the remaining small models of IntelliJ's action (null for projects without the plugin)
+            "org.jetbrains.kotlin.idea.gradleTooling.model.allopen.AllOpenModel",
+            "org.jetbrains.kotlin.idea.gradleTooling.model.noarg.NoArgModel",
+            "org.jetbrains.kotlin.idea.gradleTooling.model.samWithReceiver.SamWithReceiverModel",
+            "org.jetbrains.kotlin.idea.gradleTooling.model.assignment.AssignmentModel",
+            "org.jetbrains.kotlin.idea.gradleTooling.model.lombok.LombokModel",
+            "org.jetbrains.kotlin.idea.gradleTooling.model.parcelize.ParcelizeGradleModel",
+            "org.jetbrains.kotlin.idea.gradleTooling.KotlinMPPGradleModel",
+            "org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel",
+            // Gradle-owned KotlinDslScriptsModel, the project build script's entry per project (D14).
+            "com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload"));
         return m;
     }
 
     /** Requests that only fill IntelliJ's builder context for later builders; they yield no model to deliver. */
     public static final java.util.Set<String> CONTEXT_ONLY = java.util.Set.of(
-        "com.intellij.gradle.toolingExtension.impl.model.dependencyDownloadPolicyModel.GradleDependencyDownloadPolicy",
-        "com.intellij.gradle.toolingExtension.impl.model.sourceSetArtifactIndex.GradleSourceSetArtifactBuildRequest");
+        "com.intellij.gradle.toolingExtension.impl.model.dependencyDownloadPolicyModel.GradleDependencyDownloadPolicy");
 
     /** Model class names to capture, in order, context-only requests included. */
     public static List<String> captureOrder() {

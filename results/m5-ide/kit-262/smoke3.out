@@ -1,0 +1,17 @@
+== IDE 262 run 3 2026-10-17T13:07:31+00:00
+exit 0
+2026-10-17 13:07:34,573 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 13:07:43,731 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 13:07:44,121 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 13:08:02,882 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 13:08:05,779 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 31 s 351 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s)
+[wbs] bundles read during the run: 287 of 287
+[wbs] dropping provider BuildModel(org.gradle.tooling.model.idea.IdeaProject)
+[wbs] dropping provider ProjectModel(com.intellij.gradle.toolingExtension.model.repositoryModel.ProjectRepositoriesModel)
+[wbs] dropping provider ProjectModel(com.intellij.openapi.externalSystem.model.project.dependencies.ProjectDependencies)
+[wbs] dropping provider ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel)
+[wbs] dropping provider ProjectModel(org.jetbrains.plugins.gradle.javaModel.JavaGradleManifestModel)
+[wbs] dropping provider ProjectModel(org.jetbrains.plugins.gradle.model.AnnotationProcessingModel)
+log lines with error|exception: 8
+== smoke done 2026-10-17T13:09:00+00:00

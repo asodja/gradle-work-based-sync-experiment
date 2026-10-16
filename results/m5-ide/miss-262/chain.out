@@ -1,0 +1,102 @@
+== part A: forced miss 2026-10-17T14:03:27+00:00
+== stock round 1 (miss) 2026-10-17T14:03:27+00:00
+2026-10-17 14:03:30,070 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:04:23,362 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:04:23,565 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:04:46,101 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:04:49,240 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 19 s 258 ms
+installed without import fixes, patched jars: 3
+== tasks round 1 (miss) 2026-10-17T14:05:29+00:00
+2026-10-17 14:05:32,591 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:06:13,341 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:06:13,477 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:06:32,108 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:06:34,880 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 2 s 390 ms
+[wbs] plain model task run: 287 projects in 37048 ms
+installed with import fixes, patched jars: 5
+== tasks-fixed round 1 (miss) 2026-10-17T14:07:34+00:00
+2026-10-17 14:07:37,302 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:08:18,615 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:08:18,788 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:08:28,930 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:08:31,979 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 54 s 830 ms
+[wbs] plain model task run: 287 projects in 37916 ms
+== stock round 2 (miss) 2026-10-17T14:09:31+00:00
+2026-10-17 14:09:34,525 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:10:26,237 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:10:26,475 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:10:48,051 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:10:51,364 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 16 s 988 ms
+installed without import fixes, patched jars: 3
+== tasks round 2 (miss) 2026-10-17T14:11:31+00:00
+2026-10-17 14:11:33,853 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:12:15,179 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:12:15,325 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:12:34,653 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:12:37,610 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 3 s 910 ms
+[wbs] plain model task run: 287 projects in 37084 ms
+installed with import fixes, patched jars: 5
+== tasks-fixed round 2 (miss) 2026-10-17T14:13:37+00:00
+2026-10-17 14:13:40,525 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:14:23,402 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:14:23,564 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:14:33,787 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:14:37,138 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 56 s 743 ms
+[wbs] plain model task run: 287 projects in 39523 ms
+== stock round 3 (miss) 2026-10-17T14:15:39+00:00
+2026-10-17 14:15:42,131 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:16:36,190 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:16:36,397 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:16:57,906 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:17:01,265 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 19 s 249 ms
+installed without import fixes, patched jars: 3
+== tasks round 3 (miss) 2026-10-17T14:17:42+00:00
+2026-10-17 14:17:45,043 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:18:26,482 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:18:26,664 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:18:45,432 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:18:48,603 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 3 s 624 ms
+[wbs] plain model task run: 287 projects in 37681 ms
+installed with import fixes, patched jars: 5
+== tasks-fixed round 3 (miss) 2026-10-17T14:19:48+00:00
+2026-10-17 14:19:50,716 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:20:31,195 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:20:31,332 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:20:41,100 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:20:43,943 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 53 s 366 ms
+[wbs] plain model task run: 287 projects in 36976 ms
+Updated 1 path from the index
+settings script restored: 0 changes
+== part B: restart hits, tasks without import fixes 2026-10-17T14:21:41+00:00
+installed without import fixes, patched jars: 3
+== tasks round 0 (hit) 2026-10-17T14:21:43+00:00
+2026-10-17 14:21:45,600 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:22:26,138 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:22:26,325 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:22:45,266 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:22:48,268 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 2 s 751 ms
+[wbs] plain model task run: 287 projects in 37005 ms
+== tasks round 1 (hit) 2026-10-17T14:23:53+00:00
+2026-10-17 14:23:55,964 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:24:06,975 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:24:07,506 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:24:34,132 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:24:37,520 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 41 s 640 ms
+[wbs] plain model task run: 287 projects in 6239 ms
+== tasks round 2 (hit) 2026-10-17T14:25:38+00:00
+2026-10-17 14:25:41,301 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:25:51,508 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:25:52,017 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:26:15,337 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:26:18,328 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 37 s 130 ms
+[wbs] plain model task run: 287 projects in 5900 ms
+== tasks round 3 (hit) 2026-10-17T14:27:15+00:00
+2026-10-17 14:27:18,168 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:27:29,103 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:27:29,375 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:27:53,228 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:27:56,073 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 37 s 979 ms
+[wbs] plain model task run: 287 projects in 6374 ms
+reinstalled with import fixes, patched jars: 5
+cc dir: 825M, disk free: 3.1G
+== all done 2026-10-17T14:28:54+00:00

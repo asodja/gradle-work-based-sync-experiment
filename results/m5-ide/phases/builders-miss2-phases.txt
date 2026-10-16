@@ -1,0 +1,91 @@
+overall span 11921 ms, 673198 operations
+  11916 ms  +     0  Run build
+     4529 ms  +   286  Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' for default scope
+       4529 ms  +   286  Configure build
+      683 ms  +  4915  Run nested tooling build actions (287)
+        462 ms  +  5136  Tooling API client action
+      403 ms  +  5598  Run nested tooling build actions (287)
+     2692 ms  +  6070  Run nested tooling build actions (287)
+        620 ms  +  7412  Tooling API client action
+        543 ms  +  7815  Tooling API client action
+      432 ms  +  9255  Run nested tooling build actions (287)
+        329 ms  +  9272  Tooling API client action
+        330 ms  +  9272  Tooling API client action
+      313 ms  +  9690  Fetch model 'org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel' for project scope
+        313 ms  +  9690  Build model 'org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel' for root project 'gradle'
+
+== every operation whose name mentions the task graph, task execution or the configuration cache (any duration)
+      0 ms  +     5  depth 1  Check configuration cache fingerprint
+    254 ms  +    27  depth 3  Load build
+     44 ms  +    99  depth 7  Configure build (:build-logic-settings)
+     41 ms  +   160  depth 9  Run tasks (:build-logic-settings)
+     47 ms  +   234  depth 4  Load build (:build-logic)
+     34 ms  +   241  depth 8  Configure build (:build-logic-commons)
+   4529 ms  +   286  depth 2  Configure build
+    408 ms  +   330  depth 3  Configure build (:build-logic)
+     61 ms  +   373  depth 10  Run tasks (:build-logic-commons)
+     33 ms  +   675  depth 6  Notify afterEvaluate listeners of :build-logic:dependency-modules
+     33 ms  +   675  depth 6  Notify afterEvaluate listeners of :build-logic:idea
+     32 ms  +   676  depth 6  Notify afterEvaluate listeners of :build-logic:cleanup
+     31 ms  +   677  depth 6  Notify afterEvaluate listeners of :build-logic:integration-testing
+     31 ms  +   677  depth 6  Notify afterEvaluate listeners of :build-logic:build-update-utils
+     31 ms  +   677  depth 6  Notify afterEvaluate listeners of :build-logic:documentation
+     30 ms  +   678  depth 6  Notify afterEvaluate listeners of :build-logic:binary-compatibility
+     30 ms  +   678  depth 6  Notify afterEvaluate listeners of :build-logic:buildquality
+    111 ms  +   779  depth 9  Calculate build tree task graph
+    109 ms  +   780  depth 10  Calculate task graph (:build-logic)
+    147 ms  +   890  depth 9  Run tasks (:build-logic)
+     49 ms  +  1209  depth 9  Calculate build tree task graph
+     43 ms  +  1210  depth 10  Calculate task graph (:build-logic)
+     27 ms  +  1259  depth 9  Run tasks (:build-logic-commons)
+    123 ms  +  1259  depth 9  Run tasks (:build-logic)
+     30 ms  +  1564  depth 5  Notify afterEvaluate listeners of :ant-worker
+     28 ms  +  1565  depth 5  Notify afterEvaluate listeners of :base-compiler-worker
+     28 ms  +  1565  depth 5  Notify afterEvaluate listeners of :base-asm
+     30 ms  +  1566  depth 5  Notify afterEvaluate listeners of :ant-api
+     26 ms  +  1567  depth 5  Notify afterEvaluate listeners of :antlr
+     26 ms  +  1574  depth 5  Notify afterEvaluate listeners of :ant-impl
+     40 ms  +  1869  depth 5  Notify afterEvaluate listeners of :build-operations-trace
+     21 ms  +  2054  depth 5  Notify afterEvaluate listeners of :configuration-cache-base
+     30 ms  +  2158  depth 9  Run tasks (:build-logic)
+     45 ms  +  2233  depth 5  Notify afterEvaluate listeners of :dependency-management-serialization-codecs
+     45 ms  +  2644  depth 5  Notify beforeEvaluate listeners of :ide-model-impls
+    190 ms  +  2710  depth 5  Notify afterEvaluate listeners of :docs
+     31 ms  +  3665  depth 5  Notify afterEvaluate listeners of :resources-s3
+    677 ms  +  4138  depth 3  Notify projectsEvaluated listeners
+      9 ms  +  4855  depth 1  Calculate build tree task graph
+      9 ms  +  4864  depth 1  Store configuration cache state
+      4 ms  +  4873  depth 1  Run main tasks
+      0 ms  + 11737  depth 1  Store model in configuration cache
+
+== direct children of the root operation (all, >= 50 ms)
+    254 ms  +    27  Fetch model 'org.gradle.tooling.model.gradle.GradleBuild' for default scope
+   4529 ms  +   286  Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' for default 
+    683 ms  +  4915  Run nested tooling build actions (287)
+    403 ms  +  5598  Run nested tooling build actions (287)
+   2692 ms  +  6070  Run nested tooling build actions (287)
+    432 ms  +  9255  Run nested tooling build actions (287)
+    313 ms  +  9690  Fetch model 'org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel' for project scope
+    194 ms  + 10759  Fetch model 'org.gradle.tooling.model.idea.IdeaProject' for project scope
+    156 ms  + 11751  Develocity plugin build finished
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)
+
+-- Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' fo (4529 ms)
+      4529 ms sum      1x  wall   4529 ms  Configure build
+         0 ms sum      1x  wall      0 ms  Build model * for root project *
+
+-- Run nested tooling build actions (287) (683 ms)
+      5399 ms sum    287x  wall    682 ms  Tooling API client action
+
+-- Run nested tooling build actions (287) (403 ms)
+      3169 ms sum    287x  wall    402 ms  Tooling API client action
+
+-- Run nested tooling build actions (287) (2692 ms)
+     22915 ms sum    287x  wall   2690 ms  Tooling API client action
+
+-- Run nested tooling build actions (287) (432 ms)
+      3165 ms sum    287x  wall    432 ms  Tooling API client action
+
+-- Fetch model 'org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel' for project scope (313 ms)
+       313 ms sum      1x  wall    313 ms  Build model * for root project *

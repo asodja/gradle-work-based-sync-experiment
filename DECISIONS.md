@@ -191,3 +191,282 @@ task variants are judged separately: `tasks` (ported models from bundles, Gradle
 is the state an unchanged IDE could reach; `tasks-only` and `launcher` are the floor and the transport the owner
 asked for (D14), which need the IDE-side changes in M5.
 Why: the gate must not be tuned to the result; 30 % is the plan's number, and the scenario list follows D6.
+
+### D16: one builder context per build, filled per project when it is evaluated (supersedes the "entries of other projects are not available" part of D13)
+
+What: the captures share one IntelliJ `ModelBuilderContext` per build invocation, held by a shared build service
+of the root build (`SharedBuilderContext`), and every project's `GradleSourceSetArtifactBuildRequest` runs from
+`gradle.lifecycle.afterProject` into that context. The capture order no longer contains the request. With this the
+ordered comparison of `GradleSourceSetDependencyModel` is 287/287 identical (`results/m3-ports/compare-hard.md`).
+Why: the M4 ordered comparison showed what the missing index costs: compile-classpath artifacts of project
+dependencies stay classes directories instead of being folded into the jar entry (COMPILE split into PROVIDED +
+RUNTIME), `projectDependencyArtifactsSources` empty, the runtime output-dir file dependencies missing: 264 of 287
+projects differed. IntelliJ fills the index for all projects before any dependency model and reads other projects'
+`SourceSet` objects from it; the task version does the same, with Gradle giving the order: resolving a project
+dependency inside a capture evaluates the target project first, so its `afterProject` entries exist when the
+capture looks them up. A map keyed by `Gradle` did not work: under Isolated Projects every project sees its own
+`Gradle` wrapper (`project.getGradle()`), so the key must be the build's shared service. A static map would also
+have kept the whole build model alive in the daemon; the service is discarded with the build.
+Contract: this is the cross-project read the builders do today (`design/task-contract.md`, "a task reads only its
+own project's state"); it happens at configuration time through IntelliJ's context, not through the Project API,
+and Isolated Projects reports no problem for it on gradle/gradle (the entry is stored and reused). It is recorded
+as a deviation that an IDE-side port would keep until the artifact index becomes a file of its own.
+Rejected: `project.getRootProject()`/`getGradle().getRootProject()` as key (IP violation); a per-capture context
+(D13's state, the measured 264 differences); a star task dependency on all `ideProjectModel` tasks (D13).
+
+### D17: the Gradle-owned build models become per-project payloads, assembled by the consumer (D14 step 2)
+
+What: two more entries in every project's bundle. `IdeaModulePayload` carries what IntelliJ reads from an
+`IdeaModule` and its `GradleProject` (names, dirs, build script, content root with source/test/resource/exclude
+dirs, compiler output, the project's source and target compatibility); the root project's payload adds the
+build-level fields (project name, current JDK). `KotlinDslScriptPayload` is the model of the project's own
+`build.gradle.kts` (classpath, source path, implicit imports, editor reports, exceptions), produced by Gradle's own
+single-script builder `KotlinBuildScriptModelBuilder.kotlinBuildScriptModelFor` called reflectively (internal API).
+In task mode the harness no longer requests `IdeaProject` or `KotlinDslScriptsModel` from builders. The consumer
+derives the build-level `IdeaProject` values the way the idea plugin does (language level and bytecode version =
+maximum over the modules, a module carries its own only when it differs), which the harness does when it writes
+the comparison text (`GradleOwnedText.finish`); in the IDE this is the M5 resolver change.
+Why: the idea plugin cannot be applied from project code under Isolated Projects (its apply reaches the root
+project and all projects for module-name de-duplication and the project-level levels; Gradle's `IdeaModelBuilder`
+applies it with privileged access to every project), so the payload mirrors the plugin's defaults from the
+project's own java plugin state instead. Consequence: `idea { module { } }` customizations are not seen; module
+names are the project names (no de-duplication). The settings script, init scripts and precompiled script plugins
+of `KotlinDslScriptsModel` stay with the builder (root build, sub-second).
+Measured: `results/m3-ports/compare-gradle-owned.md`; timings `results/m4d-*/` (`tasks` variant now without the two
+Gradle-owned builders, `tasks-only` and `launcher` with the two extra captures).
+Amended 2026-10-16 after the gradle/gradle comparison: (1) when the project applied the idea plugin itself (gradle/gradle
+does, through `gradlebuild.ide`), the payload reads `idea.module` as configured, customizations included, and only
+mirrors the plugin's defaults otherwise; the language levels are always the raw compatibility values because their
+conventions compare all projects. `plugins.withType(IdeaPlugin)` customizations of a build that does not apply the
+plugin still never run. (2) The Kotlin DSL payload carries every script the `KotlinDslScriptsModel` builder
+attributes to the project: the build script and the precompiled script plugins of a `kotlin-dsl` project, plus the
+settings script and the init scripts on the root project. Nothing stays with the builder. (3) The captures compute
+the build-wide stage-1 accessors classpath once from the root project's `afterProject`
+(`Stage1BlocksAccessorClassPathGenerator.prepareForParallelAccess`, what Gradle's own Isolated-Projects-safe scripts
+model builder does before it fans out); without it parallel captures deadlock (LOG 2026-10-16).
+(4) Added later the same day: the hook also resolves the Gradle distribution sources once
+(`SourceDistributionResolver(rootProject).sourceDirs()`, a build-tree-scoped cache whose lock is held during a
+network lookup on services.gradle.org, ~10 s on a slow connection); without it every capture thread queued behind
+that lookup and the configuration cache store stalled (LOG 2026-10-16, attribution). The lookup itself is Gradle's
+and is paid once per sync in both worlds; a persistent per-version cache in Gradle would remove it.
+
+### D18: the benchmark distribution gets a `src` directory; no sync in the measurement looks up Gradle sources online
+
+What: `~/.gradle-wbs/wrapper/dists/.../gradle-9.9.0-milestone-2/src/` exists (empty but for a README). Gradle's
+Kotlin DSL script model takes the Gradle source roots from an existing installation `src` directory and only
+otherwise resolves the distribution sources from services.gradle.org (`SourcePathProvider.sourceRootsOf`). All
+timings from `results/m4g-*` on are taken this way; `m4-*` to `m4f-*` include the lookup.
+Why: the lookup is a network round trip per sync (build-tree cache, lock held during the request), 8–16 s on the
+owner's connection on 2026-10-16, and it fails anyway for gradle/gradle's snapshot version. It made the Kotlin DSL
+script model the slowest part of both the builder sync (most of the 7.3 s `KotlinDslScriptsModel` builder in M4)
+and the task sync (every capture thread queued behind it, LOG 2026-10-16), and it put the day's connection
+quality into every number. The `-all` distribution, which the IDE recommends for Kotlin DSL builds, has a `src`
+directory and never makes the request, so this is the common IDE configuration, not a shortcut.
+Consequence: the per-project source path lacks the Gradle sources (same in both worlds); the fidelity comparison
+of the script models is unaffected (both dumps were taken before). The warm-up of the lookup from the root project's
+`afterProject` (D17 amendment 4) stays: harmless with the directory, and it keeps the store from stalling without it.
+
+### D19: model payloads are stored deflated
+
+What: `ModelPayload` deflates the serialized model bytes at capture (`Deflater.BEST_SPEED`) and inflates on read;
+the bundle file carries the deflated bytes (new magic); the configuration cache entry holds the deflated field. The
+fingerprint, the format and every consumer API (`getBytes()`) are unchanged.
+Why: the models are mostly file paths that repeat across models and projects: the Kotlin DSL script payloads of
+gradle/gradle hold 151,501 class and source path entries over 809 distinct paths (41 MB serialized, 24.9 MB of path
+text), the dependency payloads 50 + 29 MB of the same kind. With them the configuration cache directory reached
+389 MB per entry set and the no-change hit slowed from 1.6 s to 2.5–6 s (`m4e`); the bundles are also what the
+launcher transport reads from disk and what the task world would otherwise send over the wire. Deflate is generic
+(every model, no payload-specific format), cheap (a few hundred ms of CPU spread over the parallel captures) and keeps
+the per-project independence that a shared path table would break (indices assigned in capture order would change
+the fingerprints between runs).
+Measured: `results/m4h-*` (same scenarios as `m4g-*`, which has the uncompressed payloads and the network-free setup).
+
+### D20: the IDE runs headless here; M5 measures the real IDE with `idea.sh warmup` (supersedes D1's "cannot run")
+
+What: IntelliJ's headless warm-up mode (`bin/idea.sh warmup --project-dir=<project>`, `java.awt.headless=true`,
+config/system/log paths in the session scratchpad via `IDEA_VM_OPTIONS`) opens the project, runs the Gradle sync
+through the Gradle plugin's `GradleWarmupConfigurator` (resolve stage, data import, final tasks), indexes, and exits.
+Verified 2026-10-16 on the fixture: 17 s end to end, Gradle resolve stage 6.5 s, data import 0.3 s, configuration
+cache entry stored, no display. `GRADLE_USER_HOME` and `JAVA_HOME` in the environment select the Gradle user home
+(`~/.gradle-wbs`) and the Gradle JVM (`gradleJvm=#JAVA_HOME` in `.idea/gradle.xml`).
+Why: D1 rejected a headless run for want of a sync entry point; the warm-up mode is that entry point. The IDE
+baseline (`GRADLE_CALL`-level timings, data import) can now be measured here on gradle/gradle, and a modified Gradle
+plugin can be measured the same way.
+Consequence: M5 no longer waits for a display. The prototype's IDE side goes into a copy of the installed IDE as
+patched plugin jars (compiled against the IDE's own jars, as the harness and prototype already are) until the fork
+location is known; the fork then receives the same changes as source.
+
+### D21: the IDE side is a small plugin plus one patched IDE class, run from a hard-linked copy of the installed IDE
+
+What: `ide-plugin/` builds (a) the plugin `wbs-task-transport` (a `GradleProjectResolverExtension`: with
+`-Dwbs.transport=tasks` it puts the prototype jar on the daemon's init script classpath, adds an init script that
+applies `IdeModelTasks` with the IDE's own tooling-extension classpath (`GradleInitScriptUtil.GRADLE_TOOLING_EXTENSION_CLASSES`),
+and contributes the request and file providers copied from the harness), and (b) `GradleModelFetchAction` from the
+IntelliJ sources with a provider filter (`-Dwbs.transport.drop`, the list printed by `wbs.ide.DropList`). The
+installer makes a hard-linked copy of the IDE, overlays the patched class into
+`plugins/gradle/lib/gradle-tooling-extension-impl.jar`, and places the plugin in a custom plugins directory.
+Why: dropping the built-in providers of the 19 ported models has no extension point; everything else does. The
+installed IDE and the patched copy differ in one class and one plugin, so the comparison is clean, and the same
+changes port to the fork as source once its location is known.
+Verified on the fixture (headless warm-up): 4 model tasks, 4 bundles read, all import stages, import 3.5 s.
+Pitfall met on the way: the model-tasks init script needs the IDE's whole tooling-extension classpath (Trove,
+Commons, OpenTelemetry included), not the harness's shorter list; IntelliJ's serializer services fail to
+instantiate otherwise and the configuration cache store fails with them.
+
+### D22: the Gradle-owned build models are assembled in the transport's file provider, not in the IDE resolver
+
+What: the plugin's file provider, which reads every project's bundle inside IntelliJ's build action, assembles each
+build's `IdeaProject` from the `IdeaModulePayload`s and its `KotlinDslScriptsModel` from the `KotlinDslScriptPayload`s
+(`IdeaProjectFromPayloads`, `KotlinDslScriptsModelFromPayloads` in the prototype: the Tooling API interfaces
+implemented on plain records) and hands them to the IDE under those classes, as a build model and as a project model
+of the build's root project respectively, exactly as the two built-in providers do. IntelliJ's Ion serializers
+accept the implementations through the interfaces.
+Why: the IDE's resolver and the Kotlin plugin consume `IdeaProject` and `KotlinDslScriptsModel` in many places;
+reproducing the two objects is a few hundred lines in one place, changing the consumers is not, and the stock
+resolver then proves the fidelity itself (fixture: module files identical). The same assembly can move to the
+IDE side later when the bundles are read there (no action).
+Consequence: all 26 built-in providers of the ported models are dropped (`DropList` without `--keep-gradle-owned`);
+the action still runs for the eight small Kotlin models, `GradleBuildScriptClasspathModel` and the Kotlin
+`prepare` tasks.
+
+### D23: one Gradle invocation per sync; the IDE builds its model holder state from the bundles (M5 round 2c)
+
+What: with `-Dwbs.transport.run=only` the sync is the plain task run of every project's `ideProjectModel` task (plus
+the `GradleBuild` and `BuildEnvironment` requests the IDE makes anyway, sub-second and cache hits). IntelliJ's build
+action does not run: the patched `GradleProjectResolver.doResolveProjectInfo` asks the transport plugin for a
+`GradleModelHolderState` built from the bundles (`WbsTaskTransportResolverExtension.buildState()`: light builds from
+`GradleBuild`, every payload deserialized with a fresh IntelliJ serializer and stored under its model id, the two
+Gradle-owned models assembled per build) and adds it to the holder; everything after that is the stock resolver.
+Why: the owner's target is one invocation, and the action misses the configuration cache on every IDE restart by
+construction (per-process classloader id in its key) while the plain run hits; two invocations also configure the
+build twice on a first import. Fidelity is unchanged because the holder sees the same models under the same ids.
+Not yet served without the action: the Kotlin `prepare` task triggers (`PrepareKotlinIdeImportTaskModel`,
+`KotlinDslScriptAdditionalTask`), to be requested as tasks in the plain run, and the MPP-only Kotlin models (null for
+gradle/gradle).
+Pitfalls recorded in LOG 2026-10-16: model class id format, Kotlin classes on the plugin's classloader, one fresh Ion
+reader per document.
+
+
+### D24: two IDE import classes patched against quadratic library lookups (owner's request, 2026-10-16)
+
+What: the IDE copy also gets two platform classes overlaid into `lib/app.jar` (`ide-plugin/src/patched/java/...`,
+`install-patched-ide.sh`, skip with `WBS_PATCH_IDE_IMPORT=0`):
+- `AbstractIdeModifiableModelsProvider.findIdeLibrary` looks the library up by name first (`isRelated` is name
+  equality and project library names are unique) instead of scanning `getLibraries()`; `getLibraryByName` is memoized
+  for the provider's lifetime (one import), fed by `createLibrary` and cleared by `removeLibrary`.
+- `LibraryDependencyDataService.findLibraryOrderEntry` finds the entry of a workspace-model library by comparing
+  library ids (plain values) before falling back to the stock scan, which calls `LibraryOrderEntryBridge.getLibrary`
+  (a resolution through the workspace storage) on every entry of the module for every lookup. A first attempt that
+  skipped entries by name did nothing: the lookups are for unnamed module libraries (file dependencies; 103k of them
+  for gradle/gradle, scanning 21.6 million entries), and both names are null there.
+Why: the JFR profile of a restart import (LOG 2026-10-16) puts 28 % of the import thread in
+`KotlinGradleLibraryDataService.postProcess` → `findIdeLibrary` → the library table bridge rebuilding its library
+array (`librariesArrayValue`, invalidated by each `setKind` of the same loop: O(libraries²) with 577 libraries) and
+another 28 % in `findLibraryOrderEntry` resolving every entry's library of a module for every module library.
+Both fixes keep the stock semantics (same library returned, same entry found) and are candidates to report to
+JetBrains. Scope: measurement only; the stock IDE is untouched and the fidelity diff guards the result.
+
+### D25: task state stays the deflated model bytes; object graphs measured and kept as an option (2026-10-16)
+
+What: the owner suggested holding the captured models in the task state as object graphs instead of IntelliJ-serialized
+bytes, so the configuration cache's own codecs and string deduplication would remove the repetition the entry is made
+of (paths and coordinates repeated per source set, per model and per project), with the task action serializing into
+IntelliJ's format when it writes the bundle. Implemented (`CapturedModel`, `IdeModelTask.getModels()`,
+`ModelCapture.captures()`/`serialize()`), measured on gradle/gradle with a warm daemon, tasks up to date:
+
+| task state | store (miss) | entry | hit load |
+|---|---|---|---|
+| deflated bytes (default) | 6.3 / 6.7 s | 56 MB | 1.4–2.5 s |
+| object graphs (D25 option, replaced by the per-model state form of D26) | 6.0 / 6.4 s | 68 MB | 1.9 s |
+
+Fidelity identical (6321 of 6321 payload fingerprints), a deleted bundle is recreated from the loaded state in both
+forms (fixture and gradle/gradle `:core`), no configuration cache problems.
+Why the bytes stay: the store time is the capture (dependency resolution and task realization for the models), not the
+serialization, so neither form is faster; and the entry grew by 21 %. The investigation of the codecs
+(`results/m5-ide/cc-serialization-NOTES.md`) corrected the first reading: the parallel store shares one string table
+across all project files (7.6 MB of distinct strings for the whole entry), so strings are deduplicated; what costs is
+the per-object structure the bean codec writes for every dependency record (~50 bytes: tags, identity and class ids,
+one tag per field), 57 MB over 287 project files, while deflate inside a payload also compresses the repeated
+structure. Nothing in the codec chain compresses and the files are encrypted. Remaining size levers: a compact record
+format of our own expanded in the task action (estimate 56 → 20–25 MB), and dropping `ProjectDependencies` (28 % of
+the bytes, used only by the Dependency Analyzer) from the sync.
+Also found: a changed init-script classpath jar does not invalidate the entry (the first run after the rebuild reused
+the old entry, with the old task state under the new class); recorded for Gradle.
+
+### D26: the dependency model travels as a compact record format; state form per model class (2026-10-17)
+
+What: `GradleSourceSetDependencyModel` is captured into `CompactDependencies`, a per-project string table
+(`List<String>`) plus one varint record per dependency (`byte[]`), stored in that form in the task state and in the
+bundle (entry format `compact-deps`), and expanded into IntelliJ's model objects by the consumer
+(`ModelPayload.readModel`, the one reader for every format). The task state is one list of `CapturedModel`s whose
+state form is chosen per model class: compact records for the dependency model, the object itself for
+`KotlinDslScriptPayload` (lists of paths, which the configuration cache stores as references into its string table),
+deflated serialized bytes for the rest. `-PideModelTasks.compact=false` gives the all-bytes state; the D25
+`state=objects` option is removed. Measured on gradle/gradle (`results/m5-ide/compact-NOTES.md`):
+
+| | compact | bytes |
+|---|---|---|
+| configuration cache entry | **39 MB** | 56 MB |
+| bundles on disk | **43.1 MB** | 51.9 MB |
+| dependency model, all bundles / `:core` | 7.1 MB / 36 KB | 12.7 MB / 101 KB |
+| store (warm daemon) | 7.2 s | 6.7 s |
+| hit: entry load | 0.22 s | 0.18 s |
+| IDE restart import (2 hits each) | 27.7, 28.3 s | 27.9, 29.7 s |
+
+Fidelity: identical canonical text for 287 of 287 projects against Ion bundles; unit test; a deleted bundle is
+recreated from the compact state.
+Why: the owner asked to try the compact format and whether the bundle format matters (JSON, Ion). The offline estimate
+on `:core` settled the format question first: the encoding is worth ~10 % (JSON 89 KB vs Ion 101 KB deflated), the data
+model 3× (table plus references, 33 KB). The format is kept because it is a proven size win with no IDE-side change
+outside our plugin, and because it makes the entry's size independent of IntelliJ's per-record object shape.
+What it does not do: shorten anything measurable on this machine. The hit's load is 0.2 s in both forms, the import
+times overlap, the store is the capture. The entry size is a lever for slow disks and small heaps, not for these
+numbers. `ProjectDependencies` does not compact (−16 % on `:core`: the graph is the content); its lever remains
+dropping it from the eager sync.
+
+### D27: the Mac kit targets IntelliJ IDEA 2026.2.2 (262.10315.125) with per-branch patched sources (2026-10-17)
+
+What: the owner asked for a distribution to try on a Mac, based on build 262.10315.125 (IntelliJ IDEA 2026.2.2), with
+a distinguishable icon. A from-source IDE build was ruled out earlier (40–50 GB); a modified official DMG cannot be
+produced on Linux. The kit therefore patches a copy of the officially installed app on the Mac: `install-mac.sh` copies
+the app, overlays the four patched classes into their jars (found by content: the 2026.2 layout renamed
+`plugins/gradle/lib/gradle.jar` to `plugins/gradle-plugin/lib/intellij.gradle.jar` and split `lib/app.jar`), adds the
+plugin as a bundled plugin, appends the `-Dwbs.*` options and a paths selector (`IntelliJIdea2026.2-WBS`, own settings
+and caches), renames it "IntelliJ IDEA WBS" with a WBS-badged icon (the IDE's SVG plus a badge, rendered by macOS
+QuickLook, packed by `iconutil`) and re-signs ad hoc. Architecture-independent (Java classes only). Repo changes: the
+`patched` source set selects `src/patched/java` (253) or `src/patched-<branch>/java` (`-PideaBranch=262`, Java 25),
+`ideJars()` covers both plugin directories, `install-patched-ide.sh` finds jars by content, the plugin implements the
+now abstract `GradleModelConsumer.consumeBuildModel` and requests `GradleDslBaseScriptModel` on the plain-run
+connection when the IDE has the holder class (2026.2's Kotlin plugin reads it from the holder state; 2025.3 neither
+has nor needs it). Verified headless on this machine: restart hit import 31.6 s on 2026.2.2 (27.7–29.7 s on 2025.3).
+Why: the only deliverable that fits the disk and the owner's machine; the class overlay is what the Linux chains have
+run since D21. Not verified: a real Mac run (signing, icon rendering, Kotlin script support with the fetched base model).
+
+### D28: resilience is out of scope for the prototype (owner, 2026-10-17)
+
+What: the sync's behaviour on a broken build (partial models from a failing settings or build script, which Gradle's
+`GradleBuildBuilder` and the resilient model controllers provide for the stock sync) is not a goal here. A task run
+that fails whole is acceptable; resilient task runs are something to add to Gradle later. Consequence: the
+`ideBuildTree` design (`results/m5-ide/gradlebuild-as-task-NOTES.md`) needs no fallback to the `GradleBuild` model
+request, and no prototype work goes into error recovery.
+Why: owner's statement when the fallback was listed as a risk ("resiliency is not a goal for this prototype. We can
+add task resiliency later to Gradle").
+
+### D29: the build structure and the base-script model come from a root task; the sync is one Gradle operation (2026-10-17)
+
+What: `ideBuildTree` in the root project of every build writes a `BuildTreePayload` (settings descriptor tree,
+included builds, identity path, and for the root build Gradle's `GradleDslBaseScriptModel` produced by Gradle's own
+builder); the aggregate `ideModels` depends on it, on every project's `ideProjectModel` by path and on the included
+builds' aggregates. With `-Dwbs.transport.tree=task` the plugin runs `:ideModels` only, resolves projects for the
+streaming reads from the tree bundles, synthesizes the Tooling API `GradleBuild` view with Gradle's model POJOs and
+`ProtocolToModelAdapter`, and hands the base-script model to the IDE's holder as a proxy. Kept as an option, not the
+default (`results/m5-ide/buildtree-262-NOTES.md`).
+Why: the owner asked to implement it and measure. Fidelity is identical (1370/1370 storage files). The restart hit on
+2026.2.2 is unchanged within noise (model 30.7 / 31.3 s vs tree 31.9 / 32.2 s, cold / warm daemon; Gradle side
+10.0–10.5 s everywhere): the first operation on the connection costs about 1.8 s whichever it is, and the two removed
+requests cost 0.3 s and 0.08 s after it. The forced miss shows the same (55.6 vs 54.6 s medians). What it does buy: one Gradle operation per sync (simpler, and the included
+builds are addressed by their real names instead of directory names), at the price of a failing task run on a broken
+settings script instead of Gradle's partial `GradleBuild` (accepted, D28). Isolated Projects accepted the string-path
+`dependsOn` across projects and `includedBuild(name).task()`. Two IP/Gradle facts learned: a project's `Gradle` object
+is not the settings' instance (key per-build state by identity path), and Gradle's base-script model classes are
+package-private (reflection needs the accessibility flag).

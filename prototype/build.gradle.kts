@@ -21,9 +21,11 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 }
 
+// plugins/gradle/lib up to 2025.3, plugins/gradle-plugin/lib from 2026.2 (jars renamed too)
 fun ideJars() = ideaHome.map { home ->
     files(
         fileTree("$home/plugins/gradle/lib") { include("gradle-tooling-extension-api.jar", "gradle-tooling-extension-impl.jar") },
+        fileTree("$home/plugins/gradle-plugin/lib") { include("gradle-tooling-extension-api.jar", "gradle-tooling-extension-impl.jar") },
         fileTree("$home/plugins/Kotlin/lib") { include("kotlin-gradle-tooling.jar") },
         fileTree("$home/lib") { include("*.jar") },
     )

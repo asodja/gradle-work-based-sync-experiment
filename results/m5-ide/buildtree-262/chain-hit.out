@@ -1,0 +1,120 @@
+== tree-cold round 0 2026-10-17T15:16:52+00:00
+2026-10-17 15:16:54,781 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:17:34,389 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:17:34,540 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:17:44,739 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:17:47,650 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 52 s 950 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 157 ms
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] plain model task run: 287 projects in 36048 ms
+== model-cold round 0 2026-10-17T15:18:47+00:00
+2026-10-17 15:18:49,520 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:19:31,050 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:19:31,201 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:19:41,601 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:19:44,658 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 55 s 178 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 90 ms
+[wbs] plain model task run: 287 projects in 37830 ms
+== model-cold round 1 2026-10-17T15:20:45+00:00
+2026-10-17 15:20:48,179 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:20:58,992 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:20:59,463 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:21:16,558 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:21:18,740 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 30 s 708 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 84 ms
+[wbs] plain model task run: 287 projects in 6691 ms
+== tree-cold round 1 2026-10-17T15:22:20+00:00
+2026-10-17 15:22:22,761 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:22:33,022 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:22:33,272 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:22:48,919 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:22:54,532 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 31 s 898 ms
+[wbs] GradleDslBaseScriptModel from the tree bundle
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] plain model task run: 287 projects in 6289 ms
+== model-cold round 2 2026-10-17T15:23:59+00:00
+2026-10-17 15:24:02,571 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:24:12,771 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:24:13,082 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:24:27,708 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:24:33,213 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 30 s 711 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 72 ms
+[wbs] plain model task run: 287 projects in 5985 ms
+== tree-cold round 2 2026-10-17T15:25:29+00:00
+2026-10-17 15:25:31,715 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:25:41,945 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:25:42,319 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:25:57,111 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:26:02,508 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 30 s 888 ms
+[wbs] GradleDslBaseScriptModel from the tree bundle
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] plain model task run: 287 projects in 5931 ms
+== model-cold round 3 2026-10-17T15:27:00+00:00
+2026-10-17 15:27:03,333 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:27:13,826 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:27:14,223 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:27:29,914 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:27:32,544 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 29 s 267 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 78 ms
+[wbs] plain model task run: 287 projects in 6390 ms
+== tree-cold round 3 2026-10-17T15:28:35+00:00
+2026-10-17 15:28:38,526 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:28:50,245 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:28:50,472 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:29:06,461 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:29:10,478 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 32 s 151 ms
+[wbs] GradleDslBaseScriptModel from the tree bundle
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] plain model task run: 287 projects in 7119 ms
+== model-warm round 1 2026-10-17T15:30:09+00:00
+2026-10-17 15:30:11,875 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:30:21,782 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:30:22,025 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:30:37,439 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:30:43,106 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 31 s 329 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 78 ms
+[wbs] plain model task run: 287 projects in 6170 ms
+== tree-warm round 1 2026-10-17T15:31:39+00:00
+2026-10-17 15:31:42,496 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:31:52,467 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:31:52,746 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:32:08,322 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:32:11,968 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 29 s 628 ms
+[wbs] GradleDslBaseScriptModel from the tree bundle
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] plain model task run: 287 projects in 5714 ms
+== model-warm round 2 2026-10-17T15:33:07+00:00
+2026-10-17 15:33:10,056 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:33:20,499 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:33:20,800 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:33:36,008 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:33:40,188 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 30 s 196 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 81 ms
+[wbs] plain model task run: 287 projects in 6206 ms
+== tree-warm round 2 2026-10-17T15:34:39+00:00
+2026-10-17 15:34:42,864 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:34:54,871 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:34:55,162 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:35:10,742 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:35:16,274 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 33 s 562 ms
+[wbs] GradleDslBaseScriptModel from the tree bundle
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] plain model task run: 287 projects in 6961 ms
+== model-warm round 3 2026-10-17T15:36:12+00:00
+2026-10-17 15:36:15,531 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:36:25,836 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:36:26,233 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:36:41,954 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:36:46,960 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 31 s 495 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 69 ms
+[wbs] plain model task run: 287 projects in 5958 ms
+== tree-warm round 3 2026-10-17T15:37:43+00:00
+2026-10-17 15:37:46,120 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 15:37:55,737 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 15:37:56,270 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 15:38:13,650 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 15:38:18,225 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 32 s 199 ms
+[wbs] GradleDslBaseScriptModel from the tree bundle
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] plain model task run: 287 projects in 5627 ms
+== all done 2026-10-17T15:39:16+00:00

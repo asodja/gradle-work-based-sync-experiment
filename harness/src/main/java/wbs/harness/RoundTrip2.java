@@ -20,7 +20,7 @@ public final class RoundTrip2 {
                 for (ModelPayload p : ModelBundle.read(data)) {
                     if (!p.getModelClassName().endsWith(wanted)) continue;
                     Class<?> c = Class.forName(p.getModelClassName());
-                    Object model = new ToolingSerializer().read(p.getBytes(), c);
+                    Object model = p.readModel(RoundTrip2.class.getClassLoader());
                     byte[] again = writer.write(model);
                     System.out.printf("%-60s original=%6d rewritten=%6d  identityHash=%s%n", Path.of(args[i]).getParent().getParent().getParent().getParent().getFileName(), p.getBytes().length, again.length, Integer.toHexString(System.identityHashCode(model)));
                 }

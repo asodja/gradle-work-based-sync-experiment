@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Bundle file format: magic, entry count, then per entry the model class name (UTF), the format (UTF), the byte
- * length and the bytes. Readable without any IDE class; the consumer picks the serializer by class name.
+ * Bundle file format: magic, entry count, then per entry the model class name (UTF), the format (UTF), the
+ * fingerprint (UTF), the inflated length, the deflated length and the deflated bytes (D19). Readable without any IDE
+ * class; the consumer picks the serializer by class name.
  */
 public final class ModelBundle {
 
-    private static final int MAGIC = 0x1DE0_0003;
+    private static final int MAGIC = 0x1DE0_0004;
 
     private ModelBundle() {
     }
@@ -24,8 +25,9 @@ public final class ModelBundle {
             out.writeUTF(payload.getModelClassName());
             out.writeUTF(payload.getFormat());
             out.writeUTF(payload.getFingerprint());
-            out.writeInt(payload.getBytes().length);
-            out.write(payload.getBytes());
+            out.writeInt(payload.getLength());
+            out.writeInt(payload.getDeflated().length);
+            out.write(payload.getDeflated());
         }
     }
 
@@ -39,9 +41,10 @@ public final class ModelBundle {
             String className = in.readUTF();
             String format = in.readUTF();
             String fingerprint = in.readUTF();
-            byte[] bytes = new byte[in.readInt()];
-            in.readFully(bytes);
-            result.add(new ModelPayload(className, format, fingerprint, bytes));
+            int length = in.readInt();
+            byte[] deflated = new byte[in.readInt()];
+            in.readFully(deflated);
+            result.add(ModelPayload.ofDeflated(className, format, fingerprint, length, deflated));
         }
         return result;
     }

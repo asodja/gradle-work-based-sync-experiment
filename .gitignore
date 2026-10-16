@@ -5,3 +5,11 @@ harness/fixture/.gradle/
 harness/fixture/build/
 harness/fixture/*/build/
 results/**/*-trace-log.txt
+prototype/build/
+prototype/.gradle/
+ide-plugin/build/
+ide-plugin/.gradle/
+
+# raw Gradle output of the harness runs (1 MB each); the harness .txt summaries and the NOTES stay
+results/**/*.build.log
+results/**/*.jstack

@@ -20,9 +20,9 @@ import java.util.Set;
 
 /**
  * Base class of the IDE model tasks (design/task-contract.md, DECISIONS D8/D9). The task writes a bundle of
- * serialized IntelliJ models for its project; what goes into the bundle is decided at configuration time
- * ({@link #getModels()}), the action only writes bytes, so it works when the task is loaded from the
- * configuration cache.
+ * serialized IntelliJ models for its project; the models are captured at configuration time ({@link #getModels()})
+ * and the action serializes and writes them, so it works when the task is loaded from the configuration cache and
+ * recreates a deleted bundle from the loaded state.
  */
 @DisableCachingByDefault(because = "model payloads contain absolute paths")
 public abstract class IdeModelTask extends DefaultTask {
@@ -43,8 +43,9 @@ public abstract class IdeModelTask extends DefaultTask {
     @Input
     public abstract org.gradle.api.provider.Property<String> getFingerprint();
 
+    /** The captured models in their state form ({@link CapturedModel}); the action turns them into the bundle. */
     @org.gradle.api.tasks.Internal
-    public abstract ListProperty<ModelPayload> getModels();
+    public abstract ListProperty<CapturedModel> getModels();
 
     @OutputFile
     public abstract RegularFileProperty getModelFile();
@@ -53,7 +54,7 @@ public abstract class IdeModelTask extends DefaultTask {
     public void writeModels() throws IOException {
         File file = getModelFile().get().getAsFile();
         Files.createDirectories(file.getParentFile().toPath());
-        List<ModelPayload> payloads = getModels().get();
+        List<ModelPayload> payloads = ModelCapture.toPayloads(getModels().get());
         try (OutputStream out = Files.newOutputStream(file.toPath()); DataOutputStream data = new DataOutputStream(out)) {
             ModelBundle.write(data, payloads);
         } catch (IOException | RuntimeException e) {

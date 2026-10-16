@@ -22,7 +22,9 @@ build/install/harness/bin/harness --project <build> --gradle-user-home <dir> --i
   ported models (`PortedModels`) from builders and reads the bundle files instead. `--extra-tooling-jar` puts the
   prototype jar on IntelliJ's init-script classpath.
 - `--dump-models <dir>`: writes every received model's serialized bytes to `<dir>/<class id>/<build id>/<project>.bin`
-  for `../prototype/compare-models.sh`.
+  for `../prototype/compare-models.sh` (per document) and `../prototype/compare-ordered.sh` (consumption order, for the
+  two dependency models), plus `<dir>/order.txt`. The Gradle-owned `IdeaProject` / `KotlinDslScriptsModel` and their
+  per-project task payloads are also written as text under `<dir>/gradle-owned/` for `../prototype/compare-gradle-owned.sh`.
 - `--drop-arg-prefix P`: drops resolver-added arguments starting with P (e.g. the Kotlin correlation id).
 - Every run's summary ends with `stall_max_gap_s`: the largest gap between the 10-second health checks of any daemon
   in the user home during the run; values far above 10 mean the whole machine stalled (LOG 2026-10-15).

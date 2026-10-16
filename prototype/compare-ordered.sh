@@ -11,6 +11,7 @@ same=0; diffn=0; missing=0
 while IFS= read -r -d '' f; do
   rel=${f#$bdir}
   if [ ! -f "$tdir/$rel" ]; then missing=$((missing+1)); echo "MISSING in tasks: $rel"; continue; fi
-  if diff -q "$f" "$tdir/$rel" >/dev/null; then same=$((same+1)); else diffn=$((diffn+1)); echo "DIFFERENT: $rel"; diff "$f" "$tdir/$rel" | head -30; fi
+  # Per-run node ids of ProjectDependencies are not content.
+  if diff -q -I '^ *id: [0-9]*$' "$f" "$tdir/$rel" >/dev/null; then same=$((same+1)); else diffn=$((diffn+1)); echo "DIFFERENT: $rel"; diff -I '^ *id: [0-9]*$' "$f" "$tdir/$rel" | head -30; fi
 done < <(find "$bdir" -type f -name '*.bin.txt' -print0 | sort -z)
 echo "$SIMPLE: identical=$same different=$diffn missing=$missing"

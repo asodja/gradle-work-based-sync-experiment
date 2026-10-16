@@ -1,0 +1,17 @@
+overall span 1195 ms, 1750 operations
+   1193 ms  +     0  Run build
+      911 ms  +     6  Check configuration cache fingerprint
+
+== every operation whose name mentions the task graph, task execution or the configuration cache (any duration)
+    911 ms  +     6  depth 1  Check configuration cache fingerprint
+    182 ms  +   920  depth 1  Load configuration cache state
+     21 ms  +  1102  depth 2  Run tasks (:build-logic-commons)
+     65 ms  +  1102  depth 1  Run main tasks
+     64 ms  +  1103  depth 2  Run tasks
+
+== direct children of the root operation (all, >= 50 ms)
+    911 ms  +     6  Check configuration cache fingerprint
+    182 ms  +   920  Load configuration cache state
+     65 ms  +  1102  Run main tasks
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)

@@ -1,0 +1,107 @@
+overall span 14654 ms, 620518 operations
+  14649 ms  +     0  Run build
+     5338 ms  +   309  Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' for default scope
+       5337 ms  +   309  Configure build
+     6142 ms  +  5763  Store configuration cache state
+        362 ms  +  5771  Storing configuration for :ant-worker
+        589 ms  +  5771  Storing configuration for :antlr
+        590 ms  +  5771  Storing configuration for :ant-impl
+        357 ms  +  5772  Storing configuration for :architecture-test
+        357 ms  +  5772  Storing configuration for :api-metadata
+        357 ms  +  5772  Storing configuration for :ant-api
+        353 ms  +  5776  Storing configuration for :ant
+        511 ms  +  5852  Storing configuration for :base-diagnostics
+        343 ms  +  6129  Storing configuration for :build-cache
+        354 ms  +  6133  Storing configuration for :bean-serialization-services
+        442 ms  +  6328  Storing configuration for :build-cache-http
+        334 ms  +  6472  Storing configuration for :build-init
+        300 ms  +  6661  Storing configuration for :classpath
+       1311 ms  +  6781  Storing configuration for :configuration-cache
+        448 ms  +  6785  Storing configuration for :core
+        339 ms  +  6862  Storing configuration for :core-serialization-codecs
+        342 ms  +  7238  Storing configuration for :declarative-dsl-provider
+        501 ms  +  7290  Storing configuration for :dependency-management
+        503 ms  +  7535  Storing configuration for :enterprise-plugin-performance
+        305 ms  +  7581  Storing configuration for :execution
+        350 ms  +  8146  Storing configuration for :ide-plugins
+        573 ms  +  8278  Storing configuration for :integ-test
+        302 ms  +  8296  Storing configuration for :internal-integ-testing
+        359 ms  +  8300  Storing configuration for :internal-performance-testing
+        333 ms  +  8447  Storing configuration for :jacoco
+        373 ms  +  8449  Storing configuration for :ivy
+        394 ms  +  8597  Storing configuration for :java-platform
+        607 ms  +  8603  Storing configuration for :docs
+        372 ms  +  8756  Storing configuration for :kotlin-dsl
+        994 ms  +  8808  Storing configuration for :kotlin-dsl-tooling-builders
+        307 ms  +  8992  Storing configuration for :language-java
+        344 ms  +  9169  Storing configuration for :model-core
+        591 ms  +  9325  Storing configuration for :performance
+        401 ms  +  9488  Storing configuration for :plugins-groovy
+        730 ms  +  9498  Storing configuration for :plugins-java
+        686 ms  + 10348  Storing configuration for :scala
+        300 ms  + 10393  Storing configuration for :plugins-model-native
+        385 ms  + 10398  Storing configuration for :maven
+        365 ms  + 10917  Storing configuration for :toolchains-jvm
+        482 ms  + 11022  Storing configuration for :tooling-api
+        445 ms  + 11063  Storing configuration for :tooling-native
+        348 ms  + 11289  Storing configuration for :wrapper-main
+
+== every operation whose name mentions the task graph, task execution or the configuration cache (any duration)
+      1 ms  +     5  depth 1  Check configuration cache fingerprint
+    282 ms  +    22  depth 3  Load build
+     45 ms  +    83  depth 7  Configure build (:build-logic-settings)
+     70 ms  +   139  depth 9  Run tasks (:build-logic-settings)
+     57 ms  +   247  depth 4  Load build (:build-logic)
+     40 ms  +   257  depth 8  Configure build (:build-logic-commons)
+   5337 ms  +   309  depth 2  Configure build
+     35 ms  +   354  depth 3  Notify projectsLoaded listeners
+    414 ms  +   389  depth 3  Configure build (:build-logic)
+     63 ms  +   439  depth 10  Run tasks (:build-logic-commons)
+    122 ms  +   843  depth 10  Calculate task graph (:build-logic)
+    123 ms  +   843  depth 9  Calculate build tree task graph
+    183 ms  +   966  depth 9  Run tasks (:build-logic)
+     53 ms  +  1336  depth 9  Calculate build tree task graph
+     47 ms  +  1337  depth 10  Calculate task graph (:build-logic)
+     23 ms  +  1389  depth 9  Run tasks (:build-logic-commons)
+    149 ms  +  1389  depth 9  Run tasks (:build-logic)
+     28 ms  +  1719  depth 5  Notify afterEvaluate listeners of :ant
+     26 ms  +  1721  depth 5  Notify afterEvaluate listeners of :base-compiler-worker
+     24 ms  +  1723  depth 5  Notify afterEvaluate listeners of :base-asm
+     22 ms  +  1726  depth 5  Notify afterEvaluate listeners of :ant-api
+     22 ms  +  2155  depth 5  Notify afterEvaluate listeners of :configuration-cache-base
+     65 ms  +  2230  depth 10  Calculate task graph (:build-logic)
+     65 ms  +  2230  depth 9  Calculate build tree task graph
+     31 ms  +  2296  depth 9  Run tasks (:build-logic)
+     56 ms  +  2704  depth 5  Notify afterEvaluate listeners of :flow-services
+     53 ms  +  2707  depth 5  Notify afterEvaluate listeners of :file-watching
+    214 ms  +  2865  depth 5  Notify afterEvaluate listeners of :docs
+     72 ms  +  3574  depth 5  Notify afterEvaluate listeners of :plugins-jvm-test-suite
+   1214 ms  +  4432  depth 3  Notify projectsEvaluated listeners
+     55 ms  +  5701  depth 2  Calculate task graph
+     62 ms  +  5701  depth 1  Calculate build tree task graph
+   6142 ms  +  5763  depth 1  Store configuration cache state
+     91 ms  + 11905  depth 1  Run main tasks
+     35 ms  + 11906  depth 2  Run tasks (:build-logic-settings)
+     35 ms  + 11906  depth 2  Run tasks (:build-logic)
+     41 ms  + 11906  depth 2  Run tasks (:build-logic-commons)
+     71 ms  + 11925  depth 2  Run tasks
+      1 ms  + 14432  depth 1  Store model in configuration cache
+
+== direct children of the root operation (all, >= 50 ms)
+    284 ms  +    21  Fetch model 'org.gradle.tooling.model.gradle.GradleBuild' for default scope
+   5338 ms  +   309  Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' for default 
+     62 ms  +  5701  Calculate build tree task graph
+   6142 ms  +  5763  Store configuration cache state
+     91 ms  + 11905  Run main tasks
+    184 ms  + 14444  Develocity plugin build finished
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)
+
+-- Fetch model 'com.intellij.gradle.toolingExtension.impl.model.utilDummyModel.DummyModel' fo (5338 ms)
+      5337 ms sum      1x  wall   5337 ms  Configure build
+         1 ms sum      1x  wall      1 ms  Build model * for root project *
+
+-- Store configuration cache state (6142 ms)
+     52503 ms sum    287x  wall   6133 ms  Storing configuration for *
+         5 ms sum      3x  wall    245 ms  Storing configuration for build*
+         0 ms sum      1x  wall      0 ms  Storing configuration for build

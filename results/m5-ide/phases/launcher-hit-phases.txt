@@ -1,0 +1,6 @@
+overall span 2093 ms, 1750 operations
+   2091 ms  +     0  Run build
+      503 ms  +     5  Check configuration cache fingerprint
+     1442 ms  +   514  Load configuration cache state
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)

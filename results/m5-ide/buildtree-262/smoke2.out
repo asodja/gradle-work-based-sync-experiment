@@ -1,0 +1,45 @@
+== tree-store 2026-10-17T14:43:03+00:00
+exit 0
+2026-10-17 14:43:06,292 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:43:45,385 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:43:45,548 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:43:55,268 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:43:58,304 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 52 s 120 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 1651 ms
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] bundles read during the run: 287 of 287
+[wbs] holder state built from bundles: 4 builds, 6321 payloads, 5756 models; light builds: gradle(254 projects) build-logic-settings(6 projects) build-logic-com
+[wbs] plain model task run: 287 projects in 35495 ms
+suspicious log lines: 0
+storage files: 0
+== tree 2026-10-17T14:44:54+00:00
+exit 0
+2026-10-17 14:44:57,371 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:45:06,997 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:45:07,259 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:45:21,740 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:45:25,968 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 28 s 711 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 1940 ms
+[wbs] build tree from tasks: 4 builds; 0 of 287 bundles resolved after the run
+[wbs] bundles read during the run: 287 of 287
+[wbs] holder state built from bundles: 4 builds, 6321 payloads, 5756 models; light builds: gradle(254 projects) build-logic-settings(6 projects) build-logic-com
+[wbs] plain model task run: 287 projects in 5923 ms
+suspicious log lines: 0
+storage files: 0
+== model 2026-10-17T14:46:27+00:00
+exit 0
+2026-10-17 14:46:30,174 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 14:47:09,232 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:47:09,395 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:47:19,186 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:47:21,857 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 51 s 791 ms
+[wbs] GradleDslBaseScriptModel fetched: 1 model(s) in 94 ms
+[wbs] bundles read during the run: 287 of 287
+[wbs] holder state built from bundles: 4 builds, 6321 payloads, 5756 models; light builds: gradle(254 projects) build-logic(19 projects) build-logic-commons(8 p
+[wbs] plain model task run: 287 projects in 35563 ms
+suspicious log lines: 2
+storage files: 0
+find: '/tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d29/storage-tree': No such file or directory
+find: '/tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d29/storage-model': No such file or directory
+same=0 different=0 only-in-A=0 only-in-B=0
+== smoke done 2026-10-17T14:48:21+00:00

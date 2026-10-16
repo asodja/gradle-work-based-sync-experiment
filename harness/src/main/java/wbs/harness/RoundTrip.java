@@ -20,7 +20,7 @@ public final class RoundTrip {
             for (ModelPayload p : ModelBundle.read(data)) {
                 if (!p.getModelClassName().endsWith(wanted)) continue;
                 Class<?> c = Class.forName(p.getModelClassName());
-                Object model = ModelPayload.JAVA.equals(p.getFormat()) ? IdeTasksTransport.readJava(p.getBytes()) : new ToolingSerializer().read(p.getBytes(), c);
+                Object model = p.readModel(RoundTrip.class.getClassLoader());
                 System.out.println("read: " + model.getClass().getName());
                 byte[] again = writer.write(model);
                 byte[] twice = writer.write(model);

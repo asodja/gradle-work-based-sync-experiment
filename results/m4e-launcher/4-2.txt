@@ -1,0 +1,54 @@
+project=/home/agent/projects/gradle-wbs-benchmark
+gradleUserHome=/home/agent/.gradle-wbs
+gradleVersion=9.9.0-milestone-2
+mode=launcher
+arguments=-Didea.active=true -Didea.version=2025.3 -Didea.vendor.name=JetBrains -Didea.gradle.download.sources=false -Didea.sync.active=true -Didea.resolveSourceSetDependencies=true -Didea.parallelModelFetch.enabled=true -Porg.gradle.kotlin.dsl.provider.cid=50699618149120 -Pkotlin.mpp.enableIntransitiveMetadataConfiguration=true --init-script /tmp/wbs-init3439601050054953885/ijMapper.gradle --init-script /tmp/wbs-init3439601050054953885/ijIdeaPluginConfigurator.gradle --init-script /tmp/wbs-init3439601050054953885/ijInit.gradle --init-script /tmp/wbs-init3439601050054953885/ijModelTasks.gradle --no-scan --no-build-cache
+status=OK
+
+# timing (ms from start)
+start                                           0
+buildEnvironment                                4
+actionStart                                    40
+gradleBuild                                   100
+tasksStart                                    101
+tasksEnd                                    19248
+bundlesRead                                 19992
+end                                         19992
+
+total_ms=19992
+stall_max_gap_s=-1
+buildEnvironment_ms=4
+gradleBuild_ms=60
+tasks_ms=19147
+bundlesRead_ms=744
+
+# tasks
+tasks={executed=27, skipped=66, up-to-date=557}
+
+# models read from bundles (count, bytes)
+ExternalProject                                                287
+IdeaModulePayload                                              287
+GradleSourceSetModel                                           287
+GradleSourceSetDependencyModel                                 287
+GradleTaskModel                                                287
+GradleExtensions                                               278
+ExternalTestsModel                                             287
+IntelliJProjectSettings                                          1
+IntelliJSettings                                                 1
+DependencyAccessorsModel                                       287
+VersionCatalogsModel                                           287
+JavaGradleManifestModel                                        287
+RepositoryModels                                               287
+ProjectRepositoriesModel                                       287
+KaptGradleModel                                                287
+KotlinDslScriptPayload                                         287
+ProjectDependencies                                            272
+AnnotationProcessingModel                                      256
+KotlinGradleModel                                               60
+bundleBytes=196595527 missingBundles=0
+builds=4 projects=287
+
+# configuration cache / problems lines from 4-2.txt.build.log
+Calculating task graph as configuration cache cannot be reused because file 'subprojects/core/build.gradle.kts' has changed.
+BUILD SUCCESSFUL in 18s
+Configuration cache entry stored.

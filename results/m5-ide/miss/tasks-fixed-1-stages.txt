@@ -1,0 +1,45 @@
+2026-10-16 18:06:32,781 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' started
+2026-10-16 18:06:32,912 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projects/gradle-wbs-benchmark
+2026-10-16 18:07:14,439 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-16 18:07:14,599 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-16 18:07:14,613 [IDE]: Gradle: Importing gradle bridge data                                                                                        0%
+2026-10-16 18:07:14,616 [IDE]: Gradle: Importing module data                                                                                               0%
+2026-10-16 18:07:14,956 [IDE]: Gradle: Importing compose resources model                                                                                   2%
+2026-10-16 18:07:14,956 [IDE]: Gradle: Importing native target data                                                                                        5%
+2026-10-16 18:07:14,956 [IDE]: Gradle: Importing kotlin gradle project data
+2026-10-16 18:07:14,956 [IDE]: Gradle: Importing kotlin target data
+2026-10-16 18:07:14,956 [IDE]: Gradle: Importing kotlin fragment data
+2026-10-16 18:07:14,956 [IDE]: Gradle: Importing gradle project build script data
+2026-10-16 18:07:14,956 [IDE]: Gradle: Importing gradle source set data
+2026-10-16 18:07:15,516 [IDE]: Gradle: Importing gradle bridge module data
+2026-10-16 18:07:15,518 [IDE]: Gradle: Importing kotlin gradle source set data
+2026-10-16 18:07:15,518 [IDE]: Gradle: Importing project data
+2026-10-16 18:07:15,593 [IDE]: Gradle: Importing java project data
+2026-10-16 18:07:15,626 [IDE]: Gradle: Importing project sdk data
+2026-10-16 18:07:15,629 [IDE]: Gradle: Importing composite build data
+2026-10-16 18:07:15,629 [IDE]: Gradle: Importing java module data
+2026-10-16 18:07:15,673 [IDE]: Gradle: Importing module sdk data
+2026-10-16 18:07:15,690 [IDE]: Gradle: Importing library data
+2026-10-16 18:07:16,230 [IDE]: Gradle: Importing content root data
+2026-10-16 18:07:16,442 [IDE]: Gradle: Importing kotlin output paths data
+2026-10-16 18:07:16,442 [IDE]: Gradle: Importing module dependency data
+2026-10-16 18:07:17,021 [IDE]: Gradle: Importing library dependency data
+2026-10-16 18:07:22,029 [IDE]: Gradle: Importing dependency accessors model
+2026-10-16 18:07:22,029 [IDE]: Gradle: Importing version catalogs model
+2026-10-16 18:07:22,029 [IDE]: Gradle: Importing build script classpath data
+2026-10-16 18:07:22,111 [IDE]: Gradle: Importing gradle extensions
+2026-10-16 18:07:22,132 [IDE]: Gradle: Importing task data
+2026-10-16 18:07:22,134 [IDE]: Gradle: Importing java manifest data
+2026-10-16 18:07:22,135 [IDE]: Gradle: Importing external project
+2026-10-16 18:07:22,135 [IDE]: Gradle: Importing configuration data
+2026-10-16 18:07:22,167 [IDE]: Gradle: Importing test data
+2026-10-16 18:07:22,167 [IDE]: Gradle: Importing project dependencies
+2026-10-16 18:07:22,167 [IDE]: Gradle: Importing annotation processing data
+2026-10-16 18:07:22,294 [IDE]: Gradle: Importing annotation processing data$ annotation processor output
+2026-10-16 18:07:22,294 [IDE]: Gradle: Importing web configuration model data
+2026-10-16 18:07:22,315 [IDE]: Gradle: Importing external system operation descriptor
+2026-10-16 18:07:22,315 [IDE]: Gradle: Importing ear configuration model data
+2026-10-16 18:07:22,317 [IDE]: Gradle: Importing maven repository data
+2026-10-16 18:07:22,317 [IDE]: Gradle: Importing project repository data
+2026-10-16 18:07:25,090 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-16 18:07:28,224 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 55 s 443 ms

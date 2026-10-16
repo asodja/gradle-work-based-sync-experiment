@@ -1,0 +1,105 @@
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=gateway.docker.internal -Dhttp.proxyPort=3128 -Dhttps.proxyHost=gateway.docker.internal -Dhttps.proxyPort=3128 -Dhttp.nonProxyHosts=localhost|127.*|[::1]|gateway.docker.internal
+
+2026-10-16 04:53:46
+
+Full thread dump OpenJDK 64-Bit Server VM (25.0.4+7-1-26.04-Ubuntu mixed mode, sharing):
+
+
+# excerpt: the 8 threads blocked on or holding the kotlin.SynchronizedLazyImpl monitor 0x0000000761400000 (full dump kept out of the repo)
+
+
+"Daemon worker" #41 [1020538] prio=5 os_prio=0 cpu=14419.38ms elapsed=14108.02s tid=0x0000fffefc009960 nid=1020538 waiting for monitor entry  [0x0000ffff173c5000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:81)
+	- waiting to lock <0x0000000761400000> (a kotlin.SynchronizedLazyImpl)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.getStage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:78)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.stage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:92)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.accessorsClassPathOf(KotlinBuildScriptModelBuilder.kt:216)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.projectScriptModelBuilder$lambda$0(KotlinBuildScriptModelBuilder.kt:204)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt$$Lambda/0x00003fe003497be8.invoke(Unknown Source)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinScriptTargetModelBuilder.buildModel(KotlinBuildScriptModelBuilder.kt:380)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilder.kotlinBuildScriptModelFor$org_gradle_kotlin_dsl_tooling_builders(KotlinBuildScriptModelBuilder.kt:91)
+
+"Build operations Thread 2" #149 [1020851] prio=5 os_prio=0 cpu=3683.39ms elapsed=14075.80s tid=0x0000fffefaa54d40 nid=1020851 waiting for monitor entry  [0x0000ffff161bb000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:81)
+	- waiting to lock <0x0000000761400000> (a kotlin.SynchronizedLazyImpl)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.getStage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:78)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.stage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:92)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.accessorsClassPathOf(KotlinBuildScriptModelBuilder.kt:216)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.projectScriptModelBuilder$lambda$0(KotlinBuildScriptModelBuilder.kt:204)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt$$Lambda/0x00003fe003497be8.invoke(Unknown Source)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinScriptTargetModelBuilder.buildModel(KotlinBuildScriptModelBuilder.kt:380)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilder.kotlinBuildScriptModelFor$org_gradle_kotlin_dsl_tooling_builders(KotlinBuildScriptModelBuilder.kt:91)
+
+"Build operations Thread 3" #150 [1020852] prio=5 os_prio=0 cpu=3915.32ms elapsed=14075.80s tid=0x0000fffefaa55610 nid=1020852 waiting for monitor entry  [0x0000ffff163bb000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:81)
+	- waiting to lock <0x0000000761400000> (a kotlin.SynchronizedLazyImpl)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.getStage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:78)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.stage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:92)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.accessorsClassPathOf(KotlinBuildScriptModelBuilder.kt:216)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.projectScriptModelBuilder$lambda$0(KotlinBuildScriptModelBuilder.kt:204)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt$$Lambda/0x00003fe003497be8.invoke(Unknown Source)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinScriptTargetModelBuilder.buildModel(KotlinBuildScriptModelBuilder.kt:380)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilder.kotlinBuildScriptModelFor$org_gradle_kotlin_dsl_tooling_builders(KotlinBuildScriptModelBuilder.kt:91)
+
+"Build operations Thread 4" #151 [1020853] prio=5 os_prio=0 cpu=4549.28ms elapsed=14075.80s tid=0x0000fffefaa55ee0 nid=1020853 waiting for monitor entry  [0x0000fffe921fb000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:81)
+	- waiting to lock <0x0000000761400000> (a kotlin.SynchronizedLazyImpl)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.getStage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:78)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.stage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:92)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.accessorsClassPathOf(KotlinBuildScriptModelBuilder.kt:216)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.projectScriptModelBuilder$lambda$0(KotlinBuildScriptModelBuilder.kt:204)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt$$Lambda/0x00003fe003497be8.invoke(Unknown Source)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinScriptTargetModelBuilder.buildModel(KotlinBuildScriptModelBuilder.kt:380)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilder.kotlinBuildScriptModelFor$org_gradle_kotlin_dsl_tooling_builders(KotlinBuildScriptModelBuilder.kt:91)
+
+"Build operations Thread 5" #152 [1020854] prio=5 os_prio=0 cpu=3154.59ms elapsed=14075.80s tid=0x0000fffefaa567b0 nid=1020854 in Object.wait()  [0x0000fffe91bfb000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait0(java.base@25.0.4/Native Method)
+	at java.lang.Object.wait(java.base@25.0.4/Object.java:389)
+	at java.lang.Object.wait(java.base@25.0.4/Object.java:351)
+	at org.gradle.internal.resources.DefaultResourceLockCoordinationService.withStateLock(DefaultResourceLockCoordinationService.java:111)
+	- locked <0x000000073fc5ab48> (a java.lang.Object)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.lambda$acquireLocks$0(DefaultWorkerLeaseService.java:305)
+	at org.gradle.internal.work.DefaultWorkerLeaseService$$Lambda/0x00003fe00257abd0.run(Unknown Source)
+	at org.gradle.internal.work.ResourceLockStatistics$1.measureLockAcquisition(ResourceLockStatistics.java:38)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.acquireLocks(DefaultWorkerLeaseService.java:304)
+
+"Build operations Thread 6" #153 [1020855] prio=5 os_prio=0 cpu=4016.84ms elapsed=14075.80s tid=0x0000fffefaa57330 nid=1020855 waiting for monitor entry  [0x0000fffe917fb000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:81)
+	- waiting to lock <0x0000000761400000> (a kotlin.SynchronizedLazyImpl)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.getStage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:78)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.stage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:92)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.accessorsClassPathOf(KotlinBuildScriptModelBuilder.kt:216)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.projectScriptModelBuilder$lambda$0(KotlinBuildScriptModelBuilder.kt:204)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt$$Lambda/0x00003fe003497be8.invoke(Unknown Source)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinScriptTargetModelBuilder.buildModel(KotlinBuildScriptModelBuilder.kt:380)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilder.kotlinBuildScriptModelFor$org_gradle_kotlin_dsl_tooling_builders(KotlinBuildScriptModelBuilder.kt:91)
+
+"Build operations Thread 7" #154 [1020856] prio=5 os_prio=0 cpu=3314.40ms elapsed=14075.80s tid=0x0000fffefaa58250 nid=1020856 waiting for monitor entry  [0x0000fffe919fb000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:81)
+	- waiting to lock <0x0000000761400000> (a kotlin.SynchronizedLazyImpl)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.getStage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:78)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.stage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:92)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.accessorsClassPathOf(KotlinBuildScriptModelBuilder.kt:216)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.projectScriptModelBuilder$lambda$0(KotlinBuildScriptModelBuilder.kt:204)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt$$Lambda/0x00003fe003497be8.invoke(Unknown Source)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinScriptTargetModelBuilder.buildModel(KotlinBuildScriptModelBuilder.kt:380)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilder.kotlinBuildScriptModelFor$org_gradle_kotlin_dsl_tooling_builders(KotlinBuildScriptModelBuilder.kt:91)
+
+"Build operations Thread 8" #155 [1020857] prio=5 os_prio=0 cpu=3825.76ms elapsed=14075.80s tid=0x0000fffefaa58f50 nid=1020857 waiting for monitor entry  [0x0000fffe91dfb000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:81)
+	- waiting to lock <0x0000000761400000> (a kotlin.SynchronizedLazyImpl)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.getStage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:78)
+	at org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator.stage1BlocksAccessorClassPath(Stage1BlocksAccessorClassPath.kt:92)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.accessorsClassPathOf(KotlinBuildScriptModelBuilder.kt:216)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt.projectScriptModelBuilder$lambda$0(KotlinBuildScriptModelBuilder.kt:204)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilderKt$$Lambda/0x00003fe003497be8.invoke(Unknown Source)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinScriptTargetModelBuilder.buildModel(KotlinBuildScriptModelBuilder.kt:380)
+	at org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilder.kotlinBuildScriptModelFor$org_gradle_kotlin_dsl_tooling_builders(KotlinBuildScriptModelBuilder.kt:91)

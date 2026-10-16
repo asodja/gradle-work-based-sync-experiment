@@ -1,0 +1,147 @@
+overall span 12584 ms, 610679 operations
+  12579 ms  +     0  Run build
+     4664 ms  +   294  Configure build
+        470 ms  +   343  Configure build (:build-logic)
+        497 ms  +   813  Parallelize configuration
+        448 ms  +  1311  Parallelize configuration
+        444 ms  +  1312  Parallelize configuration
+        447 ms  +  1312  Parallelize configuration
+        549 ms  +  1312  Parallelize configuration
+        442 ms  +  1318  Parallelize configuration
+        555 ms  +  1319  Parallelize configuration
+        604 ms  +  1322  Parallelize configuration
+        432 ms  +  1324  Parallelize configuration
+        433 ms  +  1324  Parallelize configuration
+        644 ms  +  1760  Parallelize configuration
+        400 ms  +  2499  Parallelize configuration
+        788 ms  +  2772  Parallelize configuration
+        343 ms  +  3528  Parallelize configuration
+     7170 ms  +  5018  Store configuration cache state
+        459 ms  +  5028  Storing configuration for :ant
+        468 ms  +  5028  Storing configuration for :ant-api
+        459 ms  +  5029  Storing configuration for :ant-worker
+        460 ms  +  5029  Storing configuration for :api-metadata
+        820 ms  +  5029  Storing configuration for :antlr
+        939 ms  +  5029  Storing configuration for :ant-impl
+        463 ms  +  5030  Storing configuration for :architecture-test
+        408 ms  +  5085  Storing configuration for :base-asm
+        493 ms  +  5487  Storing configuration for :base-diagnostics
+        339 ms  +  5488  Storing configuration for :base-ide-plugins
+        351 ms  +  5493  Storing configuration for :base-services
+        497 ms  +  5496  Storing configuration for :build-cache
+        370 ms  +  5625  Storing configuration for :build-cache-core
+        376 ms  +  5995  Storing configuration for :build-init
+        419 ms  +  6171  Storing configuration for :classpath
+        490 ms  +  6270  Storing configuration for :code-quality
+       1269 ms  +  6371  Storing configuration for :configuration-cache
+        516 ms  +  6428  Storing configuration for :core
+        318 ms  +  6561  Storing configuration for :core-serialization-codecs
+        364 ms  +  6879  Storing configuration for :declarative-dsl-core
+        323 ms  +  6916  Storing configuration for :declarative-dsl-evaluator
+        495 ms  +  6935  Storing configuration for :declarative-dsl-provider
+        370 ms  +  6944  Storing configuration for :declarative-dsl-tooling-builders
+        419 ms  +  6971  Storing configuration for :dependency-management
+        300 ms  +  7007  Storing configuration for :dependency-management-serialization-codecs
+        830 ms  +  7314  Storing configuration for :docs
+        369 ms  +  7352  Storing configuration for :ear
+        434 ms  +  7390  Storing configuration for :enterprise
+        576 ms  +  7437  Storing configuration for :enterprise-plugin-performance
+        528 ms  +  7553  Storing configuration for :execution
+        355 ms  +  7721  Storing configuration for :file-watching
+        306 ms  +  7824  Storing configuration for :gradle-cli
+        321 ms  +  8144  Storing configuration for :ide-plugins
+        535 ms  +  8334  Storing configuration for :integ-test
+        383 ms  +  8442  Storing configuration for :internal-performance-testing
+        444 ms  +  8518  Storing configuration for :ivy
+        425 ms  +  8699  Storing configuration for :java-platform
+        302 ms  +  8738  Storing configuration for :javadoc
+        330 ms  +  8825  Storing configuration for :kotlin-dsl
+        302 ms  +  8827  Storing configuration for :kotlin-dsl-integ-tests
+        364 ms  +  8866  Storing configuration for :kotlin-dsl-plugins
+        363 ms  +  8962  Storing configuration for :kotlin-dsl-tooling-builders
+        397 ms  +  9124  Storing configuration for :language-java
+        331 ms  +  9157  Storing configuration for :logging
+        368 ms  +  9325  Storing configuration for :maven
+        451 ms  +  9345  Storing configuration for :model-core
+        456 ms  +  9551  Storing configuration for :performance
+        343 ms  +  9622  Storing configuration for :platform-native
+        375 ms  +  9640  Storing configuration for :plugin-development
+        524 ms  +  9790  Storing configuration for :plugins-application
+        349 ms  + 10015  Storing configuration for :plugins-model-native
+        741 ms  + 10728  Storing configuration for :scala
+        305 ms  + 10905  Storing configuration for :smoke-test
+        307 ms  + 10927  Storing configuration for :software-diagnostics
+        439 ms  + 11338  Storing configuration for :tooling-api
+
+== every operation whose name mentions the task graph, task execution or the configuration cache (any duration)
+      0 ms  +     6  depth 1  Check configuration cache fingerprint
+    286 ms  +     8  depth 1  Load build
+     45 ms  +    79  depth 5  Configure build (:build-logic-settings)
+     62 ms  +   136  depth 7  Run tasks (:build-logic-settings)
+     60 ms  +   234  depth 2  Load build (:build-logic)
+     42 ms  +   246  depth 6  Configure build (:build-logic-commons)
+   4664 ms  +   294  depth 1  Configure build
+    470 ms  +   343  depth 2  Configure build (:build-logic)
+     44 ms  +   375  depth 10  Calculate task graph (:build-logic-commons)
+     44 ms  +   375  depth 9  Calculate build tree task graph
+     86 ms  +   419  depth 9  Run tasks (:build-logic-commons)
+    114 ms  +   857  depth 9  Calculate task graph (:build-logic)
+    115 ms  +   857  depth 8  Calculate build tree task graph
+    170 ms  +   972  depth 8  Run tasks (:build-logic)
+     58 ms  +  1330  depth 9  Calculate task graph (:build-logic)
+     63 ms  +  1330  depth 8  Calculate build tree task graph
+     33 ms  +  1393  depth 8  Run tasks (:build-logic-commons)
+    187 ms  +  1393  depth 8  Run tasks (:build-logic)
+     22 ms  +  1734  depth 4  Notify afterEvaluate listeners of :base-compiler-worker
+     22 ms  +  1734  depth 4  Notify afterEvaluate listeners of :ant-worker
+     25 ms  +  1734  depth 4  Notify afterEvaluate listeners of :ant
+     21 ms  +  1735  depth 4  Notify afterEvaluate listeners of :ant-api
+     23 ms  +  1737  depth 4  Notify afterEvaluate listeners of :antlr
+     24 ms  +  1927  depth 4  Notify beforeEvaluate listeners of :build-cache-packaging
+     22 ms  +  2114  depth 4  Notify afterEvaluate listeners of :build-init-specs-api
+     32 ms  +  2372  depth 4  Notify afterEvaluate listeners of :bean-serialization-services
+     28 ms  +  2376  depth 4  Notify afterEvaluate listeners of :configuration-problems-base
+     25 ms  +  2379  depth 4  Notify afterEvaluate listeners of :configuration-cache-base
+     26 ms  +  2441  depth 4  Notify afterEvaluate listeners of :core-serialization-codecs
+     77 ms  +  2563  depth 8  Run tasks (:build-logic)
+     28 ms  +  2892  depth 4  Notify afterEvaluate listeners of :ear
+     23 ms  +  2897  depth 4  Notify afterEvaluate listeners of :encryption-services
+    332 ms  +  3228  depth 4  Notify afterEvaluate listeners of :docs
+     33 ms  +  3669  depth 4  Notify afterEvaluate listeners of :kotlin-dsl-plugins
+     31 ms  +  3840  depth 4  Notify afterEvaluate listeners of :kotlin-dsl
+     25 ms  +  3950  depth 4  Notify afterEvaluate listeners of :platform-base
+     31 ms  +  4074  depth 4  Notify beforeEvaluate listeners of :precondition-tester
+     32 ms  +  4074  depth 4  Notify beforeEvaluate listeners of :problems
+     26 ms  +  4656  depth 4  Notify afterEvaluate listeners of :testing-jvm
+     25 ms  +  4657  depth 4  Notify afterEvaluate listeners of :testing-native
+    114 ms  +  4844  depth 2  Notify projectsEvaluated listeners
+     55 ms  +  4958  depth 2  Calculate task graph
+     60 ms  +  4958  depth 1  Calculate build tree task graph
+   7170 ms  +  5018  depth 1  Store configuration cache state
+     93 ms  + 12197  depth 1  Load configuration cache state
+     56 ms  + 12290  depth 1  Run main tasks
+     55 ms  + 12291  depth 2  Run tasks
+
+== direct children of the root operation (all, >= 50 ms)
+    286 ms  +     8  Load build
+   4664 ms  +   294  Configure build
+     60 ms  +  4958  Calculate build tree task graph
+   7170 ms  +  5018  Store configuration cache state
+     93 ms  + 12197  Load configuration cache state
+     56 ms  + 12290  Run main tasks
+    219 ms  + 12352  Develocity plugin build finished
+
+== children of the task graph / configuration ops, grouped by name prefix (sum ms, count, wall of group)
+
+-- Configure build (4664 ms)
+     29548 ms sum    254x  wall   4031 ms  Parallelize configuration
+       470 ms sum      1x  wall    470 ms  Configure build *
+       114 ms sum      1x  wall    114 ms  Notify projectsEvaluated listeners
+        36 ms sum      1x  wall     36 ms  Load projects
+         2 ms sum      1x  wall      2 ms  Notify projectsLoaded listeners
+         1 ms sum      1x  wall      1 ms  Resolve dependencies of incomingCatalogForBuildLibs*
+
+-- Store configuration cache state (7170 ms)
+     59612 ms sum    287x  wall   7158 ms  Storing configuration for *
+         1 ms sum      1x  wall      1 ms  Storing configuration for build
+         0 ms sum      3x  wall    263 ms  Storing configuration for build*

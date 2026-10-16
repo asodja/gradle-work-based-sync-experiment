@@ -1,0 +1,77 @@
+== part 2: IDE restart scenario 2026-10-17T01:22:42+00:00
+== IDE compact run 1 2026-10-17T01:22:42+00:00
+2026-10-17 01:22:44,992 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 01:23:22,391 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 01:23:22,579 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 01:23:31,736 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 01:23:34,429 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 49 s 791 ms
+2026-10-17 01:23:20,355 [  37734]   INFO - STDERR - [wbs] plain model task run: 287 projects in 34383 ms
+2026-10-17 01:23:20,376 [  37755]   INFO - STDERR - [wbs] bundles read during the run: 287 of 287
+2026-10-17 01:23:20,377 [  37756]   INFO - STDERR - [wbs] holder state built from bundles: 4 builds, 6321 payloads, 5755 models; light builds: gradle(254 projec
+[wbs] bundles read during the run: 287 of 287
+bundles: 287 files, 43059814 bytes; formats in :core:       1 compact-deps       9 ion      12 java 
+== IDE compact run 2 2026-10-17T01:24:31+00:00
+2026-10-17 01:24:34,374 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 01:24:44,100 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 01:24:44,348 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 01:24:59,896 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 01:25:02,028 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 27 s 741 ms
+2026-10-17 01:24:41,337 [   9288]   INFO - STDERR - [wbs] plain model task run: 287 projects in 5692 ms
+2026-10-17 01:24:41,590 [   9541]   INFO - STDERR - [wbs] bundles read during the run: 287 of 287
+2026-10-17 01:24:41,591 [   9542]   INFO - STDERR - [wbs] holder state built from bundles: 4 builds, 6321 payloads, 5755 models; light builds: gradle(254 projec
+[wbs] bundles read during the run: 287 of 287
+bundles: 287 files, 43059814 bytes; formats in :core:       1 compact-deps       9 ion      12 java 
+== IDE compact run 3 2026-10-17T01:26:02+00:00
+2026-10-17 01:26:04,686 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 01:26:14,430 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 01:26:14,682 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 01:26:30,539 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 01:26:32,838 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 28 s 349 ms
+2026-10-17 01:26:11,759 [   9567]   INFO - STDERR - [wbs] plain model task run: 287 projects in 6115 ms
+2026-10-17 01:26:12,023 [   9831]   INFO - STDERR - [wbs] bundles read during the run: 287 of 287
+2026-10-17 01:26:12,024 [   9832]   INFO - STDERR - [wbs] holder state built from bundles: 4 builds, 6321 payloads, 5755 models; light builds: gradle(254 projec
+[wbs] bundles read during the run: 287 of 287
+bundles: 287 files, 43059814 bytes; formats in :core:       1 compact-deps       9 ion      12 java 
+entry 4125e55a-9258-4ec8-9d77-7a0201a57b1e: 39 MB, strings 2456 KB
+entry c54cf305-b3b3-4ba5-8dec-db073eb8fa92: 1 MB, strings  KB
+bundles deleted: 0 left
+== IDE bytes run 1 2026-10-17T01:27:31+00:00
+2026-10-17 01:27:34,679 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 01:28:15,274 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 01:28:15,408 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 01:28:25,455 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 01:28:28,325 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 53 s 941 ms
+2026-10-17 01:28:13,265 [  41169]   INFO - STDERR - [wbs] plain model task run: 287 projects in 37552 ms
+2026-10-17 01:28:13,288 [  41192]   INFO - STDERR - [wbs] bundles read during the run: 287 of 287
+2026-10-17 01:28:13,289 [  41193]   INFO - STDERR - [wbs] holder state built from bundles: 4 builds, 6321 payloads, 5755 models; light builds: gradle(254 projec
+[wbs] bundles read during the run: 287 of 287
+bundles: 287 files, 51903426 bytes; formats in :core:      10 ion      12 java 
+== IDE bytes run 2 2026-10-17T01:29:28+00:00
+2026-10-17 01:29:30,994 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 01:29:41,032 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 01:29:41,323 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 01:29:56,673 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 01:29:58,829 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 27 s 937 ms
+2026-10-17 01:29:38,307 [   9719]   INFO - STDERR - [wbs] plain model task run: 287 projects in 6203 ms
+2026-10-17 01:29:38,664 [  10076]   INFO - STDERR - [wbs] bundles read during the run: 287 of 287
+2026-10-17 01:29:38,665 [  10077]   INFO - STDERR - [wbs] holder state built from bundles: 4 builds, 6321 payloads, 5755 models; light builds: gradle(254 projec
+[wbs] bundles read during the run: 287 of 287
+bundles: 287 files, 51903426 bytes; formats in :core:      10 ion      12 java 
+== IDE bytes run 3 2026-10-17T01:30:56+00:00
+2026-10-17 01:30:59,381 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 01:31:09,482 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 01:31:09,738 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 01:31:26,575 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 01:31:28,999 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 29 s 719 ms
+2026-10-17 01:31:06,723 [   9705]   INFO - STDERR - [wbs] plain model task run: 287 projects in 5901 ms
+2026-10-17 01:31:07,098 [  10080]   INFO - STDERR - [wbs] bundles read during the run: 287 of 287
+2026-10-17 01:31:07,100 [  10082]   INFO - STDERR - [wbs] holder state built from bundles: 4 builds, 6321 payloads, 5755 models; light builds: gradle(254 projec
+[wbs] bundles read during the run: 287 of 287
+bundles: 287 files, 51903426 bytes; formats in :core:      10 ion      12 java 
+entry 0af460bd-0264-4d8a-8579-da879b4b3fd9: 1 MB, strings  KB
+entry 1e3c4725-f137-4e32-a63e-77674c763c69: 56 MB, strings 1412 KB
+== fidelity (corrected): Ion bundles of the bytes config vs the compact dumps
+identical=287 different=0
+bytes read errors: 0
+cc dir: 56 MB, disk free: 11G
+== all done 2026-10-17T01:32:27+00:00

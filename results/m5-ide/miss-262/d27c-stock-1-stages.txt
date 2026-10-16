@@ -1,0 +1,6 @@
+2026-10-17 14:03:29,983 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' started
+2026-10-17 14:03:30,070 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projects/gradle-
+2026-10-17 14:04:23,362 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 14:04:23,565 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 14:04:46,101 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 14:04:49,240 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 19 s 258 ms

@@ -431,9 +431,19 @@ public final class SyncHarness {
                         bytes = buffer.toByteArray();
                     }
                     Files.write(new File(dir, sanitize(id.getProjectId()) + ".bin").toPath(), bytes);
+                    if (GradleOwnedText.handles(id.getClassId())) {
+                        GradleOwnedText.write(dumpDir, id.getClassId(), sanitize(id.getBuildId()), e.getValue());
+                    }
                 } catch (IOException ex) {
                     throw new java.io.UncheckedIOException(ex);
+                } catch (Exception ex) {
+                    throw new IllegalStateException("dumping " + id, ex);
                 }
+            }
+            try {
+                GradleOwnedText.finish(dumpDir);
+            } catch (IOException ex) {
+                throw new java.io.UncheckedIOException(ex);
             }
         }
 

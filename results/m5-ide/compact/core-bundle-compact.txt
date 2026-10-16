@@ -1,0 +1,23 @@
+== /home/agent/projects/gradle-wbs-benchmark/subprojects/core/build/ide/models/ideProjectModel.bin   
+org.jetbrains.plugins.gradle.model.ExternalProject ion 589 ok DefaultExternalProject
+com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload java 3252 ok IdeaModulePayload
+org.jetbrains.plugins.gradle.model.GradleSourceSetModel ion 13827 ok DefaultGradleSourceSetModel
+org.jetbrains.plugins.gradle.model.GradleSourceSetDependencyModel compact-deps 162298 ok DefaultGradleSourceSetDependencyModel
+com.intellij.openapi.externalSystem.model.project.dependencies.ProjectDependencies ion 354229 ok ProjectDependenciesImpl
+org.jetbrains.plugins.gradle.model.GradleTaskModel ion 46927 ok DefaultGradleTaskModel
+org.jetbrains.plugins.gradle.model.GradleExtensions ion 11454 ok DefaultGradleExtensions
+org.jetbrains.plugins.gradle.model.tests.ExternalTestsModel ion 23522 ok DefaultExternalTestsModel
+org.jetbrains.plugins.gradle.model.DependencyAccessorsModel java 1432 ok DefaultDependencyAccessorsModel
+org.jetbrains.plugins.gradle.model.VersionCatalogsModel java 633 ok VersionCatalogsModelImpl
+org.jetbrains.plugins.gradle.model.AnnotationProcessingModel ion 5530 ok AnnotationProcessingModelImpl
+org.jetbrains.plugins.gradle.javaModel.JavaGradleManifestModel java 555 ok DefaultJavaGradleManifestModel
+org.jetbrains.plugins.gradle.model.RepositoryModels ion 292 ok DefaultRepositoryModels
+com.intellij.gradle.toolingExtension.model.repositoryModel.ProjectRepositoriesModel java 939 ok DefaultProjectRepositoriesModel
+org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel java 353 ok KaptGradleModelImpl
+org.jetbrains.kotlin.idea.gradleTooling.model.allopen.AllOpenModel java 189 ok AllOpenModelImpl
+org.jetbrains.kotlin.idea.gradleTooling.model.noarg.NoArgModel java 207 ok NoArgModelImpl
+org.jetbrains.kotlin.idea.gradleTooling.model.samWithReceiver.SamWithReceiverModel java 205 ok SamWithReceiverModelImpl
+org.jetbrains.kotlin.idea.gradleTooling.model.assignment.AssignmentModel java 175 ok AssignmentModelImpl
+org.jetbrains.kotlin.idea.gradleTooling.model.parcelize.ParcelizeGradleModel java 114 ok ParcelizeGradleModelImpl
+org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel ion 58140 ok DefaultGradleBuildScriptClasspathModel
+com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload java 153765 ok KotlinDslScriptPayload

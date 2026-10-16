@@ -1,0 +1,33 @@
+== IDE 262 run 1 2026-10-17T13:00:37+00:00
+exit 0
+2026-10-17 13:00:40,323 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 13:02:40,070 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 13:02:40,216 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 13:02:52,601 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 13:02:56,161 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 2 m 15 s 938 ms
+[wbs] bundles read during the run: 287 of 287
+[wbs] dropping provider BuildModel(org.gradle.tooling.model.idea.IdeaProject)
+[wbs] dropping provider ProjectModel(com.intellij.gradle.toolingExtension.model.repositoryModel.ProjectRepositoriesModel)
+[wbs] dropping provider ProjectModel(com.intellij.openapi.externalSystem.model.project.dependencies.ProjectDependencies)
+[wbs] dropping provider ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel)
+[wbs] dropping provider ProjectModel(org.jetbrains.plugins.gradle.javaModel.JavaGradleManifestModel)
+[wbs] dropping provider ProjectModel(org.jetbrains.plugins.gradle.model.AnnotationProcessingModel)
+[wbs] dropping provider ProjectModel(org.jetbrains.plugins.gradle.model.DependencyAccessorsModel)
+log lines with error|exception: 8
+== IDE 262 run 2 2026-10-17T13:03:55+00:00
+exit 0
+2026-10-17 13:03:58,678 [Gradle]: Gradle resolve stage started gradle:377725c, working dir: /home/agent/projec
+2026-10-17 13:04:08,224 [Gradle]: Gradle resolve stage finished with success: gradle:377725c
+2026-10-17 13:04:08,603 [Gradle]: Gradle data import stage started: gradle:377725c
+2026-10-17 13:04:27,032 [Gradle]: Gradle data import stage finished with success: gradle:377725c
+2026-10-17 13:04:30,233 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 31 s 644 ms
+[wbs] bundles read during the run: 287 of 287
+[wbs] dropping provider BuildModel(org.gradle.tooling.model.idea.IdeaProject)
+[wbs] dropping provider ProjectModel(com.intellij.gradle.toolingExtension.model.repositoryModel.ProjectRepositoriesModel)
+[wbs] dropping provider ProjectModel(com.intellij.openapi.externalSystem.model.project.dependencies.ProjectDependencies)
+[wbs] dropping provider ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel)
+[wbs] dropping provider ProjectModel(org.jetbrains.plugins.gradle.javaModel.JavaGradleManifestModel)
+[wbs] dropping provider ProjectModel(org.jetbrains.plugins.gradle.model.AnnotationProcessingModel)
+[wbs] dropping provider ProjectModel(org.jetbrains.plugins.gradle.model.DependencyAccessorsModel)
+log lines with error|exception: 8
+== smoke done 2026-10-17T13:05:26+00:00
