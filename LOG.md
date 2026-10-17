@@ -821,3 +821,9 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   iteration order, so the generated classpath order can differ between IDE processes; Gradle then reports
   "init script 'wbsModelTasks2.gradle' has changed" and misses the entry after an IDE restart. The classes are now sorted
   by name before the script is generated.
+- **gradle-profiler `idea-sync` works with the kit** (`results/m5-ide/profiler-262-NOTES.md`, `profiler/`): the
+  sandbox replaces the app's vmoptions (`IDEA_VM_OPTIONS`) and plugin dir, so the runner puts the `-Dwbs.*` options
+  into `ide-jvm-args` and copies the plugin into `<sandbox>/plugins` (the profiler leaves other plugins alone); its
+  agent instruments only the stock build action, so WBS shows 0 ms Gradle time (totals comparable). Headless on this
+  machine, gradle/gradle, same-session iterations: settings-script miss stock 70.8 / 65.9 / 65.3 s vs WBS 43.2 / 41.9 /
+  41.7 s (−36 %); hit (both hit the cache in-session) stock 35.0 / 51.5 / 50.7 s vs WBS 25.3 / 39.5 / 40.1 s.

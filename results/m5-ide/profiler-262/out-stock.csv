@@ -1,0 +1,8 @@
+scenario,IDE sync, configuration cache kept (stock),IDE sync, configuration cache kept (stock),IDE sync, configuration cache kept (stock)
+version,Gradle 9.9.0-milestone-2,Gradle 9.9.0-milestone-2,Gradle 9.9.0-milestone-2
+tasks,IDE sync,IDE sync,IDE sync
+value,total execution time,Gradle total execution time,IDE execution time
+warm-up build #1,107156.00,40546.00,66610.00
+measured build #1,35049.00,1140.00,33909.00
+measured build #2,51530.00,1378.00,50152.00
+measured build #3,50692.00,817.00,49875.00

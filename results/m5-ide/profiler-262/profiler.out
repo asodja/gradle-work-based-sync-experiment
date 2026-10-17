@@ -1,0 +1,115 @@
+plugin installed into /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/profiler-sandbox/plugins, 4 wbs options added
+scenarios: /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d34/out/idea-sync.scenarios
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=gateway.docker.internal -Dhttp.proxyPort=3128 -Dhttps.proxyHost=gateway.docker.internal -Dhttps.proxyPort=3128 -Dhttp.nonProxyHosts=localhost|127.*|[::1]|gateway.docker.internal
+
+* Writing results to /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d34/out
+
+* Settings
+Project dir: /home/agent/projects/gradle-wbs-benchmark
+Output dir: /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d34/out
+Profiler: none
+Benchmark: true
+Versions: []
+Gradle User Home: /home/agent/.gradle-wbs
+Targets: [sync_hit]
+
+* Inspecting the build using its default Gradle version
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/home/agent/.gradle-wbs/wrapper/dists/gradle-9.9.0-milestone-2-bin/62t9jkud9ympk5e2xxb7f0qv0/gradle-9.9.0-milestone-2/lib/native-platform-0.22-milestone-30.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+
+* Stopping daemons
+
+* Scenarios
+Scenario: IDE sync, configuration cache kept (wbs) using Gradle 9.9.0-milestone-2
+  Gradle 9.9.0-milestone-2 (/home/agent/.gradle-wbs/wrapper/dists/gradle-9.9.0-milestone-2-bin/62t9jkud9ympk5e2xxb7f0qv0/gradle-9.9.0-milestone-2)
+  Run using: IDE
+  Run: IDE sync
+  Cleanup: do nothing
+  Gradle args: []
+  Build operations trace: false
+  Build changes: []
+  Warm-ups: 1
+  Builds: 3
+
+* Running scenario IDE sync, configuration cache kept (wbs) using Gradle 9.9.0-milestone-2 (scenario 1/1)
+
+* Stopping daemons
+
+* Running warm-up build #1
+
+
+* Starting IntelliJ IDEA at /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/idea-patched-262
+* Start command: /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/idea-patched-262/bin/idea.sh
+* Additional JVM args:
+  -javaagent:/tmp/ide-agent365747013667369742.jar=45757,/tmp/instrumentation-support7083512753575740328.jar
+  --add-exports=java.base/jdk.internal.misc=ALL-UNNAMED
+  -Xbootclasspath/a:/tmp/asm11097757129050066103.jar:/tmp/client-protocol3276402994109655380.jar
+  -Xms256m
+  -Xmx4096m
+  -Dwbs.transport=tasks
+  -Dwbs.transport.drop=GradleSourceSetDependencyModelProvider,GradleExternalProjectModelProvider,GradleBuildScriptClasspathModelProvider,GradleSourceSetModelProvider,GradleTaskModelProvider,AndroidAwareGradleModelProvider,ProjectModel(org.jetbrains.plugins.gradle.model.ExternalProject),ProjectModel(com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload),ProjectModel(org.jetbrains.plugins.gradle.model.GradleSourceSetModel),ProjectModel(org.jetbrains.plugins.gradle.model.GradleSourceSetDependencyModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.KotlinGradleModel),ProjectModel(com.intellij.openapi.externalSystem.model.project.dependencies.ProjectDependencies),ProjectModel(org.jetbrains.plugins.gradle.model.GradleTaskModel),ProjectModel(org.jetbrains.plugins.gradle.model.GradleExtensions),ProjectModel(org.jetbrains.plugins.gradle.model.tests.ExternalTestsModel),ProjectModel(org.jetbrains.plugins.gradle.model.IntelliJProjectSettings),ProjectModel(org.jetbrains.plugins.gradle.model.IntelliJSettings),ProjectModel(org.jetbrains.plugins.gradle.model.DependencyAccessorsModel),ProjectModel(org.jetbrains.plugins.gradle.model.VersionCatalogsModel),ProjectModel(org.jetbrains.plugins.gradle.model.AnnotationProcessingModel),ProjectModel(org.jetbrains.plugins.gradle.javaModel.JavaGradleManifestModel),ProjectModel(org.jetbrains.plugins.gradle.model.RepositoryModels),ProjectModel(com.intellij.gradle.toolingExtension.model.repositoryModel.ProjectRepositoriesModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.kapt.KaptGradleModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.allopen.AllOpenModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.noarg.NoArgModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.samWithReceiver.SamWithReceiverModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.assignment.AssignmentModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.lombok.LombokModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.model.parcelize.ParcelizeGradleModel),ProjectModel(org.jetbrains.kotlin.idea.gradleTooling.KotlinMPPGradleModel),ProjectModel(org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel),ProjectModel(com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload),BuildModel(org.gradle.tooling.model.idea.IdeaProject),KotlinDslScriptModelProvider
+  -Dwbs.transport.run=only
+  -Dwbs.transport.tree=task
+  -Didea.gradle.distributionType=BUNDLED
+  -Dgradle.profiler.startup.port=44549
+  -Dgradle.profiler.port=38687
+  -Didea.plugins.path=/tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/profiler-sandbox/plugins
+  -Didea.config.path=/tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/profiler-sandbox/config
+  -Didea.log.path=/tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/profiler-sandbox/logs
+  -Djava.awt.headless=true
+  -Didea.trust.all.projects=true
+  -Didea.system.path=/tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/profiler-sandbox/system
+  -Dexternal.system.auto.import.disabled=true
+* Additional JVM args can be found at: /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/profiler-sandbox/scenarioOptions/idea.vmoptions
+* IDEA properties:
+* IDEA properties can be found at: /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/profiler-sandbox/scenarioOptions/idea.properties
+* IntelliJ IDEA logs can be found at: /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/profiler-sandbox/logs/idea.log
+* Using command line: /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/idea-patched-262/bin/idea.sh headless-starter /home/agent/projects/gradle-wbs-benchmark
+
+* Running sync in IntelliJ IDEA...
+* Sent sync request
+* Sync has started, waiting for it to complete...
+* Full Gradle execution time: 0ms
+* Full IntelliJ IDEA execution time: 110995ms
+* Full sync has completed in: 110995ms and it SUCCEEDED
+Execution time 110995 ms
+
+* Running measured build #1
+* Running sync in IntelliJ IDEA...
+* Sent sync request
+* Sync has started, waiting for it to complete...
+* Full Gradle execution time: 0ms
+* Full IntelliJ IDEA execution time: 25336ms
+* Full sync has completed in: 25336ms and it SUCCEEDED
+Execution time 25336 ms
+
+* Running measured build #2
+* Running sync in IntelliJ IDEA...
+* Sent sync request
+* Sync has started, waiting for it to complete...
+* Full Gradle execution time: 0ms
+* Full IntelliJ IDEA execution time: 39501ms
+* Full sync has completed in: 39501ms and it SUCCEEDED
+Execution time 39501 ms
+
+* Running measured build #3
+* Running sync in IntelliJ IDEA...
+* Sent sync request
+* Sync has started, waiting for it to complete...
+* Full Gradle execution time: 0ms
+* Full IntelliJ IDEA execution time: 40058ms
+* Full sync has completed in: 40058ms and it SUCCEEDED
+Execution time 40058 ms
+* Stopping IntelliJ IDEA....
+* IntelliJ IDEA stopped.
+
+* Stopping daemons
+
+* Results written to /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d34/out
+  /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d34/out/benchmark.csv
+  /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d34/out/benchmark.html
+  /tmp/claude-1000/-home-agent-projects-gradle-work-based-sync-experiment/03bfd696-8798-4573-b4b6-36c58133e9f7/scratchpad/logs/d34/out/benchmark.json
+

@@ -1,0 +1,8 @@
+scenario,IDE sync, settings script changed before every sync (stock),IDE sync, settings script changed before every sync (stock),IDE sync, settings script changed before every sync (stock)
+version,Gradle 9.9.0-milestone-2,Gradle 9.9.0-milestone-2,Gradle 9.9.0-milestone-2
+tasks,IDE sync,IDE sync,IDE sync
+value,total execution time,Gradle total execution time,IDE execution time
+warm-up build #1,89658.00,33886.00,55772.00
+measured build #1,70786.00,14048.00,56738.00
+measured build #2,65922.00,12546.00,53376.00
+measured build #3,65276.00,13330.00,51946.00

@@ -1,0 +1,8 @@
+[wbs] plain model task run: 287 projects in 34478 ms
+[wbs] plain model task run: 287 projects in 2519 ms
+[wbs] plain model task run: 287 projects in 1255 ms
+[wbs] plain model task run: 287 projects in 2057 ms
+[wbs] plain model task run: 287 projects in 27519 ms
+[wbs] plain model task run: 287 projects in 11980 ms
+[wbs] plain model task run: 287 projects in 10295 ms
+[wbs] plain model task run: 287 projects in 9701 ms
