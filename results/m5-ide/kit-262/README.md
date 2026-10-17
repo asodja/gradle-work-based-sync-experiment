@@ -18,7 +18,9 @@ gradle/gradle (287 projects): restart sync 1 m 20 s stock vs 28–29 s; cache-mi
     ./install-mac.sh "/Applications/IntelliJ IDEA.app" "/Applications/IntelliJ IDEA WBS.app"
 
 Both arguments are optional (these are the defaults). The script copies the app, replaces four classes in three
-jars, adds the bundled plugin `wbs-task-transport`, appends `wbs.vmoptions` to `Contents/bin/idea.vmoptions`,
+jars, installs the plugin `wbs-task-transport` into the copy's user plugin directory
+(`~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS/plugins`; the bundled plugin directory is indexed
+and not scanned in 2026.2), appends `wbs.vmoptions` to `Contents/bin/idea.vmoptions`,
 renames the copy to "IntelliJ IDEA WBS" with a badged icon and its own settings directory
 (`~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS`), and re-signs it ad hoc. The original app is untouched.
 
@@ -46,7 +48,8 @@ Build output of the tasks: `<project>/build/ide/models/ideProjectModel.bin` per 
 
 ## Remove
 
-Delete "IntelliJ IDEA WBS.app" and, if wanted, `~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS`,
+Delete "IntelliJ IDEA WBS.app" and `~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS` (holds the
+plugin and the settings), and if wanted
 `~/Library/Caches/JetBrains/IntelliJIdea2026.2-WBS` and `~/Library/Logs/JetBrains/IntelliJIdea2026.2-WBS`.
 
 ## Contents

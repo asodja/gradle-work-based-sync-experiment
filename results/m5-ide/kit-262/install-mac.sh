@@ -55,9 +55,13 @@ overlay org/jetbrains/plugins/gradle/service/project/GradleProjectResolver.class
 overlay com/intellij/openapi/externalSystem/service/project/AbstractIdeModifiableModelsProvider.class "com/intellij/openapi/externalSystem/service/project/AbstractIdeModifiableModelsProvider*.class"
 overlay com/intellij/openapi/externalSystem/service/project/manage/LibraryDependencyDataService.class "com/intellij/openapi/externalSystem/service/project/manage/LibraryDependencyDataService*.class"
 
-rm -rf "$C/plugins/wbs-task-transport"
-cp -R "$HERE/plugin/wbs-task-transport" "$C/plugins/"
-echo "installed bundled plugin wbs-task-transport"
+# The plugin goes into the copy's own user plugin directory (paths selector IntelliJIdea2026.2-WBS): 2026.2 ships a
+# precomputed index of its bundled plugins (plugins/plugin-classpath.txt) and does not scan that directory for others.
+USER_PLUGINS="$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS/plugins"
+mkdir -p "$USER_PLUGINS"
+rm -rf "$USER_PLUGINS/wbs-task-transport" "$C/plugins/wbs-task-transport"
+cp -R "$HERE/plugin/wbs-task-transport" "$USER_PLUGINS/"
+echo "installed plugin wbs-task-transport into $USER_PLUGINS"
 
 printf '\n# work-based sync prototype\n' >> "$C/bin/idea.vmoptions"
 cat "$HERE/wbs.vmoptions" >> "$C/bin/idea.vmoptions"

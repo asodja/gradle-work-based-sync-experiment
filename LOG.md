@@ -780,3 +780,8 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   to the central directory there. Fix: `JarOverlay.java` in the kit, run with the IDE's bundled JBR from source,
   rewrites the jar without the index and comment, entries stored uncompressed like the originals; the Linux copy
   patched the same way syncs (287 projects, 5756 models, no class-load errors). Kit repackaged.
+- **Mac kit, second and third run:** macOS App Management refused the JBR's write into the copied bundle ("Operation
+  not permitted"; the overlay now runs in a temp dir with the source app's JBR and `cp` writes back), then the IDE did
+  not load the plugin from `Contents/plugins`: 2026.2 ships `plugins/plugin-classpath.txt`, a precomputed index of
+  the bundled plugins, and does not scan that directory for others. The kit installs the plugin into the copy's user
+  plugin directory (`~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS/plugins`) instead.
