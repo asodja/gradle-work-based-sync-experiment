@@ -10,6 +10,7 @@ set -euo pipefail
 STOCK=$1; WBS=$2; PROJECT=$3; OUT=${4:-$HOME/wbs-profiler-$(date +%Y%m%d-%H%M)}
 HERE=$(cd "$(dirname "$0")" && pwd)
 SCENARIOS=${SCENARIOS:-sync_miss_settings sync_hit}; WARMUPS=${WARMUPS:-1}; ITERATIONS=${ITERATIONS:-3}
+[[ $WARMUPS -ge 1 ]] || WARMUPS=1   # gradle-profiler refuses zero warm-ups for a benchmark
 PROFILER=${GRADLE_PROFILER:-gradle-profiler}
 # the same Gradle user home for both IDEs: without the option the profiler uses a fresh ./gradle-user-home for the
 # stock sync (its agent injects it) while the kit's own Gradle invocations use the default one
