@@ -41,14 +41,25 @@ public final class ResyncStarter implements ApplicationStarter {
             if (project == null) {
                 throw new IllegalStateException("could not open " + dir);
             }
-            System.err.println("[wbs-resync] opened " + project.getName());
+            WbsLog.info("[wbs-resync] opened " + project.getName());
             for (int i = 1; i <= count; i++) {
                 long started = System.currentTimeMillis();
                 CompletableFuture<Void> done = new CompletableFuture<>();
                 ExternalSystemUtil.refreshProject(dir.toString(),
                     new ImportSpecBuilder(project, GradleConstants.SYSTEM_ID).use(ProgressExecutionMode.MODAL_SYNC).withCallback(done));
-                done.get(30, TimeUnit.MINUTES);
-                System.err.println("[wbs-resync] sync " + i + " finished in " + (System.currentTimeMillis() - started) + " ms");
+                try {
+                    done.get(30, TimeUnit.MINUTES);
+                } catch (java.util.concurrent.ExecutionException e) {
+                    // opening the project may have started its own sync; wait for it and retry this round
+                    if (e.getCause() != null && String.valueOf(e.getCause().getMessage()).contains("Another 'Sync project' task")) {
+                        WbsLog.info("[wbs-resync] a sync is already running, retrying in 10 s");
+                        Thread.sleep(10_000);
+                        i--;
+                        continue;
+                    }
+                    throw e;
+                }
+                WbsLog.info("[wbs-resync] sync " + i + " finished in " + (System.currentTimeMillis() - started) + " ms");
             }
         } catch (Throwable t) {
             t.printStackTrace();

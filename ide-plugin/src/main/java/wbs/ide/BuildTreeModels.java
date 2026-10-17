@@ -173,7 +173,7 @@ final class BuildTreeModels {
                 (com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelHolderState) holderClass.getMethod("wrap", modelClass).invoke(null, model);
             return new LinkedHashMap<>(wrapped.getModels());
         } catch (Exception e) {
-            System.err.println("[wbs] GradleDslBaseScriptModel from the tree bundle failed: " + e);
+            WbsLog.info("[wbs] GradleDslBaseScriptModel from the tree bundle failed: " + e);
             return null;
         }
     }

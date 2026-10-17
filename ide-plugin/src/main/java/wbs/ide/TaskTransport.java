@@ -139,14 +139,14 @@ public final class TaskTransport implements Serializable {
                     for (String path : files) {
                         File file = new File(path);
                         if (!file.isFile()) {
-                            System.err.println("[wbs-tasks] missing model file " + path + " for " + project.getPath());
+                            WbsLog.info("[wbs-tasks] missing model file " + path + " for " + project.getPath());
                             continue;
                         }
                         List<ModelPayload> payloads;
                         try (InputStream in = Files.newInputStream(file.toPath()); DataInputStream data = new DataInputStream(in)) {
                             payloads = ModelBundle.read(data);
                         } catch (IOException | RuntimeException e) {
-                            System.err.println("[wbs-tasks] cannot read " + path + " for " + project.getPath() + ": " + e);
+                            WbsLog.info("[wbs-tasks] cannot read " + path + " for " + project.getPath() + ": " + e);
                             continue;
                         }
                         for (ModelPayload payload : payloads) {
@@ -165,7 +165,7 @@ public final class TaskTransport implements Serializable {
                                     consumer.consumeProjectModel(project, model, modelClass);
                                 }
                             } catch (Exception e) {
-                                System.err.println("[wbs-tasks] cannot deserialize " + payload.getModelClassName() + " from " + path
+                                WbsLog.info("[wbs-tasks] cannot deserialize " + payload.getModelClassName() + " from " + path
                                     + " for " + project.getPath() + ": " + e);
                             }
                         }
@@ -177,22 +177,22 @@ public final class TaskTransport implements Serializable {
                     GradleBuild root = buildModels.iterator().next();
                     String prefix = e.getKey() == root ? "" : ":" + e.getKey().getBuildIdentifier().getRootDir().getName();
                     org.gradle.tooling.model.idea.IdeaProject assembled = IdeaProjectFromPayloads.assemble(e.getValue(), prefix);
-                    System.err.println("[wbs-tasks] IdeaProject assembled for " + e.getKey().getBuildIdentifier().getRootDir().getName()
+                    WbsLog.info("[wbs-tasks] IdeaProject assembled for " + e.getKey().getBuildIdentifier().getRootDir().getName()
                         + ": " + assembled.getModules().size() + " modules (phase " + phase.getName() + ")");
                     consumer.consumeBuildModel(e.getKey(), assembled, org.gradle.tooling.model.idea.IdeaProject.class);
                 } catch (RuntimeException ex) {
-                    System.err.println("[wbs-tasks] cannot assemble IdeaProject for " + e.getKey().getBuildIdentifier().getRootDir() + ": " + ex);
+                    WbsLog.info("[wbs-tasks] cannot assemble IdeaProject for " + e.getKey().getBuildIdentifier().getRootDir() + ": " + ex);
                 }
             }
             for (Map.Entry<GradleBuild, List<KotlinDslScriptPayload>> e : scriptsByBuild.entrySet()) {
                 try {
                     org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel scripts = KotlinDslScriptsModelFromPayloads.assemble(e.getValue());
-                    System.err.println("[wbs-tasks] KotlinDslScriptsModel assembled for " + e.getKey().getBuildIdentifier().getRootDir().getName()
+                    WbsLog.info("[wbs-tasks] KotlinDslScriptsModel assembled for " + e.getKey().getBuildIdentifier().getRootDir().getName()
                         + ": " + scripts.getScriptModels().size() + " scripts (phase " + phase.getName() + ")");
                     consumer.consumeProjectModel(e.getKey().getRootProject(), scripts, org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel.class);
                     consumer.consumeBuildModel(e.getKey(), scripts, org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel.class);
                 } catch (RuntimeException ex) {
-                    System.err.println("[wbs-tasks] cannot assemble KotlinDslScriptsModel for " + e.getKey().getBuildIdentifier().getRootDir() + ": " + ex);
+                    WbsLog.info("[wbs-tasks] cannot assemble KotlinDslScriptsModel for " + e.getKey().getBuildIdentifier().getRootDir() + ": " + ex);
                 }
             }
         }

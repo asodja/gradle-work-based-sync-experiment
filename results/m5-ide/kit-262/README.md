@@ -30,7 +30,8 @@ Open a Gradle project in "IntelliJ IDEA WBS" and sync as usual. The first sync o
 stores the configuration cache entry (about as long as a stock sync); every later sync after an IDE or daemon restart
 is a task run that hits the cache. To check that the transport is active, look in
 `~/Library/Logs/JetBrains/IntelliJIdea2026.2-WBS/idea.log` for `[wbs] plain model task run: N projects in ... ms`
-and `[wbs] holder state built from bundles`.
+and `[wbs] holder state built from bundles` (under gradle-profiler: `<sandbox>/logs/idea.log`). If the task run fails,
+the sync fails with `[wbs] plain model task run failed after ... ms: <cause>`; the cause is the line to report.
 
 Build output of the tasks: `<project>/build/ide/models/ideProjectModel.bin` per project.
 

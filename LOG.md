@@ -843,3 +843,13 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   `scripts` import 52.6 s (contributor 23.3 s), re-sync 42.5 s (contributor 5.8 s, the second pass is incremental).
   So the script insight costs ~19 s on a fresh IDE session and ~8 s per later re-sync on gradle/gradle here; the earlier
   44-67 s figures were taken with the warm-up indexing running alongside.
+- **Kit diagnostics (2026-10-17 night).** The owner's gradle-profiler run on the Mac failed with "no plain model task run
+  happened before buildState()". That is the secondary symptom: `preImportCheck` caught the plain run's exception,
+  printed it to stderr and let the sync continue into `buildState()`. Neither the Mac app nor the profiler sandbox keeps
+  stderr, so the cause was lost. Changes: in `only` mode the sync now fails in `preImportCheck` with
+  `[wbs] plain model task run failed after N ms: <cause>` (cause attached); every `[wbs]` line goes through `WbsLog`
+  (stderr + IntelliJ logger `#wbs`, so idea.log has them; profiler: `<sandbox>/logs/idea.log`). `wbsResync` retries while
+  the sync started by opening the project is running (it failed with "Another 'Sync project' task is currently running"
+  on the fixture). Smoke-tested headless on the fixture: both syncs succeeded, 12 `#wbs` lines in idea.log. Kit repacked.
+  Difference between the owner's working IDE sync and the profiler run worth checking first: the profiler's IDE plugin
+  sets the Gradle JVM of a freshly linked project to `#JAVA_HOME`.

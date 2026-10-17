@@ -75,12 +75,17 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
                 runModelTasks(connection, context);
                 return null;
             });
-            System.err.println("[wbs] plain model task run: " + bundlesByProjectDir.size() + " projects in "
+            WbsLog.info("[wbs] plain model task run: " + bundlesByProjectDir.size() + " projects in "
                 + (System.currentTimeMillis() - started) + " ms");
         } catch (RuntimeException e) {
+            String message = "[wbs] plain model task run failed after " + (System.currentTimeMillis() - started) + " ms: " + e;
+            WbsLog.info(message);
+            if (onlyPlainRun()) {
+                // no build action to fall back to: the sync fails here, with the cause, instead of in buildState()
+                throw new IllegalStateException(message, e);
+            }
             // the sync goes on with the request provider scheduling the tasks inside the action
             bundlesByProjectDir.clear();
-            System.err.println("[wbs] plain model task run failed after " + (System.currentTimeMillis() - started) + " ms: " + e);
         }
     }
 
@@ -211,7 +216,7 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
             if (dslBaseScriptModels == null) {
                 dslBaseScriptModels = fetchDslBaseScriptModel(connection, context, arguments);
             } else if (!dslBaseScriptModels.isEmpty()) {
-                System.err.println("[wbs] GradleDslBaseScriptModel from the tree bundle");
+                WbsLog.info("[wbs] GradleDslBaseScriptModel from the tree bundle");
             }
             for (String taskPath : unresolved) {
                 String resolved = trees.projectDirOf(taskPath);
@@ -220,7 +225,7 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
                     streamedReads.put(resolved, pool.submit(() -> readBundle(bundle)));
                 }
             }
-            System.err.println("[wbs] build tree from tasks: " + trees.buildCount() + " builds; " + unresolved.size() + " of " + (streamedReads.size()) + " bundles resolved after the run");
+            WbsLog.info("[wbs] build tree from tasks: " + trees.buildCount() + " builds; " + unresolved.size() + " of " + (streamedReads.size()) + " bundles resolved after the run");
         }
         List<GradleBuild> all = traverse(root);
         Map<String, List<String>> bundles = new LinkedHashMap<>();
@@ -269,7 +274,7 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
     private static ReadBundle readBundle(File file) throws Exception {
         Map<String, Object> models = new LinkedHashMap<>();
         if (!file.isFile()) {
-            System.err.println("[wbs] missing bundle " + file);
+            WbsLog.info("[wbs] missing bundle " + file);
             return new ReadBundle(models);
         }
         List<com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload> bundle;
@@ -283,7 +288,7 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
                     models.put(payload.getModelClassName(), value);
                 }
             } catch (Exception e) {
-                System.err.println("[wbs] cannot read " + payload.getModelClassName() + " from " + file + ": " + e);
+                WbsLog.info("[wbs] cannot read " + payload.getModelClassName() + " from " + file + ": " + e);
             }
         }
         return new ReadBundle(models);
@@ -371,7 +376,7 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
                 }
             }
             allPayloads = payloads;
-            System.err.println("[wbs] bundles read during the run: " + streamed + " of " + bundlesByProjectDir.size());
+            WbsLog.info("[wbs] bundles read during the run: " + streamed + " of " + bundlesByProjectDir.size());
         } finally {
             pool.shutdown();
             readPool = null;
@@ -383,7 +388,7 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
         for (org.jetbrains.plugins.gradle.model.DefaultGradleLightBuild b : light) {
             names.append(' ').append(b.getName()).append('(').append(b.getProjects().size()).append(" projects)");
         }
-        System.err.println("[wbs] holder state built from bundles: " + allBuilds.size() + " builds, " + payloads + " payloads, " + models.size()
+        WbsLog.info("[wbs] holder state built from bundles: " + allBuilds.size() + " builds, " + payloads + " payloads, " + models.size()
             + " models; light builds:" + names);
         return new com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelHolderState(light.get(0), light.subList(1, light.size()), models);
     }
@@ -412,11 +417,11 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
             Object model = builder.get();
             com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelHolderState wrapped =
                 (com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelHolderState) holderClass.getMethod("wrap", modelClass).invoke(null, model);
-            System.err.println("[wbs] GradleDslBaseScriptModel fetched: " + wrapped.getModels().size() + " model(s) in "
+            WbsLog.info("[wbs] GradleDslBaseScriptModel fetched: " + wrapped.getModels().size() + " model(s) in "
                 + (System.currentTimeMillis() - started) + " ms");
             return new LinkedHashMap<>(wrapped.getModels());
         } catch (Exception e) {
-            System.err.println("[wbs] GradleDslBaseScriptModel not fetched: " + e);
+            WbsLog.info("[wbs] GradleDslBaseScriptModel not fetched: " + e);
             return Map.of();
         }
     }

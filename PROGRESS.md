@@ -80,7 +80,7 @@ This machine; details and disk budget in `design/environment.md`.
 0. D30 (2026-10-17 evening): Kotlin DSL script code insight in the kit fixed (state delivered through the IDE's
    fetch-result bridge so the sync contributors run; `-Dwbs.transport.phases=scripts|all|none`), at +40-60 s per sync
    on gradle/gradle for the Kotlin script contributor (IDE-side cost, hidden in stock behind the build action). Next:
-   deliver the script phase in the background, or cheaper script entities. Owner to confirm code insight on the Mac.
+   deliver the script phase in the background, or cheaper script entities. Owner to confirm code insight on the Mac. Owner reported, under gradle-profiler on the Mac, a sync failure "no plain model task run happened before buildState()"; that message hid the real cause (the plain run had failed and was only reported on stderr). Fixed in the kit (2026-10-17 night): in `only` mode the sync fails with the plain run's cause, and every `[wbs]` line also goes to idea.log (`WbsLog`, category `#wbs`; under the profiler `<sandbox>/logs/idea.log`). Waiting for the owner's cause line; candidate: the profiler sets the Gradle JVM to `#JAVA_HOME` in a fresh sandbox.
    D29 (2026-10-17): `GradleBuild` as a task implemented (`-Dwbs.transport.tree=task`, root `ideBuildTree` +
    `ideModels`, base-script model included; `results/m5-ide/buildtree-262-NOTES.md`): identical storage, no time gain
    on a hit (first daemon contact ~1.8 s whichever operation); kept as an option, model request stays the default.
