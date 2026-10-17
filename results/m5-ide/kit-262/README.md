@@ -62,6 +62,24 @@ itself completes. To clear the duplicates: quit the WBS app, delete
 
 opens an already imported project and syncs it twice without a UI; timings in the log as `[wbs-resync] sync N finished`.
 
+## Measuring with gradle-profiler (0.26+)
+
+gradle-profiler's `idea-sync` scenarios run the IDE in a sandbox: it starts the app's launcher with `IDEA_VM_OPTIONS`
+pointing at its own vmoptions file (sandbox config/system/plugins/log paths, its agent, the scenario's `ide-jvm-args`),
+which replaces the app's `Contents/bin/idea.vmoptions`, and the sandbox has its own `plugins` directory. The included
+`run-idea-sync.sh` handles both: it copies the plugin into `<sandbox>/plugins` (the profiler leaves other plugins there
+alone) and puts the `-Dwbs.*` options into `ide-jvm-args`; the patched classes come with the WBS app itself.
+
+    WBS_KIT=$(pwd) ./run-idea-sync.sh "/Applications/IntelliJ IDEA WBS.app" ~/workspace/gradle ~/wbs-sandbox ~/wbs-results wbs
+    ./run-idea-sync.sh "/Users/<you>/Applications/IntelliJ IDEA.app" ~/workspace/gradle ~/stock-sandbox ~/stock-results stock
+
+Scenarios in the generated file: `sync_hit` (cache kept), `sync_miss_settings` (settings script changed before every
+sync), `sync_miss_cleared` (`.gradle/configuration-cache` deleted before every sync); pass scenario names after the mode
+to run a subset, and other gradle-profiler options (e.g. `--iterations 5`). Use separate sandbox and output
+directories per mode. Known limit: the profiler's agent only intercepts the stock sync's build action, so for the WBS
+runs it reports the Gradle part as 0 ms and cannot inject `--gradle-version`; the total sync time is measured for both.
+The IDE stays open across the iterations of a scenario, so hits run against a warm daemon and a warm IDE.
+
 ## Remove
 
 Delete "IntelliJ IDEA WBS.app" and `~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS` (holds the

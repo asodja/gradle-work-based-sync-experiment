@@ -1,0 +1,34 @@
+# gradle-profiler IDE sync scenarios, stock IntelliJ IDEA 2026.2.2 (build 262.10315.125), gradle/gradle.
+#
+#   gradle-profiler --benchmark --scenario-file stock.scenarios --project-dir ~/workspace/gradle \
+#     --idea-install-dir "<the stock app>" --idea-sandbox-dir ~/gp-sandbox-stock --output-dir ~/gp-results-stock [scenario...]
+#
+# The IDE runs with a GUI when a display is available (headless otherwise). It stays open across the iterations of one
+# scenario, so later iterations are same-session re-syncs with a warm daemon; the stock sync hits the configuration
+# cache then too (its action's classloader id only changes on an IDE restart). The two miss scenarios are the ones to
+# compare. Use a separate sandbox directory per IDE.
+
+
+
+sync_hit {
+  title = "IDE sync, configuration cache kept (stock)"
+  idea-sync { ide-jvm-args = ["-Xms256m", "-Xmx4096m"] }
+  warm-ups = 1
+  iterations = 3
+}
+
+sync_miss_settings {
+  title = "IDE sync, settings script changed before every sync (stock)"
+  idea-sync { ide-jvm-args = ["-Xms256m", "-Xmx4096m"] }
+  apply-build-script-change-to = "settings.gradle.kts"
+  warm-ups = 1
+  iterations = 3
+}
+
+sync_miss_cleared {
+  title = "IDE sync, configuration cache deleted before every sync (stock)"
+  idea-sync { ide-jvm-args = ["-Xms256m", "-Xmx4096m"] }
+  clear-configuration-cache-state-before = BUILD
+  warm-ups = 1
+  iterations = 3
+}
