@@ -17,7 +17,7 @@ die() { echo "error: $*" >&2; exit 1; }
 [[ -d "$SRC/Contents" ]] || die "$SRC is not an app bundle"
 BUILD=$(cat "$SRC/Contents/Resources/build.txt" 2>/dev/null || true)
 [[ "$BUILD" == *"$EXPECTED" ]] || die "this kit is for build $EXPECTED; $SRC is '$BUILD' (download IntelliJ IDEA 2026.2.2)"
-for tool in unzip zip codesign /usr/libexec/PlistBuddy; do command -v "$tool" >/dev/null || die "$tool not found"; done
+for tool in unzip codesign /usr/libexec/PlistBuddy; do command -v "$tool" >/dev/null || die "$tool not found"; done
 if [[ -e "$DEST" ]]; then
   [[ -f "$DEST/Contents/Resources/wbs-kit.txt" ]] || die "$DEST exists and was not made by this kit; remove it or pass another target"
   rm -rf "$DEST"
@@ -36,10 +36,13 @@ jar_of() {
   done
   die "no jar in $C holds $1"
 }
+# The IDE's bundled JBR runs the overlay tool from source. Info-ZIP's zip -u must not be used: the IDE's jars carry a
+# lookup index that would point at stale offsets afterwards, and the patched classes then fail to load.
+JAVA="$C/jbr/Contents/Home/bin/java"; [[ -x "$JAVA" ]] || die "no bundled JBR at $JAVA"
 overlay() { # overlay <class file path> <glob of class files to replace in its jar>
   local jar; jar=$(jar_of "$1")
-  (cd "$HERE/patched-classes" && zip -q -u "$jar" $2)
-  echo "patched ${jar#"$C"/}: $(cd "$HERE/patched-classes" && ls $2 | wc -l | tr -d ' ') classes"
+  local classes; classes=$(cd "$HERE/patched-classes" && ls $2)
+  (cd "$HERE/patched-classes" && "$JAVA" "$HERE/JarOverlay.java" "$jar" . $classes) || die "overlay into ${jar#"$C"/} failed"
 }
 overlay com/intellij/gradle/toolingExtension/impl/modelAction/GradleModelFetchAction.class "com/intellij/gradle/toolingExtension/impl/modelAction/GradleModelFetchAction*.class"
 overlay org/jetbrains/plugins/gradle/service/project/GradleProjectResolver.class "org/jetbrains/plugins/gradle/service/project/GradleProjectResolver*.class"

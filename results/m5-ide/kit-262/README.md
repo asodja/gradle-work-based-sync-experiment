@@ -55,5 +55,7 @@ Delete "IntelliJ IDEA WBS.app" and, if wanted, `~/Library/Application Support/Je
   AbstractIdeModifiableModelsProvider and LibraryDependencyDataService (platform external-system)
 - `plugin/wbs-task-transport/lib/`: the plugin jar and `ide-model-tasks.jar` (the Gradle-side tasks, put on the
   init script classpath by the plugin)
+- `JarOverlay.java`: the jar patcher the installer runs with the IDE's bundled JBR (the IDE's jars carry a lookup
+  index that `zip -u` would leave stale)
 - `wbs.vmoptions`: `-Dwbs.transport=tasks`, the provider drop list, `-Dwbs.transport.run=only`, the paths selector
 - `icon/idea-wbs.svg`: the badged icon source

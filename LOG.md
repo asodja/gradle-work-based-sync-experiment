@@ -772,3 +772,11 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   after the run (streaming had read the previous run's). Forced miss (settings script changed per run), 3 rounds:
   model request 55.6 / 56.3 / 54.9 s vs tree task 55.9 / 54.6 / 53.1 s, task run 37.0–38.7 s in both: no measurable
   difference on a miss either. Tree mode stays an option; the model request remains the default.
+- **Mac kit, first run on the owner's Mac: patched classes failed to load** (`NoClassDefFoundError` for
+  `GradleModelFetchAction` in the Gradle plugin's classloader). Cause: the IDE's jars carry a lookup index (an
+  `__index__` entry, 40 KB, plus a 5-byte archive comment marker) that IntelliJ's own zip reader (`ImmutableZipFile`,
+  `platform-loader.jar`) trusts for entry offsets; Info-ZIP's `zip -u` keeps both while moving entries, so the IDE read
+  the patched class at a stale offset. The JDK's `jar` tool, used on Linux, drops the comment, so the reader fell back
+  to the central directory there. Fix: `JarOverlay.java` in the kit, run with the IDE's bundled JBR from source,
+  rewrites the jar without the index and comment, entries stored uncompressed like the originals; the Linux copy
+  patched the same way syncs (287 projects, 5756 models, no class-load errors). Kit repackaged.
