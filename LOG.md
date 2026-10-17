@@ -839,3 +839,7 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   the Kotlin script contributor: 44-62 s on a fresh IDE, re-sync 67 s vs 27 s without (JFR: workspace VirtualFileIndex
   updates for script classpath URLs in `GradleKotlinScriptEntityProvider`, and lock waits). Default `scripts`; `none`
   restores the previous speed without script insight. `wbsResync`, phase timestamps (`[wbs] sync contributors: …`).
+  Back-to-back comparison, warm daemon (`results/m5-ide/kit-262/phases/`): `none` import 33.9 s, re-sync 34.9 s;
+  `scripts` import 52.6 s (contributor 23.3 s), re-sync 42.5 s (contributor 5.8 s, the second pass is incremental).
+  So the script insight costs ~19 s on a fresh IDE session and ~8 s per later re-sync on gradle/gradle here; the earlier
+  44-67 s figures were taken with the warm-up indexing running alongside.

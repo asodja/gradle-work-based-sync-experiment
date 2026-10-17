@@ -483,8 +483,9 @@ feeds the state through `GradleModelFetchActionResultHandlerBridge` as the actio
 with all models, the others empty), under `-Dwbs.transport.phases`: `scripts` (default: only the two script phases),
 `all`, `none`. Measured on this machine (gradle/gradle, 2026.2.2): `all` turned the data import's library dependency and
 project repository steps from 4.4 / 2.7 s into 24 / 23 s (the contributors populate the workspace model a second time);
-`scripts` keeps the import at 15 s but the Kotlin script contributor alone takes 44-62 s on a fresh IDE and ~40 s on a
-re-sync (JFR: `GradleKotlinScriptEntityProvider` → workspace `VirtualFileIndex` updates and `MutableWorkspaceSet` copies
+`scripts` keeps the import at 15 s; the Kotlin script contributor costs 23 s on a fresh IDE session and 6 s on a later
+re-sync with a warm daemon (import 52.6 vs 33.9 s, re-sync 42.5 vs 34.9 s), 44-62 s when the IDE's warm-up indexing
+runs alongside (JFR: `GradleKotlinScriptEntityProvider` → workspace `VirtualFileIndex` updates and `MutableWorkspaceSet` copies
 for the scripts' classpath URLs, plus read-lock waits), work that a stock sync overlaps with its 40 s build action.
 Why: correctness first for the kit (the owner uses Kotlin scripts); the cost is documented and switchable. Next lever:
 deliver the script phase in the background after the sync, or make the script entities cheaper (IDE-side: one shared

@@ -38,11 +38,12 @@ Build output of the tasks: `<project>/build/ide/models/ideProjectModel.bin` per 
 
 In 2026.2 the script configurations of `.gradle.kts` files come from the IDE's per-phase *sync contributors*
 (Kotlin DSL base-script and script-model phases). The kit's resolver now feeds the bundle models through the IDE's own
-fetch-result bridge so those contributors run. Their cost is not small: the Kotlin script contributor takes 40-60 s for
-gradle/gradle's 290 scripts on the test machine (workspace-model index updates for the scripts' classpath URLs), work
-a stock sync hides behind its 40 s build action. The option in `Contents/bin/idea.vmoptions`:
+fetch-result bridge so those contributors run. Their cost: the Kotlin script contributor takes about 23 s on the first sync of
+an IDE session and 6 s on later re-syncs for gradle/gradle's 290 scripts on the test machine (workspace-model index
+updates for the scripts' classpath URLs; more while the IDE is still indexing), work a stock sync hides behind its 40 s
+build action. The option in `Contents/bin/idea.vmoptions`:
 
-    -Dwbs.transport.phases=scripts   (default) script insight works; sync + ~40-60 s on gradle/gradle
+    -Dwbs.transport.phases=scripts   (default) script insight works; first sync +19 s, re-syncs +8 s on gradle/gradle
     -Dwbs.transport.phases=none      fastest sync; .gradle.kts files show "Script Configurations not loaded"
     -Dwbs.transport.phases=all       every contributor, as stock; slower still (the legacy import reconciles duplicates)
 
