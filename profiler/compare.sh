@@ -42,7 +42,8 @@ scenario_file() { # scenario_file <mode> <file>
 }
 
 run() { # run <mode> <app>
-  local mode=$1 app=$2 sandbox="$OUT/sandbox-$mode" result="$OUT/$mode"
+  local mode=$1 app=$2
+  local sandbox="$OUT/sandbox-$mode" result="$OUT/$mode"
   mkdir -p "$sandbox/plugins" "$result"
   if [[ $mode == wbs ]]; then rm -rf "$sandbox/plugins/wbs-task-transport"; cp -R "$KIT/plugin/wbs-task-transport" "$sandbox/plugins/"; fi
   scenario_file "$mode" "$result/idea-sync.scenarios"
