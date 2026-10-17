@@ -59,34 +59,5 @@ run() { # run <mode> <app>
 run stock "$STOCK"
 run wbs "$WBS"
 
-python3 - "$OUT" <<'PY' | tee "$OUT/report.md"
-import csv, sys, statistics, pathlib
-out = pathlib.Path(sys.argv[1]); rows = {}
-for mode in ("stock", "wbs"):
-    f = out / mode / "benchmark.csv"
-    if not f.exists(): print(f"(no results for {mode})"); continue
-    data = list(csv.reader(f.open()))
-    titles = data[0][1:]; kinds = [r[0] for r in data]
-    vals = {t: [] for t in titles}
-    for r in data[4:]:
-        if not r[0].startswith("measured"): continue
-        for t, v in zip(titles, r[1:]):
-            if v: vals[t].append(float(v) / 1000)
-    # one column per scenario carries the total, the next two Gradle and IDE parts
-    scen = [titles[i] for i in range(0, len(titles), 3)]
-    for i, s in enumerate(scen):
-        name = s.split(" (")[0]
-        tot = vals[titles[3*i]]; gr = vals[titles[3*i+1]] if 3*i+1 < len(titles) else []
-        rows.setdefault(name, {})[mode] = (tot, gr)
-print("| scenario | stock total (median) | WBS total (median) | speed-up | stock Gradle part |")
-print("|---|---|---|---|---|")
-for name, by in rows.items():
-    def fmt(v): return " / ".join(f"{x:.1f}" for x in v) + f" → **{statistics.median(v):.1f} s**" if v else "-"
-    st = by.get("stock", ([], []))[0]; wb = by.get("wbs", ([], []))[0]; gr = by.get("stock", ([], []))[1]
-    su = f"−{100*(1-statistics.median(wb)/statistics.median(st)):.0f} %" if st and wb else "-"
-    print(f"| {name} | {fmt(st)} | {fmt(wb)} | {su} | {fmt(gr)} |")
-print()
-print("Totals are measured identically for both; the profiler's Gradle/IDE split exists only for stock (its agent hooks the stock build action).")
-print(f"Raw results: {out}/stock/benchmark.html, {out}/wbs/benchmark.html")
-PY
+python3 "$HERE/merge-report.py" "$OUT" | tee "$OUT/report.md"
 echo "report: $OUT/report.md"

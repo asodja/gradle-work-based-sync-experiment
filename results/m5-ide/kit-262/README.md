@@ -64,6 +64,14 @@ opens an already imported project and syncs it twice without a UI; timings in th
 
 ## Measuring with gradle-profiler (0.26+)
 
+One command for stock vs WBS with a merged report (needs gradle-profiler on the PATH and python3):
+
+    ./compare.sh "/Users/<you>/Applications/IntelliJ IDEA.app" "/Applications/IntelliJ IDEA WBS.app" ~/workspace/gradle
+
+Runs `sync_miss_settings` and `sync_hit` (1 warm-up, 3 iterations) for both IDEs with the full IDE, then prints and
+saves `report.md` in `~/wbs-profiler-<timestamp>`. Tunables: `SCENARIOS`, `ITERATIONS`, `WARMUPS`, `GRADLE_USER_HOME`.
+Details of what the profiler does and why the two adaptations below are needed:
+
 gradle-profiler's `idea-sync` scenarios run the IDE in a sandbox: it starts the app's launcher with `IDEA_VM_OPTIONS`
 pointing at its own vmoptions file (sandbox config/system/plugins/log paths, its agent, the scenario's `ide-jvm-args`),
 which replaces the app's `Contents/bin/idea.vmoptions`, and the sandbox has its own `plugins` directory. The included
