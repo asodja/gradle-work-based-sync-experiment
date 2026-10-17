@@ -784,4 +784,7 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   not permitted"; the overlay now runs in a temp dir with the source app's JBR and `cp` writes back), then the IDE did
   not load the plugin from `Contents/plugins`: 2026.2 ships `plugins/plugin-classpath.txt`, a precomputed index of
   the bundled plugins, and does not scan that directory for others. The kit installs the plugin into the copy's user
-  plugin directory (`~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS/plugins`) instead.
+  plugin directory (`~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS/plugins`) instead. Fourth run:
+  still not loaded, because the macOS launcher appends `-Didea.paths.selector` from `product-info.json`'s
+  `dataDirectoryName` after the vmoptions, so the copy used the shared `IntelliJIdea2026.2` directories; the kit now
+  sets `dataDirectoryName` to `IntelliJIdea2026.2-WBS` in the copy's `Contents/Resources/product-info.json`.

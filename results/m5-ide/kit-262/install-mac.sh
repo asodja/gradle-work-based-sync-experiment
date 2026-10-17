@@ -55,8 +55,15 @@ overlay org/jetbrains/plugins/gradle/service/project/GradleProjectResolver.class
 overlay com/intellij/openapi/externalSystem/service/project/AbstractIdeModifiableModelsProvider.class "com/intellij/openapi/externalSystem/service/project/AbstractIdeModifiableModelsProvider*.class"
 overlay com/intellij/openapi/externalSystem/service/project/manage/LibraryDependencyDataService.class "com/intellij/openapi/externalSystem/service/project/manage/LibraryDependencyDataService*.class"
 
-# The plugin goes into the copy's own user plugin directory (paths selector IntelliJIdea2026.2-WBS): 2026.2 ships a
-# precomputed index of its bundled plugins (plugins/plugin-classpath.txt) and does not scan that directory for others.
+# Own settings/plugins/logs directories: the launcher derives the paths selector from product-info.json and appends it
+# after the vmoptions, so the selector must change there (a -Didea.paths.selector line alone is overridden).
+PI="$C/Resources/product-info.json"
+grep -q '"dataDirectoryName": *"IntelliJIdea2026.2"' "$PI" || die "unexpected dataDirectoryName in $PI"
+sed -i '' 's/"dataDirectoryName": *"IntelliJIdea2026.2"/"dataDirectoryName": "IntelliJIdea2026.2-WBS"/' "$PI"
+echo "data directory name set to IntelliJIdea2026.2-WBS"
+
+# The plugin goes into the copy's own user plugin directory: 2026.2 ships a precomputed index of its bundled plugins
+# (plugins/plugin-classpath.txt) and does not scan that directory for others.
 USER_PLUGINS="$HOME/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS/plugins"
 mkdir -p "$USER_PLUGINS"
 rm -rf "$USER_PLUGINS/wbs-task-transport" "$C/plugins/wbs-task-transport"
