@@ -190,6 +190,7 @@ public final class TaskTransport implements Serializable {
                     System.err.println("[wbs-tasks] KotlinDslScriptsModel assembled for " + e.getKey().getBuildIdentifier().getRootDir().getName()
                         + ": " + scripts.getScriptModels().size() + " scripts (phase " + phase.getName() + ")");
                     consumer.consumeProjectModel(e.getKey().getRootProject(), scripts, org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel.class);
+                    consumer.consumeBuildModel(e.getKey(), scripts, org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel.class);
                 } catch (RuntimeException ex) {
                     System.err.println("[wbs-tasks] cannot assemble KotlinDslScriptsModel for " + e.getKey().getBuildIdentifier().getRootDir() + ": " + ex);
                 }

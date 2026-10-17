@@ -1,6 +1,6 @@
 # gradle-profiler IDE sync scenarios, wbs IntelliJ IDEA 2026.2.2 (build 262.10315.125), gradle/gradle.
 #
-#   gradle-profiler --benchmark --scenario-file wbs.scenarios --project-dir ~/workspace/gradle \
+#   gradle-profiler --benchmark --scenario-file wbs.scenarios --project-dir ~/workspace/gradle --gradle-user-home ~/.gradle \
 #     --idea-install-dir "<the wbs app>" --idea-sandbox-dir ~/gp-sandbox-wbs --output-dir ~/gp-results-wbs [scenario...]
 #
 # The IDE runs with a GUI when a display is available (headless otherwise). It stays open across the iterations of one

@@ -62,4 +62,4 @@ sync_miss_cleared {
 SCN
 echo "scenarios: $OUT/idea-sync.scenarios"
 exec "$PROFILER" --benchmark --scenario-file "$OUT/idea-sync.scenarios" --project-dir "$PROJECT" \
-  --idea-install-dir "$IDEA" --idea-sandbox-dir "$SANDBOX" --output-dir "$OUT" "$@"
+  --gradle-user-home "${GRADLE_USER_HOME:-$HOME/.gradle}" --idea-install-dir "$IDEA" --idea-sandbox-dir "$SANDBOX" --output-dir "$OUT" "$@"

@@ -827,3 +827,10 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   agent instruments only the stock build action, so WBS shows 0 ms Gradle time (totals comparable). Headless on this
   machine, gradle/gradle, same-session iterations: settings-script miss stock 70.8 / 65.9 / 65.3 s vs WBS 43.2 / 41.9 /
   41.7 s (−36 %); hit (both hit the cache in-session) stock 35.0 / 51.5 / 50.7 s vs WBS 25.3 / 39.5 / 40.1 s.
+- **Owner's Mac: Kotlin scripts show "Code insight is unavailable (Script Configurations not loaded)" in the WBS
+  IDE.** The Kotlin plugin reads the assembled `KotlinDslScriptsModel` through `ProjectResolverContext.getBuildModel`
+  (2026.2, `KotlinDslScriptModelProcessorKt`) or `getRootModel` (2025.3), i.e. under a build model id, while the
+  transport registered it under the root project's project model id (as the comment in `TaskTransport` assumed from
+  `GradleClassBuildModelProvider`). Never caught: the headless runs cannot show code insight, and the harness compared
+  the model's content, not its id. Now registered under both ids (`buildState()`, and `consumeBuildModel` in the
+  `--tasks` transport). Verification needs a real IDE: the owner's Mac.

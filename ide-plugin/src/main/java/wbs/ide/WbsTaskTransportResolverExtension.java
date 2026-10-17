@@ -362,8 +362,12 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
                         com.intellij.gradle.toolingExtension.impl.ideTask.IdeaProjectFromPayloads.assemble(idea, prefix));
                 }
                 if (!scripts.isEmpty()) {
-                    models.put(com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelId.createProjectModelId(build.getRootProject(), org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel.class),
-                        com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptsModelFromPayloads.assemble(scripts));
+                    org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel assembled =
+                        com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptsModelFromPayloads.assemble(scripts);
+                    // 2025.3's Kotlin plugin reads it as a project model of the root project, 2026.2's as a build model
+                    // (ProjectResolverContext.getBuildModel); registered under both ids
+                    models.put(com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelId.createProjectModelId(build.getRootProject(), org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel.class), assembled);
+                    models.put(com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelId.createBuildModelId(build, org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel.class), assembled);
                 }
             }
             allPayloads = payloads;

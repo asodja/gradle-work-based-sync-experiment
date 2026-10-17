@@ -13,3 +13,4 @@ ide-plugin/.gradle/
 # raw Gradle output of the harness runs (1 MB each); the harness .txt summaries and the NOTES stay
 results/**/*.build.log
 results/**/*.jstack
+gradle-user-home/

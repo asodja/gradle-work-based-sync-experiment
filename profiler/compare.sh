@@ -11,6 +11,9 @@ STOCK=$1; WBS=$2; PROJECT=$3; OUT=${4:-$HOME/wbs-profiler-$(date +%Y%m%d-%H%M)}
 HERE=$(cd "$(dirname "$0")" && pwd)
 SCENARIOS=${SCENARIOS:-sync_miss_settings sync_hit}; WARMUPS=${WARMUPS:-1}; ITERATIONS=${ITERATIONS:-3}
 PROFILER=${GRADLE_PROFILER:-gradle-profiler}
+# the same Gradle user home for both IDEs: without the option the profiler uses a fresh ./gradle-user-home for the
+# stock sync (its agent injects it) while the kit's own Gradle invocations use the default one
+GUH=${GRADLE_USER_HOME:-$HOME/.gradle}
 KIT=${WBS_KIT:-}
 if [[ -z $KIT ]]; then
   for c in "$HERE/../wbs-ide-kit-262.10315.125" "$HERE/../dist/wbs-ide-kit-262.10315.125"; do [[ -d $c ]] && KIT=$c && break; done
@@ -49,7 +52,7 @@ run() { # run <mode> <app>
   scenario_file "$mode" "$result/idea-sync.scenarios"
   echo "== $mode: $app  ($SCENARIOS; $WARMUPS warm-up(s), $ITERATIONS iterations)"
   "$PROFILER" --benchmark --scenario-file "$result/idea-sync.scenarios" --project-dir "$PROJECT" \
-    --idea-install-dir "$app" --idea-sandbox-dir "$sandbox" --output-dir "$result" 2>&1 | tee "$result/profiler.log" | grep -E "Running scenario|Full sync|FAILED|rror" || true
+    --gradle-user-home "$GUH" --idea-install-dir "$app" --idea-sandbox-dir "$sandbox" --output-dir "$result" 2>&1 | tee "$result/profiler.log" | grep -E "Running scenario|Full sync|FAILED|rror" || true
   (cd "$PROJECT" && git checkout -- "$SETTINGS" 2>/dev/null) || true
 }
 run stock "$STOCK"
