@@ -25,6 +25,8 @@ fi
 [[ -n $KIT && -f "$KIT/wbs.vmoptions" ]] || { echo "kit not found; set WBS_KIT to the unpacked kit directory" >&2; exit 1; }
 command -v "$PROFILER" >/dev/null || { echo "gradle-profiler not found; set GRADLE_PROFILER" >&2; exit 1; }
 for app in "$STOCK" "$WBS"; do [[ -d $app ]] || { echo "no IDE at $app" >&2; exit 1; }; done
+PROJECT=${PROJECT/#\~/$HOME}   # a quoted "~/..." reaches us unexpanded
+[[ -d $PROJECT ]] || { echo "no project directory at $PROJECT" >&2; exit 1; }
 mkdir -p "$OUT"
 SETTINGS=settings.gradle.kts; [[ -f "$PROJECT/$SETTINGS" ]] || SETTINGS=settings.gradle
 
@@ -53,7 +55,8 @@ run() { # run <mode> <app>
   scenario_file "$mode" "$result/idea-sync.scenarios"
   echo "== $mode: $app  ($SCENARIOS; $WARMUPS warm-up(s), $ITERATIONS iterations)"
   "$PROFILER" --benchmark --scenario-file "$result/idea-sync.scenarios" --project-dir "$PROJECT" \
-    --gradle-user-home "$GUH" --idea-install-dir "$app" --idea-sandbox-dir "$sandbox" --output-dir "$result" 2>&1 | tee "$result/profiler.log" | grep -E "Running scenario|Full sync|FAILED|rror" || true
+    --gradle-user-home "$GUH" --idea-install-dir "$app" --idea-sandbox-dir "$sandbox" --output-dir "$result" 2>&1 | tee "$result/profiler.log" | grep -E "Running scenario|Full sync|FAILED|rror|xception|\* " || true
+  [[ -f "$result/benchmark.csv" ]] || { echo "no results for $mode; see $result/profiler.log" >&2; exit 1; }
   (cd "$PROJECT" && git checkout -- "$SETTINGS" 2>/dev/null) || true
 }
 run stock "$STOCK"

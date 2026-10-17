@@ -77,7 +77,11 @@ This machine; details and disk budget in `design/environment.md`.
 
 ## Next step
 
-0. D29 (2026-10-17): `GradleBuild` as a task implemented (`-Dwbs.transport.tree=task`, root `ideBuildTree` +
+0. D30 (2026-10-17 evening): Kotlin DSL script code insight in the kit fixed (state delivered through the IDE's
+   fetch-result bridge so the sync contributors run; `-Dwbs.transport.phases=scripts|all|none`), at +40-60 s per sync
+   on gradle/gradle for the Kotlin script contributor (IDE-side cost, hidden in stock behind the build action). Next:
+   deliver the script phase in the background, or cheaper script entities. Owner to confirm code insight on the Mac.
+   D29 (2026-10-17): `GradleBuild` as a task implemented (`-Dwbs.transport.tree=task`, root `ideBuildTree` +
    `ideModels`, base-script model included; `results/m5-ide/buildtree-262-NOTES.md`): identical storage, no time gain
    on a hit (first daemon contact ~1.8 s whichever operation); kept as an option, model request stays the default.
    D27 (2026-10-17): Mac kit for IntelliJ IDEA 2026.2.2 (262.10315.125) built and smoke-tested headless on Linux

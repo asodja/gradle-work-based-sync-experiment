@@ -470,3 +470,22 @@ settings script instead of Gradle's partial `GradleBuild` (accepted, D28). Isola
 `dependsOn` across projects and `includedBuild(name).task()`. Two IP/Gradle facts learned: a project's `Gradle` object
 is not the settings' instance (key per-build state by identity path), and Gradle's base-script model classes are
 package-private (reflection needs the accessibility flag).
+
+### D30: the bundle state is delivered through the IDE's fetch-result bridge; script phases on by default (2026-10-17)
+
+What: the owner's Mac showed "Code insight is unavailable (Script Configurations not loaded)" in `.gradle.kts` files.
+Two causes: the assembled `KotlinDslScriptsModel` was registered under the root project's model id while the Kotlin
+plugin reads it as a build model (`getBuildModel`/`getRootModel`); and the single-invocation mode replaced the build
+action with `models.addState(state)`, so the IDE's `GradleModelFetchActionListener` (created by
+`GradleSyncProjectConfigurator.createModelFetchResultHandler`) never ran and with it none of the per-phase sync
+contributors, which in 2026.2 include the Kotlin DSL base-script and script-model contributors. The patched resolver now
+feeds the state through `GradleModelFetchActionResultHandlerBridge` as the action's streamed results would (first phase
+with all models, the others empty), under `-Dwbs.transport.phases`: `scripts` (default: only the two script phases),
+`all`, `none`. Measured on this machine (gradle/gradle, 2026.2.2): `all` turned the data import's library dependency and
+project repository steps from 4.4 / 2.7 s into 24 / 23 s (the contributors populate the workspace model a second time);
+`scripts` keeps the import at 15 s but the Kotlin script contributor alone takes 44-62 s on a fresh IDE and ~40 s on a
+re-sync (JFR: `GradleKotlinScriptEntityProvider` → workspace `VirtualFileIndex` updates and `MutableWorkspaceSet` copies
+for the scripts' classpath URLs, plus read-lock waits), work that a stock sync overlaps with its 40 s build action.
+Why: correctness first for the kit (the owner uses Kotlin scripts); the cost is documented and switchable. Next lever:
+deliver the script phase in the background after the sync, or make the script entities cheaper (IDE-side: one shared
+classpath per build instead of per script).

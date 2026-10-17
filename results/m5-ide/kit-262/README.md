@@ -34,6 +34,18 @@ and `[wbs] holder state built from bundles`.
 
 Build output of the tasks: `<project>/build/ide/models/ideProjectModel.bin` per project.
 
+## Kotlin DSL script code insight and the `wbs.transport.phases` option
+
+In 2026.2 the script configurations of `.gradle.kts` files come from the IDE's per-phase *sync contributors*
+(Kotlin DSL base-script and script-model phases). The kit's resolver now feeds the bundle models through the IDE's own
+fetch-result bridge so those contributors run. Their cost is not small: the Kotlin script contributor takes 40-60 s for
+gradle/gradle's 290 scripts on the test machine (workspace-model index updates for the scripts' classpath URLs), work
+a stock sync hides behind its 40 s build action. The option in `Contents/bin/idea.vmoptions`:
+
+    -Dwbs.transport.phases=scripts   (default) script insight works; sync + ~40-60 s on gradle/gradle
+    -Dwbs.transport.phases=none      fastest sync; .gradle.kts files show "Script Configurations not loaded"
+    -Dwbs.transport.phases=all       every contributor, as stock; slower still (the legacy import reconciles duplicates)
+
 ## Known limits
 
 - The first import of a project also resolves what the IDE's "Download sources" setting asks for; with the 2026.2

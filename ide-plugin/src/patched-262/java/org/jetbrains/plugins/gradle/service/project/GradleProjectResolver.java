@@ -325,7 +325,7 @@ public final class GradleProjectResolver implements ExternalSystemProjectResolve
       if ("only".equals(System.getProperty("wbs.transport.run"))) {
         // work-based sync experiment (D23): no build action; the transport plugin ran the model tasks as a plain
         // task run in preImportCheck and now hands over the holder state read from the bundles.
-        models.addState(wbsStateFrom(projectResolverChain));
+        wbsDeliverState(resolverContext, buildAction, wbsStateFrom(projectResolverChain));
       }
       else {
         var modelFetchActionResultHandler = GradleSyncProjectConfigurator.createModelFetchResultHandler(resolverContext);
@@ -374,6 +374,116 @@ public final class GradleProjectResolver implements ExternalSystemProjectResolve
         null, activityId, Phase.PROJECT_RESOLVERS, projectResolversTimeInMs, projectResolversErrorsCount);
       projectResolversSpan.end();
     }
+  }
+
+  /**
+   * Delivers the bundle-built state the way the build action's streamed results would: through the IDE's own result
+   * handler bridge, so that the per-phase sync contributors (Kotlin DSL script configurations, workspace model
+   * population) run as in a stock sync. The first phase carries all models, the others an empty state with the same
+   * root build; the project-loaded and build-finished handlers and the final result handler follow in the stock order.
+   */
+  private static void wbsDeliverState(
+    @NotNull DefaultProjectResolverContext resolverContext,
+    @NotNull GradleModelFetchAction buildAction,
+    @NotNull com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelHolderState state
+  ) {
+    var delegate = GradleSyncProjectConfigurator.createModelFetchResultHandler(resolverContext);
+    long started = System.currentTimeMillis();
+    // the same listener with a timestamp per callback: the contributors run inside these calls, sequentially
+    var handler = new org.jetbrains.plugins.gradle.service.modelAction.GradleModelFetchActionListener() {
+      private void mark(String what) {
+        System.err.println("[wbs] sync contributors: " + what + " at +" + (System.currentTimeMillis() - started) + " ms");
+      }
+      @Override
+      public Object onModelFetchPhaseCompleted(com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase phase, kotlin.coroutines.Continuation<? super kotlin.Unit> c) {
+        mark("phase " + phase.getName());
+        return delegate.onModelFetchPhaseCompleted(phase, c);
+      }
+      @Override
+      public Object onProjectLoadedActionCompleted(kotlin.coroutines.Continuation<? super kotlin.Unit> c) {
+        mark("project loaded");
+        return delegate.onProjectLoadedActionCompleted(c);
+      }
+      @Override
+      public Object onModelFetchCompleted(kotlin.coroutines.Continuation<? super kotlin.Unit> c) {
+        mark("model fetch completed");
+        return delegate.onModelFetchCompleted(c);
+      }
+      @Override
+      public Object onModelFetchFailed(Throwable t, kotlin.coroutines.Continuation<? super kotlin.Unit> c) {
+        mark("failed: " + t);
+        return delegate.onModelFetchFailed(t, c);
+      }
+      @Override
+      public Object onModelFetchFailures(com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelFetchFailureResult r, kotlin.coroutines.Continuation<? super kotlin.Unit> c) {
+        return delegate.onModelFetchFailures(r, c);
+      }
+    };
+    var bridge = new org.jetbrains.plugins.gradle.service.modelAction.GradleModelFetchActionResultHandlerBridge(resolverContext, buildAction, handler);
+    var empty = new com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelHolderState(
+      state.getRootBuild(), java.util.List.of(), java.util.Map.of());
+    // -Dwbs.transport.phases: "scripts" (default) runs the sync contributors of the phases the Kotlin DSL script support
+    // reads (base script definitions, script configurations; without them .gradle.kts files have no code insight, D30);
+    // "all" runs every contributor as a stock sync would (the others populate the workspace model a second time, which
+    // the legacy data import then reconciles at a high cost); "none" runs no contributor (fastest, no script insight).
+    String phasesMode = System.getProperty("wbs.transport.phases", "scripts");   // scripts | all | none
+    boolean allPhases = "all".equals(phasesMode);
+    boolean noPhases = "none".equals(phasesMode);
+    Thread feeder = new Thread(() -> {
+      try {
+        boolean first = true;
+        for (var phase : wbsPhases()) {
+          String name = phase.getName();
+          boolean scriptPhase = name.contains("SCRIPT");
+          if (noPhases || (!allPhases && !scriptPhase)) {
+            continue;
+          }
+          bridge.asStreamValueListener().onValue((first ? state : empty).withPhase(phase));
+          first = false;
+          if (allPhases && phase == com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase.PROJECT_LOADED_PHASE) {
+            bridge.asProjectLoadedResultHandler().onComplete(empty.withPhase(phase));
+          }
+        }
+        if (first) {
+          // no phase delivered: the models still have to reach the holder
+          resolverContext.getModels().addState(state);
+        }
+        if (allPhases) {
+          bridge.asBuildFinishedResultHandler().onComplete(empty);   // completes the remaining phases as the action does
+        }
+        bridge.asResultHandler().onComplete(null);
+      }
+      catch (Throwable t) {
+        bridge.asResultHandler().onFailure(new org.gradle.tooling.GradleConnectionException("wbs: delivering the bundle state failed", t));
+      }
+    }, "wbs-state-feeder");
+    feeder.start();
+    bridge.collectAllEvents();
+    try {
+      feeder.join();
+    }
+    catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+    System.err.println("[wbs] sync contributors: all done at +" + (System.currentTimeMillis() - started) + " ms");
+  }
+
+  /** The fetch phases in order: the static instances of the phase interface (a Comparable, not an enum). */
+  private static java.util.List<com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase> wbsPhases() {
+    var phases = new java.util.ArrayList<com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase>();
+    for (var field : com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase.class.getFields()) {
+      if (java.lang.reflect.Modifier.isStatic(field.getModifiers())
+          && com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase.class.isAssignableFrom(field.getType())) {
+        try {
+          phases.add((com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase)field.get(null));
+        }
+        catch (IllegalAccessException e) {
+          throw new IllegalStateException(e);
+        }
+      }
+    }
+    java.util.Collections.sort(phases);
+    return phases;
   }
 
   private static com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelHolderState wbsStateFrom(

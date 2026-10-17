@@ -833,4 +833,9 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   transport registered it under the root project's project model id (as the comment in `TaskTransport` assumed from
   `GradleClassBuildModelProvider`). Never caught: the headless runs cannot show code insight, and the harness compared
   the model's content, not its id. Now registered under both ids (`buildState()`, and `consumeBuildModel` in the
-  `--tasks` transport). Verification needs a real IDE: the owner's Mac.
+  `--tasks` transport). Still unavailable afterwards: the second cause was that the single-invocation mode never ran the
+  IDE's fetch-result listener and hence no sync contributor (D30). Fixed by feeding the state through the IDE's result
+  bridge; costs measured: `all` phases blow up the legacy import (lib deps 24 s, project repos 23 s), `scripts` only adds
+  the Kotlin script contributor: 44-62 s on a fresh IDE, re-sync 67 s vs 27 s without (JFR: workspace VirtualFileIndex
+  updates for script classpath URLs in `GradleKotlinScriptEntityProvider`, and lock waits). Default `scripts`; `none`
+  restores the previous speed without script insight. `wbsResync`, phase timestamps (`[wbs] sync contributors: …`).
