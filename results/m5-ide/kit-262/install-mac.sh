@@ -36,13 +36,19 @@ jar_of() {
   done
   die "no jar in $C holds $1"
 }
-# The IDE's bundled JBR runs the overlay tool from source. Info-ZIP's zip -u must not be used: the IDE's jars carry a
-# lookup index that would point at stale offsets afterwards, and the patched classes then fail to load.
-JAVA="$C/jbr/Contents/Home/bin/java"; [[ -x "$JAVA" ]] || die "no bundled JBR at $JAVA"
+# The original app's bundled JBR runs the overlay tool from source, on a copy of the jar in a temp directory: macOS
+# (App Management) refuses writes into an app bundle from a process started out of that bundle, while cp from the
+# Terminal is allowed. Info-ZIP's zip -u must not be used: the IDE's jars carry a lookup index that would point at
+# stale offsets afterwards, and the patched classes then fail to load.
+JAVA="$SRC/Contents/jbr/Contents/Home/bin/java"; [[ -x "$JAVA" ]] || die "no bundled JBR at $JAVA"
+WORK=$(mktemp -d)
 overlay() { # overlay <class file path> <glob of class files to replace in its jar>
   local jar; jar=$(jar_of "$1")
   local classes; classes=$(cd "$HERE/patched-classes" && ls $2)
-  (cd "$HERE/patched-classes" && "$JAVA" "$HERE/JarOverlay.java" "$jar" . $classes) || die "overlay into ${jar#"$C"/} failed"
+  local name; name=$(basename "$jar")
+  cp "$jar" "$WORK/$name"
+  (cd "$HERE/patched-classes" && "$JAVA" "$HERE/JarOverlay.java" "$WORK/$name" . $classes) || die "overlay into $name failed"
+  cp "$WORK/$name" "$jar" || die "cannot write $jar (macOS may ask to allow Terminal to modify apps)"
 }
 overlay com/intellij/gradle/toolingExtension/impl/modelAction/GradleModelFetchAction.class "com/intellij/gradle/toolingExtension/impl/modelAction/GradleModelFetchAction*.class"
 overlay org/jetbrains/plugins/gradle/service/project/GradleProjectResolver.class "org/jetbrains/plugins/gradle/service/project/GradleProjectResolver*.class"
@@ -78,6 +84,7 @@ else
 fi
 rm -rf "$TMP"
 
+rm -rf "$WORK"
 echo "$EXPECTED installed $(date)" > "$C/Resources/wbs-kit.txt"
 codesign --force --deep --sign - "$DEST" 2>/dev/null || die "ad hoc codesign failed"
 xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
