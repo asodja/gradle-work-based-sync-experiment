@@ -1,0 +1,67 @@
+GradleSourceSetDependencyModel-626173734: identical=287 different=0 missing=0 extra-in-tasks=0
+ExternalProject-1310207950: identical=287 different=0 missing=0 extra-in-tasks=0
+DIFFERENT: GradleSourceSetModel-1524096923/58159708/_docs.bin
+18,57d17
+<       key:"__$$asciidoctorj_asciidoctor$$__d",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"__$$asciidoctorj_asciidoctor$$__r",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"__$$asciidoctorj_samplesMultiPage$$__d",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"__$$asciidoctorj_samplesMultiPage$$__r",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"__$$asciidoctorj_userguideMultiPage$$__d",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"__$$asciidoctorj_userguideMultiPage$$__r",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"__$$asciidoctorj_userguideSinglePageHtml$$__d",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"__$$asciidoctorj_userguideSinglePageHtml$$__r",
+<       value:[
+<       ]
+<     },
+DIFFERENT: GradleSourceSetModel-1524096923/58159708/_internal-build-reports.bin
+17,36d16
+<       key:"incubatingReportHtmlPath",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"incubatingReportTxtPath",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"nextMajorRemovalReportHtmlPath",
+<       value:[
+<       ]
+<     },
+<     {
+<       key:"nextMajorRemovalReportTxtPath",
+<       value:[
+<       ]
+<     },
+<     {
+GradleSourceSetModel-1524096923: identical=285 different=2 missing=0 extra-in-tasks=0
+AnnotationProcessingModel-271669493: identical=256 different=0 missing=0 extra-in-tasks=0

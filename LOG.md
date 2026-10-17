@@ -787,4 +787,22 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   plugin directory (`~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS/plugins`) instead. Fourth run:
   still not loaded, because the macOS launcher appends `-Didea.paths.selector` from `product-info.json`'s
   `dataDirectoryName` after the vmoptions, so the copy used the shared `IntelliJIdea2026.2` directories; the kit now
-  sets `dataDirectoryName` to `IntelliJIdea2026.2-WBS` in the copy's `Contents/Resources/product-info.json`.
+  sets `dataDirectoryName` to `IntelliJIdea2026.2-WBS` in the copy's `Contents/Resources/product-info.json`. Fifth run:
+  the launcher takes the selector from the explicit `-Didea.paths.selector=…` entries of `product-info.json`'s launch
+  arguments (4 occurrences), rewritten too; the kit then worked on the owner's Mac (Apple Silicon): first sync fine,
+  the tree mode (D29) enabled by default in the kit afterwards.
+- **Owner's Mac, second sync in the WBS copy:** `IllegalStateException: removeContentEntry: removed content entry url
+  '…/platforms/software/ant/build/generated/sources/annotationProcessor/java/main' still exists after removing`
+  (`ContentRootDataService.importData:253` → `ModifiableRootModelBridgeImpl.removeContentEntry`), i.e. the module held
+  two content entries with that URL before the re-sync removed one. Not reproducible here: the headless warm-up only
+  imports a new project, never re-syncs. Checked instead on 2026.2.2 (`results/m5-ide/kit-262/mac-resync/`): fresh
+  imports by stock and by the patched IDE write identical content roots, no module has a duplicated content URL, with
+  or without that generated directory present (neither IDE lists it as a content root on Linux); the model dump
+  comparison builders vs bundles is identical for `GradleSourceSetDependencyModel` (287/287), `ExternalProject`
+  (287/287), `AnnotationProcessingModel` (256/256), and `GradleSourceSetModel` except the two known benign
+  `configurationArtifacts` differences. The patched-vs-stock storage differs only in 75 module files where a library
+  (jackson-annotations 2.22, hamcrest 3.0, jackson-core 2.22.3) is module-level in one and project-level in the other:
+  the IDE's conflict rule for same-named libraries with different roots depends on module processing order, not on
+  model content. Most likely cause of the Mac error: the project model had been built by the stock Toolbox IDE and by
+  the first kit attempts that ran with the shared `IntelliJIdea2026.2` config; suggested check: invalidate the WBS
+  copy's caches and sync twice.

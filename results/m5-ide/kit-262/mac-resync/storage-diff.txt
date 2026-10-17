@@ -1,0 +1,676 @@
+DIFFERENT: modules/build-logic.cleanup.test.xml
+269,279c269
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.architecture-test.integTest.xml
+49c49,59
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.architecture-test.test.xml
+21c21,31
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.architecture-test.testFixtures.xml
+34c34,44
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.base-services-groovy.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.base-services.test.xml
+139,149c139
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.build-cache-base.testFixtures.xml
+271,281c271
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.build-cache-core.test.xml
+1197,1207c1197
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-core:2.22.3">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.22.3/8695aab38355c65b60e242ec62edf13c52916d88/jackson-core-2.22.3.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.build-cache-spi.testFixtures.xml
+271,281c271
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.build-cache.test.xml
+164,174c164
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.build-discovery.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.classloaders.integTest.xml
+162,172c162
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.classloaders.testFixtures.xml
+262,272c262
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.cli.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.collections.testFixtures.xml
+271,281c271
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.credentials-api.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.daemon-logging.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.daemon-main.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.declarative-dsl-provider.testFixtures.xml
+217,227c217
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.dependency-management-resources.testFixtures.xml
+190,200c190
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.distributions-integ-tests.testFixtures.xml
+283,293c283
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.enterprise-operations.testFixtures.xml
+271,281c271
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.enterprise-plugin-performance.performanceTest.xml
+217,227c217
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.enterprise-workers.testFixtures.xml
+271,281c271
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.enterprise.test.xml
+1599,1609c1599
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.execution-e2e-tests.testFixtures.xml
+283,293c283
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.gradle-cli-main.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.graph-isolation.integTest.xml
+1417,1427c1417
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.groovy-loader.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.ide-plugins.testFixtures.xml
+179,189c179
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.input-tracking.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.installation-beacon.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.instrumentation-agent-services.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.instrumentation-agent.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.instrumentation-declarations.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.integ-test.testFixtures.xml
+283,293c283
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.internal-performance-testing.integTest.xml
+111c111,121
+<     <orderEntry type="library" name="Gradle: org.jspecify:jspecify:1.0.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.jspecify:jspecify:1.0.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/9.9.0-milestone-2/transforms/e6550600842b4b597071d5886b534cc5/transformed/jspecify-1.0.0-no-module-annotation.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.internal-performance-testing.main.xml
+112c112,122
+<     <orderEntry type="library" name="Gradle: org.jspecify:jspecify:1.0.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.jspecify:jspecify:1.0.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/9.9.0-milestone-2/transforms/e6550600842b4b597071d5886b534cc5/transformed/jspecify-1.0.0-no-module-annotation.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.internal-performance-testing.test.xml
+111c111,121
+<     <orderEntry type="library" name="Gradle: org.jspecify:jspecify:1.0.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.jspecify:jspecify:1.0.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/9.9.0-milestone-2/transforms/e6550600842b4b597071d5886b534cc5/transformed/jspecify-1.0.0-no-module-annotation.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.internal-performance-testing.testFixtures.xml
+34c34,44
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.io.testFixtures.xml
+262,272c262
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.jacoco.testFixtures.xml
+172,182c172
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.java-api-extractor.testFixtures.xml
+271,281c271
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.java-compiler-plugin.testFixtures.xml
+265,275c265
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.java-compiler-worker.test.xml
+1233,1243c1233
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-core:2.22.3">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.22.3/8695aab38355c65b60e242ec62edf13c52916d88/jackson-core-2.22.3.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.kotlin-dsl-tooling-models.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.language-groovy.main.xml
+1230,1240c1230
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-core:2.22.3">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.22.3/8695aab38355c65b60e242ec62edf13c52916d88/jackson-core-2.22.3.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.maven.testFixtures.xml
+1173,1183c1173
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.normalization-api.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.normalization.test.xml
+192,202c192
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.performance.integTest.xml
+49c49,59
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.performance.performanceTest.xml
+146c146,156
+<     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.guava:guava:33.4.6-jre" level="project" />
+---
+>     <orderEntry type="module-library" scope="PROVIDED">
+>       <library name="Gradle: com.google.guava:guava:33.4.6-jre">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.google.guava/guava/33.4.6-jre/4437fb72c3cc5d29554b588d9a97bea12d6a42e1/guava-33.4.6-jre.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.performance.test.xml
+18c18,28
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.performance.testFixtures.xml
+34c34,44
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.plugin-development.crossVersionTest.xml
+228,238c228
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.plugins-jvm-test-fixtures.testFixtures.xml
+1410,1420c1410
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-core:2.22.3">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.22.3/8695aab38355c65b60e242ec62edf13c52916d88/jackson-core-2.22.3.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.precondition-tester.crossVersionTest.xml
+136,146c136
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.precondition-tester.testFixtures.xml
+283,293c283
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.process-services-api.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.public-api-tests.testFixtures.xml
+283,293c283
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.reflection-services.integTest.xml
+174,184c174
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.samples.testFixtures.xml
+283,293c283
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.scala.testFixtures.xml
+282,292c282
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.service-provider.testFixtures.xml
+254,264c254
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.smoke-ide-test.integTest.xml
+49c49,59
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.smoke-ide-test.smokeIdeTest.xml
+136c136,146
+<     <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest:3.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.smoke-ide-test.test.xml
+18c18,28
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.smoke-ide-test.testFixtures.xml
+34c34,44
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.software-diagnostics.integTest.xml
+155c155,165
+<     <orderEntry type="library" name="Gradle: org.jspecify:jspecify:1.0.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.jspecify:jspecify:1.0.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/9.9.0-milestone-2/transforms/e6550600842b4b597071d5886b534cc5/transformed/jspecify-1.0.0-no-module-annotation.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.software-diagnostics.main.xml
+156c156,166
+<     <orderEntry type="library" name="Gradle: org.jspecify:jspecify:1.0.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.jspecify:jspecify:1.0.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/9.9.0-milestone-2/transforms/e6550600842b4b597071d5886b534cc5/transformed/jspecify-1.0.0-no-module-annotation.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.software-diagnostics.test.xml
+155c155,165
+<     <orderEntry type="library" name="Gradle: org.jspecify:jspecify:1.0.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.jspecify:jspecify:1.0.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/9.9.0-milestone-2/transforms/e6550600842b4b597071d5886b534cc5/transformed/jspecify-1.0.0-no-module-annotation.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.software-diagnostics.testFixtures.xml
+36c36,46
+<     <orderEntry type="library" name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0" level="project" />
+---
+>     <orderEntry type="module-library">
+>       <library name="Gradle: org.spockframework:spock-core:2.4-groovy-4.0">
+>         <CLASSES>
+>           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.spockframework/spock-core/2.4-groovy-4.0/7e470527a08377fd905f37aba41989e6f6f8dbd6/spock-core-2.4-groovy-4.0.jar!/" />
+>         </CLASSES>
+DIFFERENT: modules/gradle.testing-native.testFixtures.xml
+188,198c188
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.wrapper-shared.integTest.xml
+183,193c183
+<     <orderEntry type="module-library">
+<       <library name="Gradle: org.hamcrest:hamcrest:3.0">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/org.hamcrest/hamcrest/3.0/8fd9b78a8e6a6510a078a9e30e9e86a6035cfaf7/hamcrest-3.0.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+DIFFERENT: modules/gradle.wrapper-shared.testFixtures.xml
+263,273c263
+<     <orderEntry type="module-library" scope="RUNTIME">
+<       <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.22">
+<         <CLASSES>
+<           <root url="jar://$USER_HOME$/.gradle-wbs/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.22/15c67f9498d6934cff9510fc70c5a12e52290457/jackson-annotations-2.22.jar!/" />
+<         </CLASSES>
+<         <JAVADOC />
+<         <SOURCES>
+same=1295 different=75 only-in-A=0 only-in-B=0

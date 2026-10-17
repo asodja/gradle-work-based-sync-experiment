@@ -1,0 +1,15 @@
+== tasks import 1 2026-10-17T18:05:59+00:00
+exit 0
+2026-10-17 18:07:02,560 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 58 s 997 ms
+removeContentEntry errors: 0; ERROR lines: 0
+== tasks import 2 2026-10-17T18:08:01+00:00
+exit 0
+removeContentEntry errors: 0; ERROR lines: 0
+== stock import 1 2026-10-17T18:08:23+00:00
+exit 0
+2026-10-17 18:09:47,371 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 20 s 970 ms
+removeContentEntry errors: 0; ERROR lines: 0
+== stock import 2 2026-10-17T18:10:27+00:00
+exit 0
+removeContentEntry errors: 0; ERROR lines: 0
+== done 2026-10-17T18:10:50+00:00

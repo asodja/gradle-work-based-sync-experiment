@@ -1,0 +1,24 @@
+== tasks dump (--tasks) 2026-10-17T18:18:33+00:00
+run 1 -> /tmp/claude-1000/-home-agent-projects-gradle-work-b
+dump files: 6326
+== compare 2026-10-17T18:18:48+00:00
+GradleSourceSetDependencyModel-626173734: identical=287 different=0 missing=0 extra-in-tasks=0
+ExternalProject-1310207950: identical=287 different=0 missing=0 extra-in-tasks=0
+DIFFERENT: GradleSourceSetModel-1524096923/58159708/_docs.bin
+DIFFERENT: GradleSourceSetModel-1524096923/58159708/_internal-build-reports.bin
+GradleSourceSetModel-1524096923: identical=285 different=2 missing=0 extra-in-tasks=0
+AnnotationProcessingModel-271669493: identical=256 different=0 missing=0 extra-in-tasks=0
+created /home/agent/projects/gradle-wbs-benchmark/platforms/software/ant/build/generated/sources/annotationProcessor/java/main
+== stock fresh import with the generated dir 2026-10-17T18:19:33+00:00
+exit 0
+2026-10-17 18:20:56,519 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 1 m 20 s 484 ms
+  gradle.ant.main content entries: 1, duplicated: 0; generated mentioned: 0
+<content url="file://$MODULE_DIR$/../../../../../platforms/software/ant/src/main"
+  modules with duplicated content URLs: 0; removeContentEntry errors in log: 0
+== tasks fresh import with the generated dir 2026-10-17T18:21:41+00:00
+exit 0
+2026-10-17 18:22:19,450 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 34 s 978 ms
+  gradle.ant.main content entries: 1, duplicated: 0; generated mentioned: 0
+<content url="file://$MODULE_DIR$/../../../../../platforms/software/ant/src/main"
+  modules with duplicated content URLs: 0; removeContentEntry errors in log: 0
+== done 2026-10-17T18:23:23+00:00

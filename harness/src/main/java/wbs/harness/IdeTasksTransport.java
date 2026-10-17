@@ -72,6 +72,11 @@ final class IdeTasksTransport implements Serializable {
             // project-scoped request configures its project, so a sequential loop would configure 287 projects one by one.
             GradleModelProviderUtil.buildModels(controller, buildModels, IdeModelTaskRequest.class, new GradleModelConsumer() {
                 @Override
+                public void consumeBuildModel(org.gradle.tooling.model.BuildModel buildModel, Object object, Class<?> clazz) {
+                    // the request is a project model; abstract in 2026.2, a default method in 2025.3
+                }
+
+                @Override
                 public void consumeProjectModel(BasicGradleProject project, Object object, Class<?> clazz) {
                     IdeModelTaskRequest request = (IdeModelTaskRequest) object;
                     if (!request.getModelFiles().isEmpty()) {

@@ -32,6 +32,9 @@ fun ideaJars() = ideaHome.map { home ->
     files(
         fileTree("$home/plugins/gradle/lib") { include("*.jar") },
         fileTree("$home/plugins/gradle-java/lib") { include("*.jar") },
+        // 2026.2 layout
+        fileTree("$home/plugins/gradle-plugin/lib") { include("*.jar") },
+        fileTree("$home/plugins/gradle-java-plugin/lib") { include("*.jar") },
         fileTree("$home/plugins/Kotlin/lib") { include("*.jar") },
         fileTree("$home/lib") { include("*.jar") },
     )
