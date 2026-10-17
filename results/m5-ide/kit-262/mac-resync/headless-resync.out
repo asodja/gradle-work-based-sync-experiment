@@ -1,0 +1,15 @@
+== fresh import 2026-10-17T18:55:24+00:00
+exit 0
+2026-10-17 18:56:02,086 [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 34 s 585 ms
+== two re-syncs 2026-10-17T18:57:00+00:00
+exit 0
+2026-10-17 18:56:02,086 [  37161]   INFO - STDOUT - [IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 34 s 585 ms
+2026-10-17 18:57:01,108 [    350] SEVERE - #c.i.i.p.PluginManager - Problems found loading plugins:
+2026-10-17 18:57:01,109 [    351] SEVERE - #c.i.i.p.PluginManager - IntelliJ IDEA 2026.2.2  Build #IU-262.10315.125
+2026-10-17 18:57:01,109 [    351] SEVERE - #c.i.i.p.PluginManager - JDK: 25.0.4; VM: OpenJDK 64-Bit Server VM; Vendor: JetBrains s.r.o.
+2026-10-17 18:57:01,109 [    351] SEVERE - #c.i.i.p.PluginManager - OS: Linux
+[IDE]: Task 'Importing 'gradle-wbs-benchmark' Gradle Project' ended in 34 s 585 ms
+[wbs-resync] opened gradle
+[wbs-resync] sync 1 finished in 52541 ms
+[wbs-resync] sync 2 finished in 26631 ms
+== done 2026-10-17T18:58:27+00:00

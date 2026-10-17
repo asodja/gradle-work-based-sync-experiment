@@ -439,7 +439,11 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
      * classloader, and the captures run IntelliJ's builders, so the model tasks script needs the same jars.
      */
     private static Set<Class<?>> initScriptClasses() {
-        Set<Class<?>> classes = new java.util.LinkedHashSet<>(GradleInitScriptUtil.GRADLE_TOOLING_EXTENSION_CLASSES);
+        // Sorted by name: the extensions return Set.of(...) collections whose iteration order changes per JVM run, which
+        // changes the generated init script's classpath order, and a changed init script is a configuration cache miss
+        // for every sync after an IDE restart (seen as "init script 'wbsModelTasks2.gradle' has changed").
+        Set<Class<?>> classes = new java.util.TreeSet<>(java.util.Comparator.comparing(Class::getName));
+        classes.addAll(GradleInitScriptUtil.GRADLE_TOOLING_EXTENSION_CLASSES);
         for (org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension extension
             : org.jetbrains.plugins.gradle.service.project.GradleProjectResolverExtension.EP_NAME.getExtensionList()) {
             if (extension instanceof WbsTaskTransportResolverExtension) {

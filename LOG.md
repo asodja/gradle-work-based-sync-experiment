@@ -805,4 +805,19 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   the IDE's conflict rule for same-named libraries with different roots depends on module processing order, not on
   model content. Most likely cause of the Mac error: the project model had been built by the stock Toolbox IDE and by
   the first kit attempts that ran with the shared `IntelliJIdea2026.2` config; suggested check: invalidate the WBS
-  copy's caches and sync twice.
+  copy's caches and sync twice. Still there afterwards. Added `wbsResync` (an `appStarter` in the plugin:
+  `idea.sh wbsResync <project> [count]`, headless re-sync of an imported project, the warm-up command only imports new
+  projects and `--configure-project` does not refresh linked ones). Two re-syncs on 2026.2.2 with the patched IDE and
+  the generated directory populated: no error, no duplicated content URL in any of 1367 modules. Mechanism from the
+  262 source (`ContentRootDataService.findOrCreateContentRoot`, lines 296-302): existing content entries are matched
+  through `filePathToContentEntryMap`, built only from entries whose directory exists (`contentEntry.getFile() != null`),
+  so an entry for a missing directory is never matched and every re-sync adds a duplicate; `contentEntriesMap.remove(url)`
+  then shields the stale one. When the URL later leaves the data, `removeContentEntry` on one duplicate trips the
+  bridge's "still exists after removing" check. Trigger on the Mac: the annotation processor output directory, present
+  only after a build, listed by that checkout's model (not by gradle/gradle 9.9-m2 here). An IDE issue independent of
+  the transport; the kit README documents the reset (delete the WBS caches dir) and the cause.
+- **Init script order nondeterminism (found through the re-sync run's cache miss):** the plugin's init script content
+  follows `GradleProjectResolverExtension.getToolingExtensionsClasses()`, which return `Set.of(...)` with per-JVM
+  iteration order, so the generated classpath order can differ between IDE processes; Gradle then reports
+  "init script 'wbsModelTasks2.gradle' has changed" and misses the entry after an IDE restart. The classes are now sorted
+  by name before the script is generated.

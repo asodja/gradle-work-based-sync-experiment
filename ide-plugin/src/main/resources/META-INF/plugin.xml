@@ -10,4 +10,8 @@
   <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
     <projectResolve implementation="wbs.ide.WbsTaskTransportResolverExtension"/>
   </extensions>
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- idea.sh wbsResync <project dir> [count]: headless re-sync of an imported project -->
+    <appStarter id="wbsResync" implementation="wbs.ide.ResyncStarter"/>
+  </extensions>
 </idea-plugin>

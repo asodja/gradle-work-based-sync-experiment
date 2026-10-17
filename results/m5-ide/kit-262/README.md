@@ -46,6 +46,22 @@ Build output of the tasks: `<project>/build/ide/models/ideProjectModel.bin` per 
   updating the kit, run once with `--rerun-tasks` or change any build script.
 - The Dependency Analyzer's graph model is still produced eagerly (the largest payload); nothing else is dropped.
 
+## Re-sync error "removeContentEntry: removed content entry url … still exists after removing"
+
+An IDE issue, not specific to this kit: the IDE's content-root import matches existing content entries through the
+directory on disk, so a content root whose directory does not exist at sync time (for example
+`build/generated/sources/annotationProcessor/java/main` before the first build) gets a duplicate entry on each re-sync,
+and once that directory leaves the sync data the removal of one duplicate trips a workspace-model assertion. The sync
+itself completes. To clear the duplicates: quit the WBS app, delete
+`~/Library/Caches/JetBrains/IntelliJIdea2026.2-WBS`, start it and sync again. Keeping such directories present
+(build once) avoids the toggle.
+
+## Headless re-sync (for measurements)
+
+    "/Applications/IntelliJ IDEA WBS.app/Contents/MacOS/idea" wbsResync /path/to/project 2
+
+opens an already imported project and syncs it twice without a UI; timings in the log as `[wbs-resync] sync N finished`.
+
 ## Remove
 
 Delete "IntelliJ IDEA WBS.app" and `~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS` (holds the
