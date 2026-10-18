@@ -1,5 +1,7 @@
 package com.intellij.gradle.toolingExtension.impl.ideTask;
 
+import com.intellij.gradle.toolingExtension.impl.ideTask.tasks.IdeProjectModelTask;
+
 import org.gradle.api.Project;
 import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.invocation.Gradle;

@@ -1,10 +1,10 @@
 package wbs.ide;
 
-import com.intellij.gradle.toolingExtension.impl.ideTask.BuildTreePayload;
-import com.intellij.gradle.toolingExtension.impl.ideTask.IdeBuildTreeTask;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.BuildTreePayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.tasks.IdeBuildTreeTask;
 import com.intellij.gradle.toolingExtension.impl.ideTask.IdeModelTasks;
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle;
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelBundle;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload;
 import org.gradle.plugins.ide.internal.tooling.model.DefaultGradleBuild;
 import org.gradle.tooling.internal.adapter.ProtocolToModelAdapter;
 import org.gradle.tooling.internal.gradle.DefaultBuildIdentifier;

@@ -1,5 +1,9 @@
 package com.intellij.gradle.toolingExtension.impl.ideTask;
 
+import com.intellij.gradle.toolingExtension.impl.ideTask.capture.ProjectModelCapture;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +27,13 @@ public final class PortedModels {
         // iterates IdeaProject.getModules() today.
         m.put("PROJECT_MODEL_PHASE", List.of(
             "org.jetbrains.plugins.gradle.model.ExternalProject",
-            "com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload"));
+            IdeaModulePayload.class.getName()));
         m.put("SOURCE_SET_MODEL_PHASE", List.of(
             "org.jetbrains.plugins.gradle.model.GradleSourceSetModel"));
         // Hard group (D13): captured with the builders too, in IntelliJ's request order: the download policy fills the
         // shared builder context for this project (no payload), then the dependency model. IntelliJ's other
         // context-only request, GradleSourceSetArtifactBuildRequest, runs for every project when it is evaluated
-        // (ModelCapture.indexSourceSetArtifacts), because the dependency model of one project reads the index entries
+        // (ProjectModelCapture.indexSourceSetArtifacts), because the dependency model of one project reads the index entries
         // of the projects it depends on.
         m.put("DEPENDENCY_MODEL_PHASE", List.of(
             "com.intellij.gradle.toolingExtension.impl.model.dependencyDownloadPolicyModel.GradleDependencyDownloadPolicy",
@@ -64,7 +68,7 @@ public final class PortedModels {
             "org.jetbrains.kotlin.idea.gradleTooling.KotlinMPPGradleModel",
             "org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel",
             // Gradle-owned KotlinDslScriptsModel, the project build script's entry per project (D14).
-            "com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload"));
+            KotlinDslScriptPayload.class.getName()));
         return m;
     }
 

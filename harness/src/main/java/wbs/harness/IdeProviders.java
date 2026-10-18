@@ -69,11 +69,11 @@ final class IdeProviders {
                 : ported.stream().anyMatch(c -> p.toString().equals("ProjectModel(" + c + ")"));
             // Gradle-owned build models replaced by per-project payloads (D14).
             if (p.toString().equals("BuildModel(org.gradle.tooling.model.idea.IdeaProject)")
-                && ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload")) {
+                && ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload")) {
                 remove = true;
             }
             if (p.getClass().getSimpleName().equals("KotlinDslScriptModelProvider")
-                && ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload")) {
+                && ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload")) {
                 remove = true;
             }
             if (remove) {

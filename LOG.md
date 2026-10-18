@@ -853,3 +853,16 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   on the fixture). Smoke-tested headless on the fixture: both syncs succeeded, 12 `#wbs` lines in idea.log. Kit repacked.
   Difference between the owner's working IDE sync and the profiler run worth checking first: the profiler's IDE plugin
   sets the Gradle JVM of a freshly linked project to `#JAVA_HOME`.
+- **Module reorganization (D31, 2026-10-18).** `prototype` split into `ideTask.{tasks,capture,payload,consumer}` with
+  role-based names; prototype tests, harness and IDE plugin build; `prototype/README.md` written. Two things the move
+  surfaced: (1) `PortedModels` spelled the two payload class names as string literals, which the package move left stale
+  (now `X.class.getName()`); (2) a kit upgrade reused the project's stale state. With the new jar on the init script's
+  classpath, a fresh daemon still printed "Reusing configuration cache" and every model task UP-TO-DATE, so the bundles on
+  disk kept the old class names and the IDE failed with "build tree bundles missing". Reproduced from the command line:
+  the configuration cache fingerprints the init script's *text*, not the content of the jars on its classpath, and
+  `-Pwbs.v=1` did not invalidate either (only properties the build reads are inputs). A changed init script text does
+  ("cannot be reused because content of 1st init script has changed"), so the plugin now writes
+  `// ide-model-tasks <sha256 prefix of the jar>` into the generated script: one reconfiguration per plugin version, then
+  hits again (fixture: 7.9 s miss, 78 ms hit, contributors ran). `wbsResync` now waits 5 s for the open-project sync and
+  for any running RESOLVE_PROJECT task before its own sync (a concurrent one was rejected or stopped the first one's
+  connection). Kit repacked with the new jars and drop lists.

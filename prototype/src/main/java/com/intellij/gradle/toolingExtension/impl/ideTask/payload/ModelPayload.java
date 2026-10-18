@@ -1,4 +1,4 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.payload;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,7 +26,7 @@ public final class ModelPayload implements Serializable {
 
     public static final String ION = "ion";
     public static final String JAVA = "java";
-    /** {@link CompactDependencies#toBytes()} (D26). */
+    /** {@link CompactDependenciesPayload#toBytes()} (D26). */
     public static final String COMPACT_DEPENDENCIES = "compact-deps";
 
     private final String modelClassName;
@@ -106,7 +106,7 @@ public final class ModelPayload implements Serializable {
         byte[] bytes = getBytes();
         switch (format) {
             case COMPACT_DEPENDENCIES:
-                return CompactDependencies.fromBytes(bytes).expand();
+                return CompactDependenciesPayload.fromBytes(bytes).expand();
             case JAVA:
                 try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes)) {
                     @Override

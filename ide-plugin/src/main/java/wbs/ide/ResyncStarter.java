@@ -42,7 +42,15 @@ public final class ResyncStarter implements ApplicationStarter {
                 throw new IllegalStateException("could not open " + dir);
             }
             WbsLog.info("[wbs-resync] opened " + project.getName());
+            var processing = com.intellij.openapi.application.ApplicationManager.getApplication()
+                .getService(com.intellij.openapi.externalSystem.service.internal.ExternalSystemProcessingManager.class);
+            // Opening the project schedules its own sync a moment later; a second sync issued meanwhile is rejected or
+            // stops the first one's connection. Give it time to start, then wait for it before every explicit sync.
+            Thread.sleep(5000);
             for (int i = 1; i <= count; i++) {
+                while (processing.hasTaskOfTypeInProgress(com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType.RESOLVE_PROJECT, project)) {
+                    Thread.sleep(1000);
+                }
                 long started = System.currentTimeMillis();
                 CompletableFuture<Void> done = new CompletableFuture<>();
                 ExternalSystemUtil.refreshProject(dir.toString(),

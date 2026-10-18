@@ -1,4 +1,4 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.payload;
 
 import java.io.File;
 import java.io.Serializable;

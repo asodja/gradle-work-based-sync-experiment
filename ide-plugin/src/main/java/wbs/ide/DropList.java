@@ -27,8 +27,8 @@ public final class DropList {
         boolean keepGradleOwned = java.util.Arrays.asList(args).contains("--keep-gradle-owned");
         Set<String> ported = new LinkedHashSet<>(PortedModels.all());
         if (keepGradleOwned) {
-            ported.remove("com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload");
-            ported.remove("com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload");
+            ported.remove("com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload");
+            ported.remove("com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload");
         }
         Set<String> drop = new LinkedHashSet<>();
         for (Map.Entry<String, String> e : DEDICATED_PROVIDERS.entrySet()) {
@@ -39,10 +39,10 @@ public final class DropList {
         for (String c : ported) {
             drop.add("ProjectModel(" + c + ")");
         }
-        if (ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload")) {
+        if (ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload")) {
             drop.add("BuildModel(org.gradle.tooling.model.idea.IdeaProject)");
         }
-        if (ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload")) {
+        if (ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload")) {
             drop.add("KotlinDslScriptModelProvider");
         }
         System.out.println(String.join(",", drop));

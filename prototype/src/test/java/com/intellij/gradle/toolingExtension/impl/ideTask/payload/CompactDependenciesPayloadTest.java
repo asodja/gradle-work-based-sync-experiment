@@ -1,4 +1,4 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.payload;
 
 import com.intellij.gradle.toolingExtension.impl.model.sourceSetDependencyModel.DefaultGradleSourceSetDependencyModel;
 import org.jetbrains.plugins.gradle.model.DefaultExternalLibraryDependency;
@@ -22,13 +22,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class CompactDependenciesTest {
+public class CompactDependenciesPayloadTest {
 
     @Test
     public void roundTripKeepsContentAndOrder() throws Exception {
         GradleSourceSetDependencyModel model = sample();
-        CompactDependencies compact = CompactDependencies.of(model);
-        GradleSourceSetDependencyModel expanded = CompactDependencies.fromBytes(compact.toBytes()).expand();
+        CompactDependenciesPayload compact = CompactDependenciesPayload.of(model);
+        GradleSourceSetDependencyModel expanded = CompactDependenciesPayload.fromBytes(compact.toBytes()).expand();
 
         assertEquals(ModelText.canonical(model), ModelText.canonical(expanded));
         assertEquals(ModelText.fingerprint(model), ModelText.fingerprint(expanded));
@@ -49,14 +49,14 @@ public class CompactDependenciesTest {
     @Test
     public void payloadRoundTrip() throws Exception {
         GradleSourceSetDependencyModel model = sample();
-        ModelPayload payload = new ModelPayload("x", ModelPayload.COMPACT_DEPENDENCIES, "fp", CompactDependencies.of(model).toBytes());
+        ModelPayload payload = new ModelPayload("x", ModelPayload.COMPACT_DEPENDENCIES, "fp", CompactDependenciesPayload.of(model).toBytes());
         Object read = payload.readModel(getClass().getClassLoader());
         assertEquals(ModelText.canonical(model), ModelText.canonical(read));
     }
 
     @Test
     public void sharesStringsAcrossRecords() {
-        CompactDependencies compact = CompactDependencies.of(sample());
+        CompactDependenciesPayload compact = CompactDependenciesPayload.of(sample());
         // the same jar in main and test is one string
         assertTrue(compact.stringCount() < 40);
         assertTrue(compact.recordBytes() < 200);

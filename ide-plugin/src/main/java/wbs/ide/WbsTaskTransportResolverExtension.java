@@ -129,13 +129,13 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
         List<String> taskPaths = new ArrayList<>();
         Map<String, File> projectDirByTaskPath = new java.util.HashMap<>();
         if (treeMode) {
-            taskPaths.add(":" + com.intellij.gradle.toolingExtension.impl.ideTask.IdeBuildTreeTask.AGGREGATE_NAME);
+            taskPaths.add(":" + com.intellij.gradle.toolingExtension.impl.ideTask.tasks.IdeBuildTreeTask.AGGREGATE_NAME);
         } else {
             for (GradleBuild b : traverse(root)) {
                 String buildPath = b == root ? "" : ":" + b.getBuildIdentifier().getRootDir().getName();
                 for (BasicGradleProject project : b.getProjects()) {
                     String projectPart = project.getPath().equals(":") ? "" : project.getPath();
-                    String taskPath = buildPath + projectPart + ":" + com.intellij.gradle.toolingExtension.impl.ideTask.IdeProjectModelTask.NAME;
+                    String taskPath = buildPath + projectPart + ":" + com.intellij.gradle.toolingExtension.impl.ideTask.tasks.IdeProjectModelTask.NAME;
                     taskPaths.add(taskPath);
                     projectDirByTaskPath.put(taskPath, project.getProjectDirectory());
                 }
@@ -151,12 +151,12 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
         final java.util.concurrent.ExecutorService pool = readPool;
         final BuildTreeModels treesRef = trees;
         List<String> unresolved = java.util.Collections.synchronizedList(new ArrayList<>());
-        String modelTaskSuffix = ":" + com.intellij.gradle.toolingExtension.impl.ideTask.IdeProjectModelTask.NAME;
+        String modelTaskSuffix = ":" + com.intellij.gradle.toolingExtension.impl.ideTask.tasks.IdeProjectModelTask.NAME;
         org.gradle.tooling.events.ProgressListener streaming = event -> {
             if (event instanceof org.gradle.tooling.events.task.TaskFinishEvent) {
                 org.gradle.tooling.events.task.TaskFinishEvent finish = (org.gradle.tooling.events.task.TaskFinishEvent) event;
                 String taskPath = finish.getDescriptor().getTaskPath();
-                if (treesRef != null && taskPath.endsWith(":" + com.intellij.gradle.toolingExtension.impl.ideTask.IdeBuildTreeTask.NAME)) {
+                if (treesRef != null && taskPath.endsWith(":" + com.intellij.gradle.toolingExtension.impl.ideTask.tasks.IdeBuildTreeTask.NAME)) {
                     // the bundle read so far may be the previous run's (an up-to-date check is a finish event too)
                     treesRef.invalidate();
                     return;
@@ -191,7 +191,20 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
                 throw new java.io.UncheckedIOException(e);
             }
             final java.io.PrintStream out = log;
-            out.println("== plain run " + java.time.LocalTime.now() + " tasks=" + taskPaths.size());
+            out.println("== plain run " + java.time.LocalTime.now() + " tasks=" + taskPaths.size() + " arguments=" + arguments);
+            for (int i = 0; i + 1 < arguments.size(); i++) {
+                if (arguments.get(i).equals("--init-script")) {
+                    try {
+                        for (String line : java.nio.file.Files.readAllLines(Path.of(arguments.get(i + 1)))) {
+                            if (line.contains("ide-model-tasks")) {
+                                out.println("   " + arguments.get(i + 1) + ": " + line);
+                            }
+                        }
+                    } catch (java.io.IOException e) {
+                        out.println("   " + arguments.get(i + 1) + ": " + e);
+                    }
+                }
+            }
             launcher.setStandardOutput(new TimestampedStream(out));
             launcher.setStandardError(new TimestampedStream(out));
             launcher.addProgressListener((org.gradle.tooling.events.ProgressListener) event ->
@@ -247,7 +260,7 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
     }
 
     private static File bundleFile(File projectDir) {
-        return new File(projectDir, "build/" + IdeModelTasks.MODEL_DIR + "/" + com.intellij.gradle.toolingExtension.impl.ideTask.IdeProjectModelTask.NAME + ".bin");
+        return new File(projectDir, "build/" + IdeModelTasks.MODEL_DIR + "/" + com.intellij.gradle.toolingExtension.impl.ideTask.tasks.IdeProjectModelTask.NAME + ".bin");
     }
 
     /** The root build and every editable build below it, each once, root first. */
@@ -277,11 +290,11 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
             WbsLog.info("[wbs] missing bundle " + file);
             return new ReadBundle(models);
         }
-        List<com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload> bundle;
+        List<com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload> bundle;
         try (java.io.DataInputStream in = new java.io.DataInputStream(java.nio.file.Files.newInputStream(file.toPath()))) {
-            bundle = com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle.read(in);
+            bundle = com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelBundle.read(in);
         }
-        for (com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload payload : bundle) {
+        for (com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload payload : bundle) {
             try {
                 Object value = payload.readModel(WbsTaskTransportResolverExtension.class.getClassLoader());
                 if (value != null) {
@@ -344,18 +357,18 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
             int payloads = 0;
             for (GradleBuild build : allBuilds) {
                 String buildId = com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelId.createBuildId(build.getBuildIdentifier());
-                List<com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload> idea = new ArrayList<>();
-                List<com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload> scripts = new ArrayList<>();
+                List<com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload> idea = new ArrayList<>();
+                List<com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload> scripts = new ArrayList<>();
                 for (Map.Entry<BasicGradleProject, java.util.concurrent.Future<ReadBundle>> entry : reads.getOrDefault(build, List.of())) {
                     ReadBundle read = entry.getValue().get();
                     String projectId = com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelId.createProjectModelId(entry.getKey(), Object.class).getProjectId();
                     for (Map.Entry<String, Object> e : read.models.entrySet()) {
                         payloads++;
                         Object value = e.getValue();
-                        if (value instanceof com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload) {
-                            idea.add((com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload) value);
-                        } else if (value instanceof com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload) {
-                            scripts.add((com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload) value);
+                        if (value instanceof com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload) {
+                            idea.add((com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload) value);
+                        } else if (value instanceof com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload) {
+                            scripts.add((com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload) value);
                         } else {
                             models.put(new com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelId(classIdOf(e.getKey()), buildId, projectId), value);
                         }
@@ -364,11 +377,11 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
                 if (!idea.isEmpty()) {
                     String prefix = build == rootBuild ? "" : ":" + build.getBuildIdentifier().getRootDir().getName();
                     models.put(com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelId.createBuildModelId(build, org.gradle.tooling.model.idea.IdeaProject.class),
-                        com.intellij.gradle.toolingExtension.impl.ideTask.IdeaProjectFromPayloads.assemble(idea, prefix));
+                        com.intellij.gradle.toolingExtension.impl.ideTask.consumer.IdeaProjectFromPayloads.assemble(idea, prefix));
                 }
                 if (!scripts.isEmpty()) {
                     org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel assembled =
-                        com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptsModelFromPayloads.assemble(scripts);
+                        com.intellij.gradle.toolingExtension.impl.ideTask.consumer.KotlinDslScriptsModelFromPayloads.assemble(scripts);
                     // 2025.3's Kotlin plugin reads it as a project model of the root project, 2026.2's as a build model
                     // (ProjectResolverContext.getBuildModel); registered under both ids
                     models.put(com.intellij.gradle.toolingExtension.impl.modelAction.GradleModelId.createProjectModelId(build.getRootProject(), org.gradle.tooling.model.kotlin.dsl.KotlinDslScriptsModel.class), assembled);
@@ -436,10 +449,27 @@ public final class WbsTaskTransportResolverExtension extends AbstractProjectReso
         if (!active()) {
             return List.of();
         }
+        // The jar's hash in the script text: the configuration cache fingerprints the init script's content but not the
+        // content of the jars on its classpath, so without this a new plugin version would reuse an entry whose task
+        // classes and bundle formats are the old ones (seen as "build tree bundles missing" after a kit upgrade).
         String content = GradleInitScriptUtil.loadToolingExtensionProvidingInitScript(initScriptClasses())
+            + System.lineSeparator() + "// ide-model-tasks " + modelTasksJarHash()
             + System.lineSeparator() + IdeModelTasks.class.getName() + ".apply(gradle)" + System.lineSeparator();
         Path script = GradleInitScriptUtil.createInitScript("wbsModelTasks", content);
         return List.of("--init-script", script.toString());
+    }
+
+    private static String modelTasksJarHash() {
+        try {
+            String jar = com.intellij.openapi.application.PathManager.getJarPathForClass(IdeModelTasks.class);
+            if (jar == null) {
+                return "unknown";
+            }
+            byte[] digest = java.security.MessageDigest.getInstance("SHA-256").digest(java.nio.file.Files.readAllBytes(Path.of(jar)));
+            return java.util.HexFormat.of().formatHex(digest, 0, 8);
+        } catch (java.io.IOException | java.security.NoSuchAlgorithmException e) {
+            return "unknown";
+        }
     }
 
     /**

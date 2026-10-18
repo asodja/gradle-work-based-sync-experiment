@@ -1,4 +1,4 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.payload;
 
 import com.intellij.gradle.toolingExtension.impl.model.sourceSetDependencyModel.DefaultGradleSourceSetDependencyModel;
 import org.jetbrains.plugins.gradle.ExternalDependencyId;
@@ -32,7 +32,7 @@ import java.util.Map;
  * bundle carries the same two parts ({@link #toBytes()}); the consumer expands them back into IntelliJ's model
  * objects with {@link #expand()}.
  */
-public final class CompactDependencies implements Serializable {
+public final class CompactDependenciesPayload implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,13 +44,13 @@ public final class CompactDependencies implements Serializable {
     private final List<String> strings;
     private final byte[] records;
 
-    private CompactDependencies(List<String> strings, byte[] records) {
+    private CompactDependenciesPayload(List<String> strings, byte[] records) {
         this.strings = strings;
         this.records = records;
     }
 
     /** @throws IllegalArgumentException for a dependency type this format does not know */
-    public static CompactDependencies of(GradleSourceSetDependencyModel model) {
+    public static CompactDependenciesPayload of(GradleSourceSetDependencyModel model) {
         Writer w = new Writer();
         Map<String, ? extends Collection<? extends ExternalDependency>> bySourceSet = model.getDependencies();
         if (bySourceSet == null) {
@@ -62,7 +62,7 @@ public final class CompactDependencies implements Serializable {
                 w.dependencies(e.getValue());
             }
         }
-        return new CompactDependencies(w.strings, w.out.toByteArray());
+        return new CompactDependenciesPayload(w.strings, w.out.toByteArray());
     }
 
     public GradleSourceSetDependencyModel expand() {
@@ -95,7 +95,7 @@ public final class CompactDependencies implements Serializable {
         return out.toByteArray();
     }
 
-    public static CompactDependencies fromBytes(byte[] bytes) {
+    public static CompactDependenciesPayload fromBytes(byte[] bytes) {
         int[] pos = {0};
         int count = readVarint(bytes, pos);
         List<String> strings = new ArrayList<>(count);
@@ -107,7 +107,7 @@ public final class CompactDependencies implements Serializable {
         int length = readVarint(bytes, pos);
         byte[] records = new byte[length];
         System.arraycopy(bytes, pos[0], records, 0, length);
-        return new CompactDependencies(strings, records);
+        return new CompactDependenciesPayload(strings, records);
     }
 
     public int stringCount() {

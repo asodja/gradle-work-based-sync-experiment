@@ -1,7 +1,7 @@
 package wbs.harness;
 
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle;
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelBundle;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload;
 import com.intellij.gradle.toolingExtension.impl.modelSerialization.ToolingSerializer;
 
 import java.io.DataInputStream;

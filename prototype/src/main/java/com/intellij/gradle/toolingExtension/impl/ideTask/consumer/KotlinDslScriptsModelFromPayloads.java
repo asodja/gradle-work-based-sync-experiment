@@ -1,4 +1,6 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.consumer;
+
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload;
 
 import org.gradle.tooling.model.kotlin.dsl.EditorPosition;
 import org.gradle.tooling.model.kotlin.dsl.EditorReport;
@@ -34,7 +36,7 @@ public final class KotlinDslScriptsModelFromPayloads {
         return new Model(models);
     }
 
-    /** "SEVERITY message @line:column", as GradleOwnedModels writes it. */
+    /** "SEVERITY message @line:column", as GradleOwnedModelCapture writes it. */
     private static EditorReport parseReport(String text) {
         int space = text.indexOf(' ');
         EditorReportSeverity severity = EditorReportSeverity.valueOf(text.substring(0, space));

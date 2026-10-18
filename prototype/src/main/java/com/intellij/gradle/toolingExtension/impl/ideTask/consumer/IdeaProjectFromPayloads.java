@@ -1,4 +1,6 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.consumer;
+
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload;
 
 import org.gradle.api.JavaVersion;
 import org.gradle.tooling.model.BuildIdentifier;

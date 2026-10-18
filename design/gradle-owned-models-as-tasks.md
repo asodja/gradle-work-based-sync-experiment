@@ -26,6 +26,6 @@ and travel over the wire: `IdeaProject` (9.5 MB on gradle/gradle) and `KotlinDsl
 Measured floor without either model: `--tasks-only` (LOG 2026-10-15), which is what these substitutes would reach.
 
 Implemented (D17): `IdeaModulePayload` and `KotlinDslScriptPayload` in the `ideProjectModel` bundle
-(`prototype/.../GradleOwnedModels.java`), harness text comparison (`GradleOwnedText`, `prototype/compare-gradle-owned.sh`).
+(`prototype/.../GradleOwnedModelCapture.java`), harness text comparison (`GradleOwnedText`, `prototype/compare-gradle-owned.sh`).
 Deviation from the sketch: the idea plugin is not applied (not possible from project code under Isolated Projects),
 the payload mirrors its defaults from the java plugin; the build-level values are derived by the consumer.

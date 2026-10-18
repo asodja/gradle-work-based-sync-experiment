@@ -1,4 +1,10 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.capture;
+
+import com.intellij.gradle.toolingExtension.impl.ideTask.PortedModels;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.CompactDependenciesPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelText;
 
 import com.intellij.gradle.toolingExtension.impl.modelSerialization.SerializationServiceNotFoundException;
 import com.intellij.gradle.toolingExtension.impl.modelSerialization.ToolingSerializer;
@@ -21,20 +27,20 @@ import java.util.ServiceLoader;
  * Captures a model at task configuration time by running IntelliJ's own builder for it (DECISIONS D8) and puts it
  * into its state form ({@link CapturedModel}); {@link #toPayloads} turns the state into the bundle entries when the
  * task runs (IntelliJ's serializer for the class, plain Java serialization when the model has no Ion serializer,
- * the compact bytes for a {@link CompactDependencies}).
+ * the compact bytes for a {@link CompactDependenciesPayload}).
  */
-final class ModelCapture {
+public final class ProjectModelCapture {
 
     private static final List<ModelBuilderService> BUILDERS = loadBuilders();
 
     static final String ARTIFACT_INDEX_REQUEST =
         "com.intellij.gradle.toolingExtension.impl.model.sourceSetArtifactIndex.GradleSourceSetArtifactBuildRequest";
 
-    private ModelCapture() {
+    private ProjectModelCapture() {
     }
 
-    static ModelBuilderContext context(Project project) {
-        return SharedBuilderContext.of(project.getGradle());
+    public static ModelBuilderContext context(Project project) {
+        return BuilderContextService.of(project.getGradle());
     }
 
     /**
@@ -43,7 +49,7 @@ final class ModelCapture {
      * given by Gradle: resolving a project dependency inside a capture evaluates the target project first, so its
      * entries are present when the capture looks them up.
      */
-    static void indexSourceSetArtifacts(Project project) {
+    public static void indexSourceSetArtifacts(Project project) {
         ModelBuilderContext context = context(project);
         try {
             build(ARTIFACT_INDEX_REQUEST, project, context);
@@ -84,7 +90,7 @@ final class ModelCapture {
         }
     }
 
-    static Provider<List<CapturedModel>> captures(Project project, List<String> modelClassNames, boolean compact) {
+    public static Provider<List<CapturedModel>> captures(Project project, List<String> modelClassNames, boolean compact) {
         // Memoized: the same provider value is read for the fingerprint and for the models.
         Object[] memo = new Object[1];
         return project.provider(() -> {
@@ -101,7 +107,7 @@ final class ModelCapture {
     }
 
     /** The bundle entries for the captured models, whatever state form each one is in. */
-    static List<ModelPayload> toPayloads(List<CapturedModel> models) throws IOException {
+    public static List<ModelPayload> toPayloads(List<CapturedModel> models) throws IOException {
         // One serializer per call: IntelliJ's Ion SerializationServices keep per-instance write state and are not
         // thread-safe (the IDE serializes on a single-thread executor); the configuration cache store evaluates task
         // inputs of different projects in parallel, and so do the task actions.
@@ -111,9 +117,9 @@ final class ModelCapture {
             Object state = model.getModel();
             if (state instanceof ModelPayload) {
                 result.add((ModelPayload) state);
-            } else if (state instanceof CompactDependencies) {
+            } else if (state instanceof CompactDependenciesPayload) {
                 result.add(new ModelPayload(model.getModelClassName(), ModelPayload.COMPACT_DEPENDENCIES, model.getFingerprint(),
-                    ((CompactDependencies) state).toBytes()));
+                    ((CompactDependenciesPayload) state).toBytes()));
             } else {
                 result.add(serialize(serializer, model));
             }
@@ -131,7 +137,7 @@ final class ModelCapture {
         if (compact) {
             if (model instanceof GradleSourceSetDependencyModel) {
                 try {
-                    return CompactDependencies.of((GradleSourceSetDependencyModel) model);
+                    return CompactDependenciesPayload.of((GradleSourceSetDependencyModel) model);
                 } catch (IllegalArgumentException e) {
                     // a dependency type the compact format does not know: keep the serialized form
                 }
@@ -156,8 +162,8 @@ final class ModelCapture {
                 // not fail the sync (or here: the task's input evaluation).
                 Object model;
                 try {
-                    model = GradleOwnedModels.handles(modelClassName)
-                        ? GradleOwnedModels.capture(modelClassName, project)
+                    model = GradleOwnedModelCapture.handles(modelClassName)
+                        ? GradleOwnedModelCapture.capture(modelClassName, project)
                         : build(modelClassName, project, context);
                 } catch (Exception e) {
                     report(modelClassName, project, context, e);
@@ -183,7 +189,7 @@ final class ModelCapture {
         }
     }
 
-    static ModelPayload serialize(ToolingSerializer serializer, CapturedModel captured) throws IOException {
+    public static ModelPayload serialize(ToolingSerializer serializer, CapturedModel captured) throws IOException {
         Object model = captured.getModel();
         try {
             return new ModelPayload(captured.getModelClassName(), ModelPayload.ION, captured.getFingerprint(), serializer.write(model));
@@ -224,7 +230,7 @@ final class ModelCapture {
 
     private static List<ModelBuilderService> loadBuilders() {
         List<ModelBuilderService> builders = new ArrayList<>();
-        ServiceLoader.load(ModelBuilderService.class, ModelCapture.class.getClassLoader()).forEach(builders::add);
+        ServiceLoader.load(ModelBuilderService.class, ProjectModelCapture.class.getClassLoader()).forEach(builders::add);
         return builders;
     }
 }

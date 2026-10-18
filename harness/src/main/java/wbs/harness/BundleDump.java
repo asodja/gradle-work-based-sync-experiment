@@ -1,7 +1,7 @@
 package wbs.harness;
 
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle;
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelBundle;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
@@ -19,7 +19,7 @@ public final class BundleDump {
                     if (!payload.getModelClassName().endsWith("." + args[1])) continue;
                     Object model = payload.readModel(BundleDump.class.getClassLoader());
                     System.out.println("fingerprint=" + payload.getFingerprint());
-                    System.out.println(com.intellij.gradle.toolingExtension.impl.ideTask.ModelText.canonical(model));
+                    System.out.println(com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelText.canonical(model));
                 }
             }
             return;
@@ -36,7 +36,7 @@ public final class BundleDump {
                         if (!payload.getModelClassName().endsWith("." + args[1])) continue;
                         Object model = payload.readModel(BundleDump.class.getClassLoader());
                         text.append("fingerprint=").append(payload.getFingerprint()).append('\n');
-                        text.append(com.intellij.gradle.toolingExtension.impl.ideTask.ModelText.canonical(model)).append('\n');
+                        text.append(com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelText.canonical(model)).append('\n');
                     }
                 } catch (Exception e) {
                     text.append("ERROR ").append(e).append('\n');

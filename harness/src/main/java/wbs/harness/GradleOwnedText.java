@@ -1,7 +1,7 @@
 package wbs.harness;
 
-import com.intellij.gradle.toolingExtension.impl.ideTask.IdeaModulePayload;
-import com.intellij.gradle.toolingExtension.impl.ideTask.KotlinDslScriptPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload;
 import org.gradle.tooling.model.idea.IdeaCompilerOutput;
 import org.gradle.tooling.model.idea.IdeaContentRoot;
 import org.gradle.tooling.model.idea.IdeaJavaLanguageSettings;

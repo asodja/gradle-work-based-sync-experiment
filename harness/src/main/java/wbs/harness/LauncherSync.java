@@ -1,9 +1,9 @@
 package wbs.harness;
 
 import com.intellij.gradle.toolingExtension.impl.ideTask.IdeModelTasks;
-import com.intellij.gradle.toolingExtension.impl.ideTask.IdeProjectModelTask;
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle;
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.tasks.IdeProjectModelTask;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelBundle;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnectionException;
 import org.gradle.tooling.ProjectConnection;

@@ -1,4 +1,9 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.tasks;
+
+import com.intellij.gradle.toolingExtension.impl.ideTask.capture.CapturedModel;
+import com.intellij.gradle.toolingExtension.impl.ideTask.capture.ProjectModelCapture;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelBundle;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -54,7 +59,7 @@ public abstract class IdeModelTask extends DefaultTask {
     public void writeModels() throws IOException {
         File file = getModelFile().get().getAsFile();
         Files.createDirectories(file.getParentFile().toPath());
-        List<ModelPayload> payloads = ModelCapture.toPayloads(getModels().get());
+        List<ModelPayload> payloads = ProjectModelCapture.toPayloads(getModels().get());
         try (OutputStream out = Files.newOutputStream(file.toPath()); DataOutputStream data = new DataOutputStream(out)) {
             ModelBundle.write(data, payloads);
         } catch (IOException | RuntimeException e) {

@@ -1,4 +1,4 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.capture;
 
 import com.intellij.gradle.toolingExtension.impl.modelBuilder.DefaultModelBuilderContext;
 import org.gradle.api.invocation.Gradle;
@@ -14,7 +14,7 @@ import org.jetbrains.plugins.gradle.tooling.ModelBuilderContext;
  * be the key; the service is discarded with the build, so the context (which reaches every project) is not kept
  * alive in the daemon.
  */
-public abstract class SharedBuilderContext implements BuildService<BuildServiceParameters.None>, AutoCloseable {
+public abstract class BuilderContextService implements BuildService<BuildServiceParameters.None>, AutoCloseable {
 
     static final String NAME = "ideModelBuilderContext";
 
@@ -25,7 +25,7 @@ public abstract class SharedBuilderContext implements BuildService<BuildServiceP
         while (root.getParent() != null) {
             root = root.getParent();
         }
-        return root.getSharedServices().registerIfAbsent(NAME, SharedBuilderContext.class, spec -> { }).get().contextFor(root);
+        return root.getSharedServices().registerIfAbsent(NAME, BuilderContextService.class, spec -> { }).get().contextFor(root);
     }
 
     private synchronized ModelBuilderContext contextFor(Gradle rootGradle) {

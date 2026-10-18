@@ -1,4 +1,9 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.tasks;
+
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.BuildTreePayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelBundle;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelText;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;

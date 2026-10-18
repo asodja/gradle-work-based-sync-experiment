@@ -1,8 +1,8 @@
 package wbs.harness;
 
 import com.intellij.gradle.toolingExtension.impl.ideTask.IdeModelTaskRequest;
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelBundle;
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelPayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelBundle;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelPayload;
 import com.intellij.gradle.toolingExtension.impl.ideTask.PortedModels;
 import com.intellij.gradle.toolingExtension.impl.util.GradleModelProviderUtil;
 import com.intellij.gradle.toolingExtension.modelAction.GradleModelFetchPhase;

@@ -1,4 +1,7 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.capture;
+
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload;
 
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Project;
@@ -25,19 +28,19 @@ import java.util.Set;
  * plugin to every project and reads its {@code IdeaModule}; {@code KotlinDslScriptsModelBuilder} runs the
  * single-script builder for every script of the build.
  */
-final class GradleOwnedModels {
+public final class GradleOwnedModelCapture {
 
-    static final String IDEA_MODULE = IdeaModulePayload.class.getName();
-    static final String KOTLIN_DSL_SCRIPT = KotlinDslScriptPayload.class.getName();
+    public static final String IDEA_MODULE = IdeaModulePayload.class.getName();
+    public static final String KOTLIN_DSL_SCRIPT = KotlinDslScriptPayload.class.getName();
 
-    private GradleOwnedModels() {
+    private GradleOwnedModelCapture() {
     }
 
-    static boolean handles(String modelClassName) {
+    public static boolean handles(String modelClassName) {
         return IDEA_MODULE.equals(modelClassName) || KOTLIN_DSL_SCRIPT.equals(modelClassName);
     }
 
-    static Object capture(String modelClassName, Project project) throws Exception {
+    public static Object capture(String modelClassName, Project project) throws Exception {
         if (IDEA_MODULE.equals(modelClassName)) {
             return ideaModule(project);
         }
@@ -127,8 +130,8 @@ final class GradleOwnedModels {
      * on gradle/gradle at configuration cache store time, 8 threads idle for hours). Gradle's Isolated-Projects-safe
      * KotlinDslScriptsModel builder calls the same method before it fans out.
      */
-    static void prepareForParallelCaptures(Project rootProject) {
-        ClassLoader loader = GradleOwnedModels.class.getClassLoader();
+    public static void prepareForParallelCaptures(Project rootProject) {
+        ClassLoader loader = GradleOwnedModelCapture.class.getClassLoader();
         try {
             Object services = rootProject.getClass().getMethod("getServices").invoke(rootProject);
             Class<?> generatorClass = Class.forName("org.gradle.kotlin.dsl.accessors.Stage1BlocksAccessorClassPathGenerator", true, loader);
@@ -185,7 +188,7 @@ final class GradleOwnedModels {
         if (scripts.isEmpty()) {
             return null;
         }
-        ClassLoader loader = GradleOwnedModels.class.getClassLoader();
+        ClassLoader loader = GradleOwnedModelCapture.class.getClassLoader();
         Class<?> builderClass = Class.forName("org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelBuilder", true, loader);
         Object builder = builderClass.getField("INSTANCE").get(null);
         Class<?> parameterClass = Class.forName("org.gradle.kotlin.dsl.tooling.builders.KotlinBuildScriptModelParameter", true, loader);
@@ -224,7 +227,7 @@ final class GradleOwnedModels {
 
     @SuppressWarnings("unchecked")
     private static List<File> precompiledScriptPlugins(Project project) throws Exception {
-        ClassLoader loader = GradleOwnedModels.class.getClassLoader();
+        ClassLoader loader = GradleOwnedModelCapture.class.getClassLoader();
         Object services = project.getClass().getMethod("getServices").invoke(project);
         Class<?> supportClass = Class.forName("org.gradle.kotlin.dsl.provider.PrecompiledScriptPluginsSupport", true, loader);
         Object support = Class.forName("org.gradle.internal.service.ServiceLookup", true, loader)

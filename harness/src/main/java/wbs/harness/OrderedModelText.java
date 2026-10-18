@@ -1,6 +1,6 @@
 package wbs.harness;
 
-import com.intellij.gradle.toolingExtension.impl.ideTask.ModelText;
+import com.intellij.gradle.toolingExtension.impl.ideTask.payload.ModelText;
 import com.intellij.gradle.toolingExtension.impl.modelSerialization.ToolingSerializer;
 
 import java.io.IOException;

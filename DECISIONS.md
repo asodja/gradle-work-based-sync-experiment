@@ -490,3 +490,20 @@ for the scripts' classpath URLs, plus read-lock waits), work that a stock sync o
 Why: correctness first for the kit (the owner uses Kotlin scripts); the cost is documented and switchable. Next lever:
 deliver the script phase in the background after the sync, or make the script entities cheaper (IDE-side: one shared
 classpath per build instead of per script).
+
+### D31: module layout and naming of the Gradle-side prototype (owner's request, 2026-10-18)
+
+What: `prototype`'s single package is split by audience and dependency direction (`prototype/README.md`):
+`ideTask` (entry point `IdeModelTasks.apply`, `PortedModels`, the request model builder of the build-action mode),
+`ideTask.tasks` (task types), `ideTask.capture` (configuration-time computation of models: `ProjectModelCapture`,
+`GradleOwnedModelCapture`, `BuildTreeCapture`, `CapturedModel`, `BuilderContextService`), `ideTask.payload` (bundle
+format and per-model payload forms, loaded in the IDE too, no Gradle API), `ideTask.consumer` (Tooling API models
+assembled from payloads, IDE and harness only). Naming by role: `Ide…Task`, `…Capture`, `…Payload`, `…FromPayloads`
+(renamed: `ModelCapture` → `ProjectModelCapture`, `GradleOwnedModels` → `GradleOwnedModelCapture`,
+`SharedBuilderContext` → `BuilderContextService`, `CompactDependencies` → `CompactDependenciesPayload`; the build-tree
+and base-script captures moved out of `IdeModelTasks` into `BuildTreeCapture`).
+Why: the owner is reading the code; one flat package hid that three audiences share it. `payload` must stay free of
+Gradle API because the IDE plugin loads it; `capture` and `tasks` never load in the IDE; `consumer` never loads in the
+daemon. Consequence: the payload classes' qualified names changed, so the `wbs.transport.drop` lists (kit
+`wbs.vmoptions`, profiler scenarios) and every stored bundle and configuration cache entry are invalidated once; the
+IDE plugin and harness only changed imports. The generated init script now carries the model-tasks jar hash in a comment, because the configuration cache fingerprints the script text and not its classpath jars: a new plugin version reconfigures once instead of reusing an entry with the old task classes (LOG 2026-10-18).

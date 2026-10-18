@@ -1,4 +1,4 @@
-package com.intellij.gradle.toolingExtension.impl.ideTask;
+package com.intellij.gradle.toolingExtension.impl.ideTask.payload;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * The structure of one build of the build tree, as Gradle's {@code GradleBuild} model carries it (D29): written by the
- * root project's {@link IdeBuildTreeTask} from the settings' project descriptors, read by the IDE instead of
+ * root project's {@code ideBuildTree} task from the settings' project descriptors, read by the IDE instead of
  * requesting the model. Included builds are referenced by name and root directory; each writes its own payload.
  */
 public final class BuildTreePayload implements Serializable {
