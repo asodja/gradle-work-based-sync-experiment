@@ -84,6 +84,9 @@ One command for stock vs WBS with a merged report (needs gradle-profiler on the 
 
 Runs `sync_miss_settings` and `sync_hit` (1 warm-up, 3 iterations) for both IDEs with the full IDE, then prints and
 saves `report.md` in `~/wbs-profiler-<timestamp>`. Tunables: `SCENARIOS`, `ITERATIONS`, `WARMUPS`, `GRADLE_USER_HOME`.
+The profiler keeps one IDE open per scenario, so its iterations are same-session re-syncs where the stock sync also hits
+the configuration cache; `RESTARTS=3 profiler/compare.sh ...` measures the restart case instead (a fresh IDE process per
+measured sync, the stock sync misses the cache there), see the header of `compare.sh`.
 Details of what the profiler does and why the two adaptations below are needed:
 
 gradle-profiler's `idea-sync` scenarios run the IDE in a sandbox: it starts the app's launcher with `IDEA_VM_OPTIONS`

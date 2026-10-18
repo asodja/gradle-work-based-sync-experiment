@@ -881,3 +881,10 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   a miss); the origin of the second loader is open (full stack requested). Fix regardless: the service name carries the
   identity hash of the class's loader, so every loader registers its own context; a context cannot be shared across
   loaders anyway (IntelliJ's classes come from the same loader). Kit repacked.
+- **Profiler vs manual gap (owner, 2026-10-18):** on the owner's Mac gradle-profiler shows 30 vs 25 s where a manual
+  restart-and-sync shows 50 vs 30 s. Expected: the profiler's iterations are same-session re-syncs, where the stock sync
+  hits the configuration cache too (its action's key only changes with a new IDE process) and IP serves its model
+  builders from the model cache; manual syncs after an IDE start are the restart case where stock misses. Added
+  `RESTARTS=N` to `profiler/compare.sh`: N+1 profiler invocations per IDE on one sandbox (start 0 links and imports), each
+  later start measuring the first sync after the IDE start (the profiler's warm-up row) and one same-session re-sync;
+  report as a table. Dry run on the fixture: restart sync stock 6.0 s vs WBS 3.6 s, re-syncs 0.5 s each.

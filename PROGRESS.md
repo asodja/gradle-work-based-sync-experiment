@@ -80,7 +80,8 @@ This machine; details and disk budget in `design/environment.md`.
 0. D31 (2026-10-18): the Gradle-side module is reorganized into `ideTask.{tasks,capture,payload,consumer}` with
    role-based names (`prototype/README.md` has the flow and the table); the kit and profiler scenarios carry the new
    payload class names in their drop lists. Smoke-tested headless on the fixture. The build-action mode and its request
-   model are removed (LOG 2026-10-18); the only mode is the plain task run plus the patched resolver.
+   model are removed (LOG 2026-10-18); the only mode is the plain task run plus the patched resolver. `profiler/compare.sh RESTARTS=N` measures the restart
+   case (fresh IDE process per measured sync); the owner sees 30 vs 25 s same-session and 50 vs 30 s manual.
    D30 (2026-10-17 evening): Kotlin DSL script code insight in the kit fixed (state delivered through the IDE's
    fetch-result bridge so the sync contributors run; `-Dwbs.transport.phases=scripts|all|none`), at +40-60 s per sync
    on gradle/gradle for the Kotlin script contributor (IDE-side cost, hidden in stock behind the build action). Next:
