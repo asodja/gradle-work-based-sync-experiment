@@ -12,16 +12,12 @@ import java.util.TreeMap;
 
 /**
  * Canonical text of an object graph by reflection: fields sorted by name, collections sorted by their element
- * text, maps sorted by key text. Used as the task input fingerprint of a captured model (independent of the Ion
- * object ids and of collection order, which vary between captures) and for comparing models.
+ * text, maps sorted by key text. Used for comparing models; ordered task fingerprints use {@link ModelFingerprint}.
  */
 public final class ModelText {
 
     private ModelText() {
     }
-
-    /** Field names that are per-build identifiers, not content: node ids of the dependency graph model. */
-    private static final java.util.Set<String> VOLATILE_FIELDS = java.util.Set.of("id");
 
     public static String canonical(Object root) {
         return canonical(root, java.util.Set.of());
@@ -33,19 +29,8 @@ public final class ModelText {
         return out.toString();
     }
 
-    /** SHA-256 of the canonical text without per-build identifier fields, hex. */
     public static String fingerprint(Object root) {
-        try {
-            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
-            byte[] digest = md.digest(canonical(root, VOLATILE_FIELDS).getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            StringBuilder hex = new StringBuilder();
-            for (byte b : digest) {
-                hex.append(String.format("%02x", b));
-            }
-            return hex.toString();
-        } catch (java.security.NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
-        }
+        return ModelFingerprint.of(root);
     }
 
     private static void write(Object o, StringBuilder out, int depth, IdentityHashMap<Object, Boolean> seen, java.util.Set<String> ignored) {

@@ -52,7 +52,7 @@ public final class ModelPayload implements Serializable {
     }
 
     /**
-     * Fingerprint of the model's content (ModelText), the up-to-date input. The serialized bytes are not an input:
+     * Fingerprint of the model's content ({@link ModelFingerprint}), the up-to-date input. The serialized bytes are not an input:
      * IntelliJ's Ion serializers number objects per writer and iterate hash collections, so the bytes differ
      * between two captures of the same model.
      */
