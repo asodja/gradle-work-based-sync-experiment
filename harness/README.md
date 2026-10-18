@@ -17,10 +17,9 @@ build/install/harness/bin/harness --project <build> --gradle-user-home <dir> --i
   serialized build action, which carries the client classloader's UUID, so a new JVM per run can never hit.
   `--out` must then contain `{run}`; `--first-run 0` makes run 0 the warm-up. `--before-run` runs a shell command
   before each run with `$RUN` set (used for the incremental edit).
-- `--tasks`: the task-based transport. Adds an init script that registers the model tasks (`IdeModelTasks.apply`),
-  requests `IdeModelTaskRequest` per project in the projects-loaded phase (schedules the tasks), stops requesting the
-  ported models (`PortedModels`) from builders and reads the bundle files instead. `--extra-tooling-jar` puts the
-  prototype jar on IntelliJ's init-script classpath.
+- `--launcher`: the task-based transport (DECISIONS D14, D23). Adds an init script that registers the model tasks
+  (`IdeModelTasks.apply`), runs them as one plain task run instead of a build action, and reads the bundle files.
+  `--extra-tooling-jar` puts the prototype jar on IntelliJ's init-script classpath.
 - `--dump-models <dir>`: writes every received model's serialized bytes to `<dir>/<class id>/<build id>/<project>.bin`
   for `../prototype/compare-models.sh` (per document) and `../prototype/compare-ordered.sh` (consumption order, for the
   two dependency models), plus `<dir>/order.txt`. The Gradle-owned `IdeaProject` / `KotlinDslScriptsModel` and their

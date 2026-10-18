@@ -866,3 +866,11 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   hits again (fixture: 7.9 s miss, 78 ms hit, contributors ran). `wbsResync` now waits 5 s for the open-project sync and
   for any running RESOLVE_PROJECT task before its own sync (a concurrent one was rejected or stopped the first one's
   connection). Kit repacked with the new jars and drop lists.
+- **Build-action mode removed (owner's request, 2026-10-18).** The request model (`IdeModelTaskRequestBuilder`,
+  `IdeModelTaskRequest`, `DefaultIdeModelTaskRequest`, the `ModelBuilderService` registration) existed only for the mode
+  where the tasks are scheduled from inside IntelliJ's build action; since D23 the sync is one plain task run. Gone with
+  it: the IDE plugin's `TaskTransport` (request and file providers) and the `plain`/default run modes (the plugin always
+  runs the tasks in `preImportCheck`; `-Dwbs.transport.run=only` stays as the patched resolver's switch), and the
+  harness's `--tasks`/`--tasks-only` action modes with `IdeTasksTransport` (`--launcher` remains; `JavaSerialized.read`
+  keeps the dump readers working). Kept: `DropList`, which generates the `-Dwbs.transport.drop` value the patched
+  `GradleModelFetchAction` applies. Prototype tests, harness and plugin build; fixture smoke: 5.5 s miss, contributors ran.

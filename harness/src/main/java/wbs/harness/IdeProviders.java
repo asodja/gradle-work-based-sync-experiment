@@ -41,50 +41,6 @@ final class IdeProviders {
         return providers;
     }
 
-    /** IntelliJ's dedicated providers and the model class each one delivers (the generic ones say so in toString). */
-    private static final java.util.Map<String, String> DEDICATED_PROVIDERS = java.util.Map.of(
-        "GradleSourceSetModelProvider", "org.jetbrains.plugins.gradle.model.GradleSourceSetModel",
-        "GradleSourceSetDependencyModelProvider", "org.jetbrains.plugins.gradle.model.GradleSourceSetDependencyModel",
-        "AndroidAwareGradleModelProvider", "org.jetbrains.kotlin.idea.gradleTooling.KotlinGradleModel",
-        "GradleExternalProjectModelProvider", "org.jetbrains.plugins.gradle.model.ExternalProject",
-        "GradleTaskModelProvider", "org.jetbrains.plugins.gradle.model.GradleTaskModel",
-        "GradleBuildScriptClasspathModelProvider", "org.jetbrains.plugins.gradle.model.GradleBuildScriptClasspathModel");
-
-    /** All-tasks floor (D14): no builder model at all, only the request and file providers. */
-    void useTasksOnly(IdeTasksTransport transport) {
-        List<String> removed = new ArrayList<>();
-        providers.forEach(p -> removed.add(p.toString()));
-        providers.clear();
-        providers.addAll(transport.providers());
-        log.add("TASKS-ONLY MODE: removed all " + removed.size() + " providers; added " + transport.providers());
-    }
-
-    /** Task mode: the file transport replaces the IntelliJ providers of every ported model. */
-    void useTaskTransport(IdeTasksTransport transport) {
-        java.util.Set<String> ported = new java.util.HashSet<>(com.intellij.gradle.toolingExtension.impl.ideTask.PortedModels.all());
-        List<String> removed = new ArrayList<>();
-        providers.removeIf(p -> {
-            String dedicated = DEDICATED_PROVIDERS.get(p.getClass().getSimpleName());
-            boolean remove = dedicated != null ? ported.contains(dedicated)
-                : ported.stream().anyMatch(c -> p.toString().equals("ProjectModel(" + c + ")"));
-            // Gradle-owned build models replaced by per-project payloads (D14).
-            if (p.toString().equals("BuildModel(org.gradle.tooling.model.idea.IdeaProject)")
-                && ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.payload.IdeaModulePayload")) {
-                remove = true;
-            }
-            if (p.getClass().getSimpleName().equals("KotlinDslScriptModelProvider")
-                && ported.contains("com.intellij.gradle.toolingExtension.impl.ideTask.payload.KotlinDslScriptPayload")) {
-                remove = true;
-            }
-            if (remove) {
-                removed.add(p.toString());
-            }
-            return remove;
-        });
-        providers.addAll(transport.providers());
-        log.add("TASK MODE: removed " + removed + "; added " + transport.providers());
-    }
-
     Set<Class<?>> toolingExtensionClasses() {
         return toolingExtensionClasses;
     }

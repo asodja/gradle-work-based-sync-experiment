@@ -8,8 +8,7 @@ import java.util.Set;
 
 /**
  * Prints the value of {@code -Dwbs.transport.drop}: the built-in providers of every ported model, as the patched
- * {@code GradleModelFetchAction} matches them (provider class simple name or toString()). Same mapping as the
- * harness's IdeProviders.useTaskTransport.
+ * {@code GradleModelFetchAction} matches them (provider class simple name or toString()).
  */
 public final class DropList {
 

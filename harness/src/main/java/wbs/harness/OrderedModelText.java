@@ -34,7 +34,7 @@ public final class OrderedModelText {
             byte[] bytes = Files.readAllBytes(file);
             Object model;
             try {
-                model = isIon(bytes) ? serializer.read(bytes, modelClass) : IdeTasksTransport.readJava(bytes);
+                model = isIon(bytes) ? serializer.read(bytes, modelClass) : JavaSerialized.read(bytes);
             } catch (Exception e) {
                 model = "UNREADABLE: " + e;
             }

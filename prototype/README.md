@@ -22,7 +22,7 @@ One jar, put on the IDE's init script classpath. The init script ends with
 
 | Package | Loaded in | Holds |
 |---|---|---|
-| `ideTask` | daemon | `IdeModelTasks` (entry point), `PortedModels` (which model classes travel as tasks), the `IdeModelTaskRequest` model builder used by the older build-action mode |
+| `ideTask` | daemon | `IdeModelTasks` (entry point), `PortedModels` (which model classes travel as tasks) |
 | `ideTask.tasks` | daemon | the task types |
 | `ideTask.capture` | daemon | everything that computes a model at configuration time |
 | `ideTask.payload` | daemon and IDE | the bundle file format and the per-model payload forms; no Gradle API |

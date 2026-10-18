@@ -102,7 +102,7 @@ final class GradleOwnedText {
                 Class<?> modelClass = classId.startsWith("IdeaProject") ? IdeaProject.class : KotlinDslScriptsModel.class;
                 value = new com.intellij.gradle.toolingExtension.impl.modelSerialization.ToolingSerializer().read(bytes, modelClass);
             } else {
-                value = IdeTasksTransport.readJava(bytes);
+                value = JavaSerialized.read(bytes);
             }
         }
         if (value instanceof IdeaProject) {
