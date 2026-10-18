@@ -16,7 +16,15 @@ import org.jetbrains.plugins.gradle.tooling.ModelBuilderContext;
  */
 public abstract class BuilderContextService implements BuildService<BuildServiceParameters.None>, AutoCloseable {
 
-    static final String NAME = "ideModelBuilderContext";
+    /**
+     * One registration per classloader of this class: the shared service registry is keyed by name only, so when the
+     * init script's classpath is loaded twice in one build (seen on a Mac under gradle-profiler: the instance registered
+     * by one loader cannot be cast to the class of the other), each loader gets its own context instead of a
+     * ClassCastException. IntelliJ's classes come from the same loader as this one, so a context cannot be shared
+     * across loaders anyway.
+     */
+    static final String NAME = "ideModelBuilderContext@"
+        + Integer.toHexString(System.identityHashCode(BuilderContextService.class.getClassLoader()));
 
     private ModelBuilderContext context;
 

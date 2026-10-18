@@ -874,3 +874,10 @@ Dated, append-only. One entry per measurement, finding or decision. Newest at th
   harness's `--tasks`/`--tasks-only` action modes with `IdeTasksTransport` (`--launcher` remains; `JavaSerialized.read`
   keeps the dump readers working). Kept: `DropList`, which generates the `-Dwbs.transport.drop` value the patched
   `GradleModelFetchAction` applies. Prototype tests, harness and plugin build; fixture smoke: 5.5 s miss, contributors ran.
+- **Owner's gradle-profiler run on the Mac (2026-10-18):** "class ...capture.BuilderContextService$Inject_ cannot be cast to
+  class ...capture.BuilderContextService" with two `InstrumentingVisitableURLClassLoader`s: the init script's classpath
+  was loaded twice in one build and the shared build service, keyed by name only, was registered by one loader and read by
+  the other. Not reproducible here (fixture and gradle/gradle, 9.9.0-milestone-2 on both sides, 287 projects in 27.6 s on
+  a miss); the origin of the second loader is open (full stack requested). Fix regardless: the service name carries the
+  identity hash of the class's loader, so every loader registers its own context; a context cannot be shared across
+  loaders anyway (IntelliJ's classes come from the same loader). Kit repacked.
