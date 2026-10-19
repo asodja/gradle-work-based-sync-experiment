@@ -250,6 +250,9 @@ public final class LibraryDependencyDataService extends AbstractDependencyDataSe
     return orderEntry;
   }
 
+  // -Dwbs.ide.fixes=off runs the stock scan below, to measure the transport alone
+  private static final boolean WBS_IDE_FIXES = !"off".equals(System.getProperty("wbs.ide.fixes"));
+
   private static @Nullable LibraryOrderEntry findLibraryOrderEntry(@NotNull ModifiableRootModel moduleRootModel,
                                                                    @NotNull Library library,
                                                                    @NotNull DependencyScope scope) {
@@ -257,7 +260,7 @@ public final class LibraryDependencyDataService extends AbstractDependencyDataSe
     // scan below does that for every entry of the module per lookup (21.6 million resolutions for gradle/gradle's
     // 103k unnamed module libraries). An entry carrying the library's own id is the identical library, so it is found
     // by comparing ids, which are plain values.
-    if (library instanceof com.intellij.workspaceModel.ide.impl.legacyBridge.library.LibraryBridge bridge) {
+    if (WBS_IDE_FIXES && library instanceof com.intellij.workspaceModel.ide.impl.legacyBridge.library.LibraryBridge bridge) {
       com.intellij.platform.workspace.jps.entities.LibraryId libraryId = bridge.getLibraryId();
       for (OrderEntry orderEntry : moduleRootModel.getOrderEntries()) {
         if (orderEntry instanceof com.intellij.workspaceModel.ide.impl.legacyBridge.module.roots.LibraryOrderEntryBridge entryBridge

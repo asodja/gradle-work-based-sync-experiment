@@ -3,7 +3,7 @@
 usage: merge-report.py <output dir containing stock/ and wbs/> [warm-ups] [iterations]
 <mode>/gradle-times.txt (written by compare.sh): the Gradle part of every sync in run order, one ms value per line,
 (warm-ups + iterations) lines per scenario."""
-import csv, pathlib, statistics, sys
+import csv, os, pathlib, statistics, sys
 
 out = pathlib.Path(sys.argv[1])
 warmups = int(sys.argv[2]) if len(sys.argv) > 2 else 1
@@ -50,6 +50,8 @@ def split(kinds):
 
 stock, wbs = load("stock"), load("wbs")
 names = list(dict.fromkeys(list(stock) + list(wbs)))
+if os.environ.get("WBS_IDE_FIXES") == "off":
+    print("WBS ran without its IDE import fixes (WBS_IDE_FIXES=off): the WBS column is the Gradle-side transport alone.\n")
 print("| scenario | stock total | WBS total | speed-up (medians) | stock Gradle / IDE | WBS Gradle / IDE |")
 print("|---|---|---|---|---|---|")
 for name in names:

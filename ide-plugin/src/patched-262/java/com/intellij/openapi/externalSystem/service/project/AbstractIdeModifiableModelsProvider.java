@@ -143,13 +143,18 @@ public abstract class AbstractIdeModifiableModelsProvider extends IdeModelsProvi
     return module == null ? getModifiableModuleModel().getModuleToBeRenamed(ideModuleName) : module;
   }
 
+  // -Dwbs.ide.fixes=off runs the stock code of the D24 import fixes, to measure the transport alone
+  private static final boolean WBS_IDE_FIXES = !"off".equals(System.getProperty("wbs.ide.fixes"));
+
   @Override
   public @Nullable Library findIdeLibrary(@NotNull LibraryData libraryData) {
     // D24: isRelated() is name equality and project library names are unique, so the indexed lookup gives the same
     // answer as the scan below without rebuilding the table's library array (invalidated by every library edit).
-    Library byName = getLibraryByName(libraryData.getInternalName());
-    if (byName != null && ExternalSystemApiUtil.isRelated(byName, libraryData)) {
-      return byName;
+    if (WBS_IDE_FIXES) {
+      Library byName = getLibraryByName(libraryData.getInternalName());
+      if (byName != null && ExternalSystemApiUtil.isRelated(byName, libraryData)) {
+        return byName;
+      }
     }
     final LibraryTable.ModifiableModel libraryTable = getModifiableProjectLibrariesModel();
     for (Library ideLibrary: libraryTable.getLibraries()) {
@@ -207,8 +212,8 @@ public abstract class AbstractIdeModifiableModelsProvider extends IdeModelsProvi
 
   @Override
   public @Nullable Library getLibraryByName(String name) {
-    if (name == null) {
-      return getModifiableProjectLibrariesModel().getLibraryByName(null);
+    if (name == null || !WBS_IDE_FIXES) {
+      return getModifiableProjectLibrariesModel().getLibraryByName(name);
     }
     Library cached = myWbsLibrariesByName.get(name);
     if (cached != null) {

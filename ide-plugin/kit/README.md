@@ -128,3 +128,10 @@ plugin and the settings), and if wanted
   index that `zip -u` would leave stale)
 - `wbs.vmoptions`: `-Dwbs.transport=tasks`, the provider drop list, `-Dwbs.transport.run=only`, the paths selector
 - `icon/idea-wbs.svg`: the badged icon source
+
+
+## Measuring the transport without the IDE fixes
+
+The copy carries two IDE-side import fixes besides the transport (D24: project library lookup and library order entry
+lookup in the data services). `-Dwbs.ide.fixes=off` in the copy's `idea.vmoptions`, or `WBS_IDE_FIXES=off` in front of
+`compare.sh`, runs the stock code of both, so the WBS numbers then show the Gradle-side change alone.
