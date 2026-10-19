@@ -11,13 +11,15 @@
 # measured syncs are same-session re-syncs where the stock sync hits the configuration cache too (its action's key only
 # changes with a new IDE process). With RESTARTS=N each IDE is started N+1 times on the same sandbox and project; run 0
 # links and imports the project, runs 1..N measure the first sync after an IDE start (stock: a configuration cache miss,
-# WBS: a hit) and one same-session re-sync after it.
+# WBS: a hit) and one same-session re-sync after it. RESTART_SCENARIO=sync_miss_settings (or sync_miss_cleared) combines
+# the restart with a miss: the settings script is changed (the cache state deleted) before every sync, so both IDEs miss
+# on the restart sync and on the re-sync.
 # Needs gradle-profiler 0.26+ on the PATH (or GRADLE_PROFILER) and python3 for the merged table.
 set -euo pipefail
 STOCK=$1; WBS=$2; PROJECT=$3; OUT=${4:-$HOME/wbs-profiler-$(date +%Y%m%d-%H%M)}
 HERE=$(cd "$(dirname "$0")" && pwd)
 SCENARIOS=${SCENARIOS:-sync_miss_settings sync_hit}; WARMUPS=${WARMUPS:-1}; ITERATIONS=${ITERATIONS:-3}
-RESTARTS=${RESTARTS:-0}
+RESTARTS=${RESTARTS:-0}; RESTART_SCENARIO=${RESTART_SCENARIO:-sync_hit}
 [[ $WARMUPS -ge 1 ]] || WARMUPS=1   # gradle-profiler refuses zero warm-ups for a benchmark
 PROFILER=${GRADLE_PROFILER:-gradle-profiler}
 # the same Gradle user home for both IDEs: without the option the profiler uses a fresh ./gradle-user-home for the
@@ -75,28 +77,35 @@ run_restarts() { # run_restarts <mode> <app>: RESTARTS+1 profiler invocations, e
   local sandbox="$OUT/sandbox-$mode" result="$OUT/$mode"
   mkdir -p "$sandbox/plugins" "$result"
   if [[ $mode == wbs ]]; then rm -rf "$sandbox/plugins/wbs-task-transport"; cp -R "$KIT/plugin/wbs-task-transport" "$sandbox/plugins/"; fi
-  SCENARIOS=sync_hit WARMUPS=1 ITERATIONS=1 scenario_file "$mode" "$result/restart.scenarios"
-  echo "== $mode: $app  (restart case, $RESTARTS measured IDE starts)"
+  SCENARIOS=$RESTART_SCENARIO WARMUPS=1 ITERATIONS=1 scenario_file "$mode" "$result/restart.scenarios"
+  echo "== $mode: $app  (restart case, $RESTART_SCENARIO, $RESTARTS measured IDE starts)"
   for i in $(seq 0 "$RESTARTS"); do
     "$PROFILER" --benchmark --scenario-file "$result/restart.scenarios" --project-dir "$PROJECT" \
       --gradle-user-home "$GUH" --idea-install-dir "$app" --idea-sandbox-dir "$sandbox" --output-dir "$result/restart-$i" 2>&1 | tee -a "$result/profiler.log" | grep -E "Full sync has|FAILED|rror|xception" | sed "s/^/   start $i: /" || true
     [[ -f "$result/restart-$i/benchmark.csv" ]] || { echo "no results for $mode start $i; see $result/profiler.log" >&2; exit 1; }
   done
+  (cd "$PROJECT" && git checkout -- "$SETTINGS" 2>/dev/null) || true
 }
 
 restart_report() {
-  python3 - "$OUT" "$RESTARTS" <<'PY'
+  python3 - "$OUT" "$RESTARTS" "$RESTART_SCENARIO" <<'PY'
 import csv, pathlib, sys
-out, n = pathlib.Path(sys.argv[1]), int(sys.argv[2])
+out, n, scenario = pathlib.Path(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
 def value(mode, i, row_prefix):
     for r in csv.reader(open(out / mode / f"restart-{i}" / "benchmark.csv")):
         if r and r[0].startswith(row_prefix):
             return float(r[1]) / 1000
     return float("nan")
-print("# IDE sync, restart case (gradle-profiler, one fresh IDE process per start)\n")
-print("Start 0 links and imports the project and is not shown. 'restart sync' is the first sync after an IDE start: the stock")
-print("sync misses the configuration cache there (its action's key changes with the IDE process), the task sync hits it.")
-print("'re-sync' is the second sync in the same IDE session.\n")
+print(f"# IDE sync, restart case, {scenario} (gradle-profiler, one fresh IDE process per start)\n")
+print("Start 0 links and imports the project and is not shown. 'restart sync' is the first sync after an IDE start,")
+print("'re-sync' the second sync in the same IDE session.")
+if scenario == "sync_hit":
+    print("The stock restart sync misses the configuration cache (its action's key changes with the IDE process), the task")
+    print("sync hits it; both re-syncs hit.\n")
+elif scenario == "sync_miss_settings":
+    print("The settings script is changed before every sync: all four syncs miss the configuration cache.\n")
+else:
+    print("The configuration cache state is deleted before every sync: all four syncs miss it.\n")
 print("| start | stock restart sync | WBS restart sync | stock re-sync | WBS re-sync |")
 print("|---|---|---|---|---|")
 for i in range(1, n + 1):
