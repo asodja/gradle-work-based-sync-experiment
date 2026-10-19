@@ -14,6 +14,9 @@
 # WBS: a hit) and one same-session re-sync after it. RESTART_SCENARIO=sync_miss_settings (or sync_miss_cleared) combines
 # the restart with a miss: the settings script is changed (the cache state deleted) before every sync, so both IDEs miss
 # on the restart sync and on the re-sync.
+# Gradle/IDE split: the report shows every sync as total (Gradle + IDE). Stock: the profiler's agent times the build
+# action. WBS: the agent does not see a plain task run, so the kit's "[wbs] plain model task run ... in N ms" lines in
+# the sandbox's idea.log are used; they cover the whole Gradle part of a task sync (connection, task run, bundle hand-off).
 # Needs gradle-profiler 0.26+ on the PATH (or GRADLE_PROFILER) and python3 for the merged table.
 set -euo pipefail
 STOCK=$1; WBS=$2; PROJECT=$3; OUT=${4:-$HOME/wbs-profiler-$(date +%Y%m%d-%H%M)}
@@ -60,6 +63,19 @@ scenario_file() { # scenario_file <mode> <file>
   } > "$file"
 }
 
+log_size() { if [[ -f $1 ]]; then wc -c < "$1"; else echo 0; fi; }
+gradle_times() { # gradle_times <mode> <profiler output> <idea.log> <idea.log size before the run> <expected count> <out file>
+  # one Gradle-part value in ms per sync of one profiler invocation, in run order
+  local mode=$1 out=$2 log=$3 before=$4 n=$5 file=$6
+  if [[ $mode == stock ]]; then
+    grep -o "Full Gradle execution time: [0-9]*ms" "$out" | grep -o "[0-9]*" | tail -n "$n" > "$file" || true
+  else
+    { if [[ -f $log ]]; then if (( $(wc -c < "$log") >= before )); then tail -c +$((before + 1)) "$log"; else cat "$log"; fi; fi; } \
+      | grep -o "plain model task run: [0-9]* projects in [0-9]* ms" | sed 's/.* in \([0-9]*\) ms/\1/' | tail -n "$n" > "$file" || true
+  fi
+  (( $(wc -l < "$file") == n )) || echo "   note: $mode: $(wc -l < "$file") Gradle times for $n syncs, the Gradle/IDE split is incomplete" >&2
+}
+
 run() { # run <mode> <app>
   local mode=$1 app=$2
   local sandbox="$OUT/sandbox-$mode" result="$OUT/$mode"
@@ -67,9 +83,12 @@ run() { # run <mode> <app>
   if [[ $mode == wbs ]]; then rm -rf "$sandbox/plugins/wbs-task-transport"; cp -R "$KIT/plugin/wbs-task-transport" "$sandbox/plugins/"; fi
   scenario_file "$mode" "$result/idea-sync.scenarios"
   echo "== $mode: $app  ($SCENARIOS; $WARMUPS warm-up(s), $ITERATIONS iterations)"
+  local before count=0; before=$(log_size "$sandbox/logs/idea.log")
   "$PROFILER" --benchmark --scenario-file "$result/idea-sync.scenarios" --project-dir "$PROJECT" \
     --gradle-user-home "$GUH" --idea-install-dir "$app" --idea-sandbox-dir "$sandbox" --output-dir "$result" 2>&1 | tee "$result/profiler.log" | grep -E "Running scenario|Full sync|FAILED|rror|xception|\* " || true
   [[ -f "$result/benchmark.csv" ]] || { echo "no results for $mode; see $result/profiler.log" >&2; exit 1; }
+  for _ in $SCENARIOS; do count=$((count + WARMUPS + ITERATIONS)); done
+  gradle_times "$mode" "$result/profiler.log" "$sandbox/logs/idea.log" "$before" "$count" "$result/gradle-times.txt"
   (cd "$PROJECT" && git checkout -- "$SETTINGS" 2>/dev/null) || true
 }
 run_restarts() { # run_restarts <mode> <app>: RESTARTS+1 profiler invocations, each a fresh IDE on the same sandbox
@@ -79,10 +98,13 @@ run_restarts() { # run_restarts <mode> <app>: RESTARTS+1 profiler invocations, e
   if [[ $mode == wbs ]]; then rm -rf "$sandbox/plugins/wbs-task-transport"; cp -R "$KIT/plugin/wbs-task-transport" "$sandbox/plugins/"; fi
   SCENARIOS=$RESTART_SCENARIO WARMUPS=1 ITERATIONS=1 scenario_file "$mode" "$result/restart.scenarios"
   echo "== $mode: $app  (restart case, $RESTART_SCENARIO, $RESTARTS measured IDE starts)"
+  local before
   for i in $(seq 0 "$RESTARTS"); do
+    mkdir -p "$result/restart-$i"; before=$(log_size "$sandbox/logs/idea.log")
     "$PROFILER" --benchmark --scenario-file "$result/restart.scenarios" --project-dir "$PROJECT" \
-      --gradle-user-home "$GUH" --idea-install-dir "$app" --idea-sandbox-dir "$sandbox" --output-dir "$result/restart-$i" 2>&1 | tee -a "$result/profiler.log" | grep -E "Full sync has|FAILED|rror|xception" | sed "s/^/   start $i: /" || true
+      --gradle-user-home "$GUH" --idea-install-dir "$app" --idea-sandbox-dir "$sandbox" --output-dir "$result/restart-$i" 2>&1 | tee -a "$result/profiler.log" "$result/restart-$i/profiler.log" | grep -E "Full sync has|FAILED|rror|xception" | sed "s/^/   start $i: /" || true
     [[ -f "$result/restart-$i/benchmark.csv" ]] || { echo "no results for $mode start $i; see $result/profiler.log" >&2; exit 1; }
+    gradle_times "$mode" "$result/restart-$i/profiler.log" "$sandbox/logs/idea.log" "$before" 2 "$result/restart-$i/gradle-times.txt"
   done
   (cd "$PROJECT" && git checkout -- "$SETTINGS" 2>/dev/null) || true
 }
@@ -91,14 +113,25 @@ restart_report() {
   python3 - "$OUT" "$RESTARTS" "$RESTART_SCENARIO" <<'PY'
 import csv, pathlib, sys
 out, n, scenario = pathlib.Path(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
-def value(mode, i, row_prefix):
-    for r in csv.reader(open(out / mode / f"restart-{i}" / "benchmark.csv")):
-        if r and r[0].startswith(row_prefix):
-            return float(r[1]) / 1000
+def seconds(mode, i, row_prefix, kind):
+    rows = list(csv.reader(open(out / mode / f"restart-{i}" / "benchmark.csv")))
+    col = rows[3].index(kind) if kind in rows[3] else 1
+    for r in rows[4:]:
+        if r and r[0].startswith(row_prefix) and len(r) > col and r[col]:
+            return float(r[col]) / 1000
     return float("nan")
+def gradle(mode, i, index):
+    if mode == "stock":
+        return seconds(mode, i, ["warm-up", "measured"][index], "Gradle total execution time")
+    f = out / mode / f"restart-{i}" / "gradle-times.txt"
+    lines = f.read_text().split() if f.exists() else []
+    return float(lines[index]) / 1000 if len(lines) > index else float("nan")
+def cell(mode, i, index):
+    total, g = seconds(mode, i, ["warm-up", "measured"][index], "total execution time"), gradle(mode, i, index)
+    return f"{total:.1f} s ({g:.1f} + {total - g:.1f})"
 print(f"# IDE sync, restart case, {scenario} (gradle-profiler, one fresh IDE process per start)\n")
 print("Start 0 links and imports the project and is not shown. 'restart sync' is the first sync after an IDE start,")
-print("'re-sync' the second sync in the same IDE session.")
+print("'re-sync' the second sync in the same IDE session. Cells: total (Gradle part + IDE part), seconds.")
 if scenario == "sync_hit":
     print("The stock restart sync misses the configuration cache (its action's key changes with the IDE process), the task")
     print("sync hits it; both re-syncs hit.\n")
@@ -109,7 +142,10 @@ else:
 print("| start | stock restart sync | WBS restart sync | stock re-sync | WBS re-sync |")
 print("|---|---|---|---|---|")
 for i in range(1, n + 1):
-    print(f"| {i} | {value('stock', i, 'warm-up'):.1f} s | {value('wbs', i, 'warm-up'):.1f} s | {value('stock', i, 'measured'):.1f} s | {value('wbs', i, 'measured'):.1f} s |")
+    print(f"| {i} | {cell('stock', i, 0)} | {cell('wbs', i, 0)} | {cell('stock', i, 1)} | {cell('wbs', i, 1)} |")
+print()
+print("Gradle part: stock from the profiler's agent (it times the build action); WBS from the kit's own timing of its task")
+print("run in the sandbox's idea.log, as the agent does not see a plain task run. IDE part = total - Gradle part.")
 PY
 }
 
@@ -120,6 +156,6 @@ if (( RESTARTS > 0 )); then
 else
   run stock "$STOCK"
   run wbs "$WBS"
-  python3 "$HERE/merge-report.py" "$OUT" | tee "$OUT/report.md"
+  python3 "$HERE/merge-report.py" "$OUT" "$WARMUPS" "$ITERATIONS" | tee "$OUT/report.md"
 fi
 echo "report: $OUT/report.md"
