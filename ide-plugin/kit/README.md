@@ -24,6 +24,12 @@ and not scanned in 2026.2), appends `wbs.vmoptions` to `Contents/bin/idea.vmopti
 renames the copy to "IntelliJ IDEA WBS" with a badged icon and its own settings directory
 (`~/Library/Application Support/JetBrains/IntelliJIdea2026.2-WBS`), and re-signs it ad hoc. The original app is untouched.
 
+## Update
+
+Unpack the new kit and run `install-mac.sh` again: it removes the previous "IntelliJ IDEA WBS" copy (recognized by
+its `wbs-kit.txt` marker) and installs fresh. Settings live outside the app and survive. The kit is built with
+`ide-plugin/build-kit.sh` in the repository.
+
 ## Use
 
 Open a Gradle project in "IntelliJ IDEA WBS" and sync as usual. The first sync of a project configures the build and
@@ -56,8 +62,9 @@ build action. The option in `Contents/bin/idea.vmoptions`:
   `[wbs] GradleDslBaseScriptModel fetched`). Kotlin DSL script highlighting was not verified on a Mac.
 
 - Prototype: Kotlin MPP and Android models are not ported (they still go through the stock path if present).
-- A change of the kit's own jar does not invalidate an existing configuration cache entry (Gradle finding); after
-  updating the kit, run once with `--rerun-tasks` or change any build script.
+- After a kit update the first sync reconfigures the build once: the plugin writes its jar hash into the generated
+  init script, because a changed jar on the init script classpath alone does not invalidate the configuration cache
+  entry (Gradle finding).
 - The Dependency Analyzer's graph model is still produced eagerly (the largest payload); nothing else is dropped.
 
 ## Re-sync error "removeContentEntry: removed content entry url … still exists after removing"
