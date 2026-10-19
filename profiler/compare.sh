@@ -65,13 +65,14 @@ scenario_file() { # scenario_file <mode> <file>
 
 log_size() { if [[ -f $1 ]]; then wc -c < "$1"; else echo 0; fi; }
 gradle_times() { # gradle_times <mode> <profiler output> <idea.log> <idea.log size before the run> <expected count> <out file>
-  # one Gradle-part value in ms per sync of one profiler invocation, in run order
+  # one Gradle-part value in ms per sync of one profiler invocation, in run order; the kit logs every [wbs] line twice
+  # (captured stderr and the #wbs logger), so only the logger's line is counted
   local mode=$1 out=$2 log=$3 before=$4 n=$5 file=$6
   if [[ $mode == stock ]]; then
     grep -o "Full Gradle execution time: [0-9]*ms" "$out" | grep -o "[0-9]*" | tail -n "$n" > "$file" || true
   else
     { if [[ -f $log ]]; then if (( $(wc -c < "$log") >= before )); then tail -c +$((before + 1)) "$log"; else cat "$log"; fi; fi; } \
-      | grep -o "plain model task run: [0-9]* projects in [0-9]* ms" | sed 's/.* in \([0-9]*\) ms/\1/' | tail -n "$n" > "$file" || true
+      | grep "#wbs - \[wbs\] plain model task run" | grep -o "in [0-9]* ms" | grep -o "[0-9]*" | tail -n "$n" > "$file" || true
   fi
   (( $(wc -l < "$file") == n )) || echo "   note: $mode: $(wc -l < "$file") Gradle times for $n syncs, the Gradle/IDE split is incomplete" >&2
 }
