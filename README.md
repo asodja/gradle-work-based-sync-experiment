@@ -77,3 +77,9 @@ design/building.md        how to build and wire the Gradle distribution and Inte
 harness/                  the Tooling API measurement harness (milestone 1)
 results/                  raw numbers per run and the final REPORT.md
 ```
+
+## License
+
+Apache License 2.0, see `LICENSE`. The files under `ide-plugin/src/patched/` and `ide-plugin/src/patched-262/`
+are modified copies of IntelliJ Community sources (Apache 2.0, copyright JetBrains s.r.o. and contributors);
+the modifications are marked `wbs` in the code. `dist/` and the kit contain compiled versions of them.
